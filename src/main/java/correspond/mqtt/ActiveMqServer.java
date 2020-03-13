@@ -1,4 +1,4 @@
-package com.raven.smart;
+package correspond.mqtt;
 
 /**
  * @Auther: raven
@@ -7,37 +7,27 @@ package com.raven.smart;
  */
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-import javax.jms.Connection;
-import javax.jms.DeliveryMode;
-import javax.jms.Destination;
-import javax.jms.ExceptionListener;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-import javax.jms.TextMessage;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.logging.SimpleFormatter;
+import javax.jms.*;
 
 /**
  * Hello world!
  */
-public class hello {
+public class ActiveMqServer {
 
     public static void main(String[] args) throws Exception {
-        //thread(new HelloWorldProducer(), false);
+        thread(new HelloWorldProducer(), false);
+        System.in.read();
        //thread(new HelloWorldConsumer(), false);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(simpleDateFormat.parse("2020-03-05"));
 
-        System.out.println(calendar.get(Calendar.DAY_OF_WEEK_IN_MONTH));
-        calendar.add(Calendar.DAY_OF_WEEK_IN_MONTH,1);
-
-        String format = simpleDateFormat.format(calendar.getTime());
-        System.out.println(format);
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTime(simpleDateFormat.parse("2020-03-05"));
+//
+//        System.out.println(calendar.get(Calendar.DAY_OF_WEEK_IN_MONTH));
+//        calendar.add(Calendar.DAY_OF_WEEK_IN_MONTH,1);
+//
+//        String format = simpleDateFormat.format(calendar.getTime());
+//        System.out.println(format);
 
 
     }
@@ -57,12 +47,34 @@ public class hello {
 
                 // Create a Connection
                 Connection connection = connectionFactory.createConnection();
+
+                connection.setClientID("ravenProducer");
+
                 connection.start();
 
                 // Create a Session
                 Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-                //创建队列目标
+                //创建发布/订阅模式消息
+                Topic createTopic = session.createTopic("test");//        非持久订阅
+                //创建消费者
+                MessageConsumer createConsumer = session.createConsumer(createTopic);
+                //设置消费者监听
+                createConsumer.setMessageListener(new MessageListener() {
+                    @Override
+                    public void onMessage(Message message) {
+                        TextMessage textMessage = (TextMessage) message;
+                        try {
+                            System.out.println("接收的消息为：" + textMessage.getText());
+                        } catch (JMSException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            } catch (JMSException e) {
+                e.printStackTrace();
+            }
+               /* //创建队列目标
                 Destination destination = session.createQueue("TEST.FOO");
 
                 //创建一个生产者
@@ -84,10 +96,10 @@ public class hello {
             catch (Exception e) {
                 System.out.println("Caught: " + e);
                 e.printStackTrace();
-            }
+            }*/
+
         }
     }
-
     public static class HelloWorldConsumer implements Runnable, ExceptionListener {
         @Override
         public void run() {
@@ -98,6 +110,7 @@ public class hello {
 
                 // Create a Connection
                 Connection connection = connectionFactory.createConnection();
+                connection.setClientID("ravenConsumer");
                 connection.start();
 
                 connection.setExceptionListener(this);
