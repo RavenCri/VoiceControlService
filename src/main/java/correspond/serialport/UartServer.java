@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UartServer {
    private static String port = "COM3";
-   private static String bps = "9200";
+   private static String bps = "9600";
    public  boolean sendMsg(String  msg){
 
       String path = getClass().getResource("/script/test.py").getPath().substring(1);
