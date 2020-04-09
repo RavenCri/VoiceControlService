@@ -25,10 +25,10 @@ public class UserOperationServer {
         String key;
         if(word.contains("灯") && word.contains("开") ){ //默认开1号房间的灯
             key = "开灯";
-            uartServer.sendMsg("LED_1_1");
+            uartServer.sendMsg("LED_0_1");
         }else if(word.contains("灯") && word.contains("关")){
             key = "关灯";
-            uartServer.sendMsg("LED_1_0");
+            uartServer.sendMsg("LED_0_0");
             //操作 客厅 的灯
         } else if(word.contains("灯") && word.contains("开") && word.contains("客厅")  ){
             key = "开灯";
