@@ -1,8 +1,7 @@
-package config;
+package init;
 
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 import util.FileUtil;
 

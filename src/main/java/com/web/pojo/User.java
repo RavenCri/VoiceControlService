@@ -1,28 +1,33 @@
-package pojo;
+package com.web.pojo;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "user")
+@GenericGenerator(name = "jpa-uuid", strategy = "uuid")
 public class User {
-
-    @GeneratedValue(strategy=GenerationType.IDENTITY )
+    /*strategy=GenerationType.IDENTITY*/
+    @GeneratedValue(generator = "jpa-uuid" )
+    @Column(length = 32)
     @Id
-    private Long id;
+    private String id;
     @Column(nullable = false, unique = true)
     private String username;
     @Column(nullable = false )
+    @JsonIgnore
     private String password;
     @Column(nullable = false)
     private String nickname;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long userId) {
+    public void setId(String userId) {
         this.id = userId;
     }
 
