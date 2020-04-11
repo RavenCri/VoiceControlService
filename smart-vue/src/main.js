@@ -9,6 +9,9 @@ import solid from '@fortawesome/fontawesome-free-solid'
 import regular from '@fortawesome/fontawesome-free-regular'
 import brands from '@fortawesome/fontawesome-free-brands'
 
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+
 Vue.config.productionTip = false
 
 
@@ -25,6 +28,7 @@ fontawesome.library.add(regular)
 fontawesome.library.add(brands)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
+Vue.use(ElementUI);
 
 new Vue({
   el: '#app',
