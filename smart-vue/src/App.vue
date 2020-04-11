@@ -10,7 +10,7 @@
           </ul>
         </div>
     </div>
-    <div class="content">
+    <div >
       <router-view/>
     </div>
   </div>
@@ -27,6 +27,9 @@ export default {
 *{
   padding: 0px;
   margin: 0px;
+  list-style: none;
+  border: none;
+  text-decoration: none;
 }
 .head{
   text-align: center;
@@ -37,7 +40,7 @@ export default {
   font-size: 16px;
   font-weight: bold;
   z-index: 10;
-  
+
 }
 .head ul::before{
   content:url("./assets/ico.png");
@@ -46,25 +49,24 @@ export default {
   top:10px;
 }
 .head ul{
-  list-style: none;
   display: flex;
   flex-direction: row;
   width: 60%;
   justify-content: center;
   margin-left: 150px;
-  
   /* background-color: tomato; */
 }
 .head ul li{
   width: 25%;
-  padding: 30px 10px ;
+  padding: 30px 10px 00px ;
   /* background-color:thistle; */
   margin: 0 10px;
- 
+  height: 40px;
 }
 .head ul li a{
-  text-decoration: none;
   color: aliceblue;
-  display: block;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
 }
 </style>
