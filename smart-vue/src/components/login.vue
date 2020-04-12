@@ -152,6 +152,8 @@
         font-size: 16px;
         display: inline-block;
         width: 80px;
+        position: relative;
+        top: 5px;
     }
 
     .box input {
@@ -165,7 +167,7 @@
         color: honeydew;
         padding-left: 20px;
         display: inline-block;
-        margin-left: 10px;
+        margin-left: 5px;
         letter-spacing: 3px;
 
     }
