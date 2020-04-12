@@ -18,6 +18,7 @@
                 <div class="bt">
                     <el-button type="primary" round style="margin-bottom: 20px;" @click='login'>登录</el-button>
                     <p style="cursor: pointer;" @click='goRegister'>没有账号？前去注册</p>
+                    <p style="cursor: pointer;margin-top: 20px;color: greenyellow;" @click="goIndex">Design by @科睿工作室</p>
                 </div>
 
             </div>
@@ -39,6 +40,7 @@
                 <div class="bt">
                     <el-button type="primary" round style="margin-bottom: 20px;" @click='register'>注册</el-button>
                     <p style="cursor: pointer;" @click='goLogin'>已有账号？前去登录</p>
+                    <p style="cursor: pointer;margin-top: 20px;color: greenyellow;" @click='goIndex'>Design by @科睿工作室</p>
                 </div>
 
             </div>
@@ -76,6 +78,9 @@
             goRegister() {
                 this.showlogin = false
                 this.showregister = true;
+            },
+            goIndex(){
+                window.location.href='/'
             },
             goLogin() {
                 this.showlogin = true;
@@ -127,7 +132,7 @@
 
     .content {
         width: 500px;
-        height: 380px;
+        height: 420px;
         margin: 180px auto;
         background-color: rgba(0, 0, 0, 0.5);
         padding-top: 50px;

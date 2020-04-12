@@ -26,10 +26,10 @@
       </div>
       <div class="app_right an_right">
         <img src="../assets/app.png" alt="" class="iphone">
-        <span class='small-round attr_red'>语音交互</span>
-        <span class='small-round attr_blue'>智能聊天</span>
-        <span class='small-round attr_yellow'>精准操控</span>
-        <span class='small-round attr_green'>多元素化</span>
+        <span class='small-round attr_red an_right'>语音交互</span>
+        <span class='small-round attr_blue an_left'>智能聊天</span>
+        <span class='small-round attr_yellow an_right'>精准操控</span>
+        <span class='small-round attr_green an_left'>多元素化</span>
       </div>
     </div>
     <div>
@@ -382,15 +382,15 @@
     position: relative;
     width: 400px;
     height: 500px;
-    left: 50%;
-    top: 0px;
+    left: 40%;
+    top: -50px;
   }
 
   .attr_red {
     width: 90px;
     height: 90px;
-    top: 60%;
-    left: 40%;
+    top: 55%;
+    left: 30%;
     color: white;
     background-color: #fc6a42;
   }
@@ -399,7 +399,7 @@
     width: 90px;
     height: 90px;
     top: 50%;
-    left: 120%;
+    left: 112%;
     color: white;
     background-color: #4466c9;
   }
@@ -407,8 +407,8 @@
   .attr_yellow {
     width: 90px;
     height: 90px;
-    top: 0%;
-    left: 45%;
+    top: -5%;
+    left: 35%;
     background-color: #fcec64;
     color: #797979;
   }
