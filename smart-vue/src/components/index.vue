@@ -8,7 +8,7 @@
           <li><a @click='moveTo("#bz")'>使用方法</a></li>
           <!-- <li><a href="#ln">关于我们</a></li> -->
           <li>
-            <router-link to="/device">设备管理</router-link>
+            <router-link to="/login">登录后台</router-link>
           </li>
         </ul>
       </div>

@@ -38,7 +38,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         }
         HandlerMethod handlerMethod = (HandlerMethod) object;
         Method method = handlerMethod.getMethod();
-
+        //Request method 'GET' not supported 则不进入拦截器
         //检查有没有需要用户权限的注解
         if (method.getDeclaringClass().isAnnotationPresent(UserLoginToken.class)
                 || method.isAnnotationPresent(UserLoginToken.class)

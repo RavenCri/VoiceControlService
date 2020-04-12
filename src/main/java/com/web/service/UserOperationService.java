@@ -1,9 +1,11 @@
 package com.web.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.web.pojo.Device;
-import init.JSONFileInit;
+import com.web.dao.DeviceRepository;
+import com.web.dao.UserDeviceRepository;
+import com.web.pojo.UserDevice;
 import correspond.serialport.UartServer;
+import init.JSONFileInit;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,9 @@ public class UserOperationService {
     TuLingRoobot tuLingRoobot = new TuLingRoobot();
     OwnThinkRoobot ownThinkRoobot = new OwnThinkRoobot();
     @Autowired
-    DeviceService deviceService;
+    UserDeviceRepository userDeviceRepository;
+    @Autowired
+    DeviceRepository deviceRepository;
     @Autowired
     UartServer uartServer;
 
@@ -35,7 +39,7 @@ public class UserOperationService {
     public String getWord(String userId,String word){
         JSONObject wordMap = JSONFileInit.wordMap;
         System.out.println(word);
-        List<Device> userDevices = deviceService.findDevice(userId);
+        List<UserDevice> userDeviceIds = userDeviceRepository.findUserDeviceByUserId(userId);
         String key;
         if(word.contains("灯") && word.contains("开") ){ //默认开1号房间的灯
             key = "开灯";
@@ -80,7 +84,7 @@ public class UserOperationService {
         // 如果智能回复库没有成功，获取本地回复列表
         JSONObject currIndexJSON = wordMap.getJSONObject(key);
         if(currIndexJSON.containsKey("code")){
-            mqttServer.convertAndSend("amq.topic", userDevices.get(0).getDeviceId(), currIndexJSON.getString("code"));
+            mqttServer.convertAndSend("amq.topic", userDeviceIds.get(0).getDeviceId(), currIndexJSON.getString("code"));
         }
         List<String> replayList= JSONObject.parseArray(currIndexJSON.getString("word"),String.class);
         // 随机引索

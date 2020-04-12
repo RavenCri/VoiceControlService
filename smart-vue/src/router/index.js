@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/index'
+import index from '@/components/index'
 import device from '@/components/device'
+import center from '@/components/center'
 import login from '@/components/login'
+import updateInfo from '@/components/updateInfo'
 Vue.use(Router)
 
 export default new Router({
@@ -10,7 +12,7 @@ export default new Router({
     {
       path: '/',
       name: 'index',
-      component: HelloWorld
+      component: index
     },
     {
       path: '/login',
@@ -18,9 +20,22 @@ export default new Router({
       component: login
     },
     {
-      path: '/device',
-      name: 'device',
-      component: device
-    }
+      path: '/center',
+      name: 'center',
+      component: center,
+      children:[
+        {
+          // path前面不能带/
+          path: 'device',
+          component: device
+        },
+        {
+          // path前面不能带/
+          path: 'updateInfo',
+          component: updateInfo
+        }
+      ]
+    },
+    
   ]
 })

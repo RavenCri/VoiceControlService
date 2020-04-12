@@ -14,14 +14,13 @@ import javax.servlet.http.HttpServletRequest;
  **/
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(RuntimeException.class)
     @ResponseBody
     public String handleException(HttpServletRequest request, Exception e){
-
-        //e.printStackTrace();
+        e.printStackTrace();
         JSONObject obj = new JSONObject();
-        obj.put("status",-1);
-        obj.put("msg",e.getMessage());
+        obj.put("code",-1);
+        obj.put("msg",e.getMessage()==null?"服务器异常，请通知管理员":e.getMessage());
         return obj.toJSONString();
     }
 }

@@ -14,8 +14,10 @@ public class User {
     @GeneratedValue(generator = "jpa-uuid" )
     @Column(length = 32)
     @Id
+    @JsonIgnore
     private String id;
     @Column(nullable = false, unique = true)
+    @JsonIgnore
     private String username;
     @Column(nullable = false )
     @JsonIgnore

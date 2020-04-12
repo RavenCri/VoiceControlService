@@ -1,6 +1,10 @@
 package com.web.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * @description:
@@ -13,18 +17,19 @@ import javax.persistence.*;
 public class Device {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY )
+    @JsonIgnore
     public int id;
-    @Column(nullable = false)
-    public String userId;
+
     @Column(nullable = false)
     public String deviceId;
-
+    @Column(nullable = false)
+    @JsonFormat(timezone = "GMT+8", shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    public Date create_time;
+    @Column(nullable = false)
+    public String type;
     public Device() {
     }
-    public Device(String userId,String deviceId){
-        this.userId = userId;
-        this.deviceId = deviceId;
-    }
+
     public int getId() {
         return id;
     }
@@ -33,13 +38,7 @@ public class Device {
         this.id = id;
     }
 
-    public String getUserId() {
-        return userId;
-    }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
 
     public String getDeviceId() {
         return deviceId;
@@ -47,5 +46,21 @@ public class Device {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
+    }
+
+    public Date getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(Date create_time) {
+        this.create_time = create_time;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
