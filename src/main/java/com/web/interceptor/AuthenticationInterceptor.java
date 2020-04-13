@@ -7,6 +7,7 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.web.controller.UserAccountController;
+import com.web.jwt.annotation.PassToken;
 import com.web.jwt.annotation.UserLoginToken;
 import com.web.pojo.User;
 import com.web.service.UserAccountService;
@@ -39,6 +40,13 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         HandlerMethod handlerMethod = (HandlerMethod) object;
         Method method = handlerMethod.getMethod();
         //Request method 'GET' not supported 则不进入拦截器
+
+        if(method.isAnnotationPresent(PassToken.class) ){
+            PassToken passToken = method.getAnnotation(PassToken.class);
+            if( passToken.required() ){
+                return true;
+            }
+        }
         //检查有没有需要用户权限的注解
         if (method.getDeclaringClass().isAnnotationPresent(UserLoginToken.class)
                 || method.isAnnotationPresent(UserLoginToken.class)

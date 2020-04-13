@@ -73,4 +73,13 @@ public class Result implements Serializable {
         result.setData(data);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Result{" +
+                "code=" + code +
+                ", msg='" + msg + '\'' +
+                ", data=" + data +
+                '}';
+    }
 }

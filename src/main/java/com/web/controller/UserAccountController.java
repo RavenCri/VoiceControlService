@@ -32,8 +32,8 @@ public class UserAccountController {
             @ApiImplicitParam(paramType="query", name = "password", value = "用户密码", required = true, dataType = "String"),
 
     })
-    public Result userLogin(@RequestParam String username, @RequestParam String password, HttpServletResponse response) {
-        User user = userAccountService.userLogin(username,password);
+    public Result userLogin( @RequestParam String username,  @RequestParam String password, HttpServletResponse response) {
+        User user = userAccountService.findUserByUsernameAndPassword(username,password);
         if(user == null){
             return Result.failure(ResultCode.loginFail);
 
@@ -70,7 +70,7 @@ public class UserAccountController {
         return Result.success(ResultCode.registerSuccess);
     }
     @PostMapping("update")
-    @ApiOperation("更新用户信息")
+    @ApiOperation("用来更新用户信息")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType="header", name = "token", value = "登录后的token", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "currentPassword", value = "当前密码", required = true, dataType = "String"),
@@ -93,7 +93,7 @@ public class UserAccountController {
     }
 
     @GetMapping("userInfo")
-    @ApiOperation("更新用户信息")
+    @ApiOperation("用来获取用户信息")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType="header", name = "token", value = "登录后的token", required = true, dataType = "String"),
     })

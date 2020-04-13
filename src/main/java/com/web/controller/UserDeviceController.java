@@ -1,10 +1,13 @@
 package com.web.controller;
 
+import cn.hutool.core.date.DateTime;
 import com.auth0.jwt.JWT;
+import com.web.jwt.annotation.PassToken;
 import com.web.jwt.annotation.UserLoginToken;
 import com.web.pojo.Device;
 import com.web.result.Result;
 import com.web.result.ResultCode;
+import com.web.service.DeviceService;
 import com.web.service.UserDeviceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -14,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @description:
@@ -28,7 +33,21 @@ import java.util.List;
 public class UserDeviceController {
     @Autowired
     UserDeviceService userDeviceService;
-
+    public static Map<String, DateTime> OnlineDevice = new HashMap<String, DateTime>();
+    @Autowired
+    DeviceService deviceService;
+    @ApiOperation("在线设备发送心跳包保持在线")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType="query", name = "deviceId", value = "设备id", required = true, dataType = "String"),
+    })
+    @PassToken
+    @GetMapping("keepOnline")
+    public void deviceHeartJump(String deviceId){
+        System.out.println("有设备在线啦："+deviceId);
+        if(deviceService.getDevice(deviceId) != null){
+            OnlineDevice.put(deviceId,new DateTime());
+        }
+    }
     @ApiOperation("获取用户账户下的设备")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType="header", name = "token", value = "登录后的token", required = true, dataType = "String"),

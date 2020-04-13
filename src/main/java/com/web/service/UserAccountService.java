@@ -1,6 +1,7 @@
 package com.web.service;
 
 import com.web.dao.UserAccountRepository;
+import com.web.dao.UserMqttAccountRepository;
 import com.web.pojo.User;
 import com.web.result.Result;
 import com.web.result.ResultCode;
@@ -16,9 +17,8 @@ import org.springframework.stereotype.Service;
 public class UserAccountService {
     @Autowired
     UserAccountRepository userAccountRepository;
-    public User userLogin(String username,String password){
-        return userAccountRepository.findByUsernameAndPassword(username,password);
-    }
+    @Autowired
+    UserMqttAccountRepository userMqttAccountRepository;
 
     public User getUserById(String userId) {
         return userAccountRepository.findById(userId);
@@ -45,5 +45,8 @@ public class UserAccountService {
         user.setPassword(password);
         userAccountRepository.saveAndFlush(user);
         return Result.success(ResultCode.updateUserInfoSuccess);
+    }
+    public User findUserByUsernameAndPassword(String username, String password){
+            return userAccountRepository.findUserByUsernameAndPassword(username,password);
     }
 }

@@ -36,7 +36,7 @@ Vue.use(ElementUI);
 //配置axios
 Vue.prototype.$axios = axios;
 
-axios.defaults.baseURL = 'http://localhost:80';
+axios.defaults.baseURL = 'http://localhost:8080';
 // 自定义的 axios 请求拦截器
 axios.interceptors.request.use((config) => {
   if ( typeof(localStorage.token) != 'undefined') {
