@@ -32,9 +32,9 @@ public class UserDeviceService {
     * @Author: raven
     * @Date: 2020/4/10
     */
-    public Result userAddDevice(String userId, String deviceId) {
+    public Result userAddDevice(String userId, String deviceId,String deviceKey) {
 
-        Device findDevice = deviceRepository.findDeviceByDeviceId(deviceId);
+        Device findDevice = deviceRepository.findDeviceByDeviceIdAndDeviceKey(deviceId,deviceKey);
         if(findDevice == null){
             return Result.failure(ResultCode.addDeviceNoExist);
         }
@@ -69,21 +69,29 @@ public class UserDeviceService {
         return devices;
     }
     @Transactional
-    public boolean deleteDevice(String userId, String deviceId) {
-
+    public boolean deleteDevice(String userId, String deviceId,String deviceKey) {
+        Device device = deviceRepository.findDeviceByDeviceIdAndDeviceKey(deviceId,deviceKey);
+        if(device == null){
+            return false;
+        }
         userDeviceRepository.deleteByUserIdAndDeviceId(userId,deviceId);
         return true;
     }
 
-    public Result updateUserDevice(String userId, String oldDeviceId, String newDeviceId) {
+    public Result updateUserDevice(String userId, String oldDeviceId,String oldDeviceKey,  String newDeviceId,String newDeviceKey) {
+
         UserDevice dv = userDeviceRepository.findUserDeviceByUserIdAndDeviceId(userId, oldDeviceId);
         // 如果找不到当前要修改的
         if(dv == null){
-            return Result.failure(ResultCode.updateDeviceFail);
+            return Result.failure(ResultCode.updateDeviceFailNoExist);
         }
-        Device dev = deviceRepository.findDeviceByDeviceId(newDeviceId);
-        if(dev == null){
-            return Result.failure(ResultCode.addDeviceNoExist);
+        Device oldDevice = deviceRepository.findDeviceByDeviceIdAndDeviceKey(oldDeviceId, oldDeviceKey);
+        if(oldDevice == null){
+            return Result.failure(ResultCode.updateDeviceFailOldDeviceError);
+        }
+        Device newDevice = deviceRepository.findDeviceByDeviceIdAndDeviceKey(newDeviceId,newDeviceKey);
+        if(newDevice == null){
+            return Result.failure(ResultCode.updateDeviceFailNewDeviceError);
         }
 
         // 设置为更新后的id

@@ -18,7 +18,8 @@
                 <div class="bt">
                     <el-button type="primary" round style="margin-bottom: 20px;" @click='login'>登录</el-button>
                     <p style="cursor: pointer;" @click='goRegister'>没有账号？前去注册</p>
-                    <p style="cursor: pointer;margin-top: 20px;color: greenyellow;" @click="goIndex">Design by @科睿工作室</p>
+                    <p style="cursor: pointer;margin-top: 20px;color: greenyellow;" @click="goIndex">Design by @科睿工作室
+                    </p>
                 </div>
 
             </div>
@@ -40,7 +41,8 @@
                 <div class="bt">
                     <el-button type="primary" round style="margin-bottom: 20px;" @click='register'>注册</el-button>
                     <p style="cursor: pointer;" @click='goLogin'>已有账号？前去登录</p>
-                    <p style="cursor: pointer;margin-top: 20px;color: greenyellow;" @click='goIndex'>Design by @科睿工作室</p>
+                    <p style="cursor: pointer;margin-top: 20px;color: greenyellow;" @click='goIndex'>Design by @科睿工作室
+                    </p>
                 </div>
 
             </div>
@@ -79,14 +81,21 @@
                 this.showlogin = false
                 this.showregister = true;
             },
-            goIndex(){
-                window.location.href='/'
+            goIndex() {
+                window.location.href = '/'
             },
             goLogin() {
                 this.showlogin = true;
                 this.showregister = false;
             },
             login() {
+                // for (var o in this.loginForm) {
+
+                //     if (this.loginForm[o] == '') {
+                //         this.$message.error("请将参数填写完整再提交吧~");
+                //         return;
+                //     }
+                // }
                 // axios.get('url', {params: data});
                 // axios.post('url', data)
                 this.$axios.post("account/login", qs.stringify(this.loginForm), {
@@ -103,6 +112,12 @@
                 });
             },
             register() {
+                for (var o in this.loginForm) {
+                    if (this.registerForm[o] == '') {
+                        this.$message.error("请将参数填写完整再提交吧~");
+                        return;
+                    }
+                }
                 this.$axios.post("account/register", qs.stringify(this.registerForm), {
                     headers: {
                         'Content-type': 'application/x-www-form-urlencoded'

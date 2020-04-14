@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +22,7 @@ import java.util.Map;
 @RestController
 @Api(value = "UserAccountController|用户账号操作接口")
 @RequestMapping("account")
+@Validated
 public class UserAccountController {
     @Autowired
     UserAccountService userAccountService;
@@ -32,7 +34,10 @@ public class UserAccountController {
             @ApiImplicitParam(paramType="query", name = "password", value = "用户密码", required = true, dataType = "String"),
 
     })
-    public Result userLogin( @RequestParam String username,  @RequestParam String password, HttpServletResponse response) {
+
+    public Result userLogin( @RequestParam String username,
+                             @RequestParam String password,
+                            HttpServletResponse response) {
         User user = userAccountService.findUserByUsernameAndPassword(username,password);
         if(user == null){
             return Result.failure(ResultCode.loginFail);
@@ -51,14 +56,22 @@ public class UserAccountController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType="query", name = "username", value = "用户账号", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "password", value = "用户密码", required = true, dataType = "String"),
-            @ApiImplicitParam(paramType="query", name = "password", value = "用户确认密码", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="query", name = "password2", value = "用户确认密码", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "nickname", value = "用户昵称", required = true, dataType = "String"),
     })
-    public Result registerUser(@RequestParam String username, @RequestParam String password,  @RequestParam String password2,@RequestParam String nickname) {
+    public Result registerUser(@RequestParam String username,
+                               @RequestParam String password,
+                               @RequestParam String password2,
+                               @RequestParam String nickname) {
+
+        if(!password.equals(password2)){
+            return Result.failure(ResultCode.registerUserPasswordNotEqual);
+        }
         User user = new User();
         user.setUsername(username);
         user.setPassword(password);
         user.setNickname(nickname);
+
         User existUser = userAccountService.getUserByUserName(username);
         if(existUser != null){
             return Result.failure(ResultCode.registerUserNameExist);

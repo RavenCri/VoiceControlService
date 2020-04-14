@@ -25,9 +25,7 @@ public class UserAccountService {
     }
 
     public User registerUser(User user) {
-        if(userAccountRepository.findByUsername(user.getUsername()) != null ){
-            return null;
-        }
+
         User us = userAccountRepository.saveAndFlush(user);
         return us;
     }

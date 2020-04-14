@@ -23,6 +23,8 @@ public class Device {
     @Column(nullable = false)
     public String deviceId;
     @Column(nullable = false)
+    public String deviceKey;
+    @Column(nullable = false)
     @JsonFormat(timezone = "GMT+8", shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     public Date create_time;
     @Column(nullable = false)
@@ -38,7 +40,13 @@ public class Device {
         this.id = id;
     }
 
+    public String getDeviceKey() {
+        return deviceKey;
+    }
 
+    public void setDeviceKey(String deviceKey) {
+        this.deviceKey = deviceKey;
+    }
 
     public String getDeviceId() {
         return deviceId;

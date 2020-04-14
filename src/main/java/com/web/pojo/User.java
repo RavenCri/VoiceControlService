@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "user")
@@ -18,9 +19,11 @@ public class User {
     private String id;
     @Column(nullable = false, unique = true)
     @JsonIgnore
+    @NotEmpty(message = "账号不能为空哦")
     private String username;
     @Column(nullable = false )
     @JsonIgnore
+    @NotEmpty(message = "密码不能为空哦")
     private String password;
     @Column(nullable = false)
     private String nickname;
@@ -66,4 +69,6 @@ public class User {
                 ", nickname='" + nickname + '\'' +
                 '}';
     }
+
+
 }

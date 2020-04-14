@@ -9,5 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface DeviceRepository extends JpaRepository<Device,Long>, CrudRepository<Device,Long>, JpaSpecificationExecutor<Device> {
 
     Device findDeviceByDeviceId(String deviceId);
+    Device findDeviceByDeviceIdAndDeviceKey(String deviceId,String deviceKey);
 
 }

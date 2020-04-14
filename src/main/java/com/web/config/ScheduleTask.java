@@ -5,7 +5,6 @@ import com.web.controller.UserDeviceController;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
@@ -17,11 +16,12 @@ import java.util.Map;
 public class ScheduleTask {
     @Scheduled(fixedRate=10000)
     private void configureTasks() {
-        System.err.println("执行定时任务时间: " + LocalDateTime.now());
         DateTime now = new DateTime();
+        //System.out.println(now.getTime());
         for(Map.Entry entry:UserDeviceController.OnlineDevice.entrySet()){
             DateTime last = (DateTime) entry.getValue();
-            if( now.getTime()- last.getTime() >= 1000*60){
+            // 如果一分钟该硬件都没有相应心跳数据包，说明离线了。删除即可。
+            if( now.getTime()- last.getTime() >= 1000*6){
                 System.out.println(entry.getKey()+"设备离线了！");
                 UserDeviceController.OnlineDevice.remove(entry.getKey());
             }

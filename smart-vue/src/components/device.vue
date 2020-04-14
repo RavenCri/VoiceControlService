@@ -38,7 +38,46 @@
         </el-table>
         <el-button type="primary" round style="display: block;width: 200px; margin: 30px auto;" @click='addDevice'>增加设备
         </el-button>
+
+
+        <el-dialog title="添加设备信息" :visible.sync="addDialogVisible" width="30%" >
+            <el-form ref="addForm"  :model="addForm" label-width="80px">
+                <el-form-item label="设备id" prop="deviceId" required>
+                    <el-input v-model="addForm.deviceId"></el-input>
+                </el-form-item>
+                <el-form-item label="设备密码" prop="deviceKey" required>
+                    <el-input v-model="addForm.deviceKey"></el-input>
+                </el-form-item>
+    
+                <el-form-item>
+                    <el-button type="primary" @click="addSubmit()">提交</el-button>
+                    <el-button @click="addDialogVisible = false">取消</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+
+        <el-dialog title="更新设备信息" :visible.sync="updateDialogVisible" width="30%" >
+            <el-form ref="updateForm"  :model="updateForm" label-width="80px">
+                <el-form-item label="当前设备id" prop="oldDeviceId" required >
+                    <el-input v-model="updateForm.oldDeviceId" readonly="readonly" disabled="disabled"></el-input>
+                </el-form-item>
+                <el-form-item label="当前设备密码" prop="oldDeviceKey" required>
+                    <el-input v-model="updateForm.oldDeviceKey"></el-input>
+                </el-form-item>
+                <el-form-item label="新设备id" prop="newDeviceId" required>
+                    <el-input v-model="updateForm.newDeviceId"></el-input>
+                </el-form-item>
+                <el-form-item label="新设备密码" prop="newDeviceKey" required>
+                    <el-input v-model="updateForm.newDeviceKey"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="updateSubmit()">提交</el-button>
+                    <el-button @click="updateDialogVisible = false">取消</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
     </div>
+   
 </template>
 
 <script>
@@ -51,7 +90,21 @@
         },
         data() {
             return {
-                devices: []
+                devices: [],
+                addDialogVisible: false,
+                updateDialogVisible: false,
+                submitType: "",
+                addForm: {
+                    deviceId: "",
+                    deviceKey: ""
+                },
+                updateForm: {
+                    oldDeviceId: "",
+                    oldDeviceKey: "",
+                    newDeviceId: "",
+                    newDeviceKey: ""
+                },
+
             }
         },
         methods: {
@@ -72,29 +125,78 @@
                 })
             },
             handleEdit(index, row) {
-                console.log(index, row);
-                this.$prompt('请输入要修改的产品ID', '修改设备id', {
+                this.updateForm.oldDeviceId = this.devices[index]['deviceId'];
+                this.updateDialogVisible = true;
+            },
+            updateSubmit() {
+                if (this.updateForm.oldDeviceId == this.updateForm.newDeviceId) {
+                    this.$message.error('请保证当前设备id与更新id不同！');
+                    return
+                }
+                this.$confirm('确定要将设备id改为：' + this.updateForm.newDeviceId + '吗？', '更新设备编号', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
-                    inputPattern: /^\d{4}-\d{4}-\d{4}-\d{4}$/,
-                    inputErrorMessage: '设备id格式不正确'
-                }).then(({ value }) => {
-                    if(value == this.devices[index]['deviceId']){
-                        this.$message.error('请保证当前设备id与更新id不同！');
-                        return
+                    type: 'warning'
+                }).then(() => {
+                    console.log(JSON.stringify(this.updateForm))
+                    this.$axios.post('device/update',
+                        qs.stringify(
+                            this.updateForm
+                        )).then(res => {
+                            if (res.data.code == 200) {
+                                this.$message({
+                                    type: 'success',
+                                    message: res.data.msg
+                                });
+                                this.updateDialogVisible = false;
+                                this.updateForm['olddeviceId']='';
+                                this.updateForm['olddeviceKey']='';
+                                this.updateForm['newdeviceId']='';
+                                this.updateForm['newdeviceId']='';
+                                this.initData();
+                            } else {
+                                this.$message.error(res.data.msg);
+                            }
+                        })
+                }).catch((err) => {
+                });
+            },
+            addDevice() {
+                
+                this.addDialogVisible = true;
+            },
+            addSubmit() {
+
+                this.$axios.post('device/add', qs.stringify(this.addForm)).then(res => {
+                    if (res.data.code == 200) {
+                        this.$message({
+                            type: 'success',
+                            message: res.data.msg
+                        });
+                        this.addDialogVisible = false;
+                        this.addForm['deviceId']='';
+                        this.addForm['deviceKey']='';
+                        this.initData();
+                    } else {
+                        this.$message.error(res.data.msg);
                     }
-                    this.$confirm('确定要将设备id改为：' + value + '吗？', '更新设备编号', {
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        type: 'warning'
-                    }).then(() => {
-                        this.$axios.post('device/update',
-                            qs.stringify(
-                                {
-                                    "newDeviceId": value,
-                                    "oldDeviceId": this.devices[index]['deviceId']
-                                }
-                            )).then(res => {
+                })
+
+            },
+           
+            handleDelete(index, row) {
+                console.log(index, row);
+                this.$prompt('请输入要该设备的密码', '输入密码', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                }).then(({ value }) => {
+                    if (value && value != '') {
+                        this.$confirm('确定要从您的账户下移除该设备吗？', '删除设备', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                            type: 'warning'
+                        }).then(() => {
+                            this.$axios.post('device/delete', qs.stringify({ "deviceId": this.devices[index]['deviceId'], "deviceKey": value })).then(res => {
                                 if (res.data.code == 200) {
                                     this.$message({
                                         type: 'success',
@@ -105,55 +207,11 @@
                                     this.$message.error(res.data.msg);
                                 }
                             })
-                    }).catch((err) => {
-                    });
-                }).catch(() => {
+                        }).catch((err) => {
+                        });
+                    }
+                })
 
-                });
-            },
-            handleDelete(index, row) {
-                console.log(index, row);
-                this.$confirm('确定要从您的账户下移除该设备吗？', '删除设备', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    this.$axios.post('device/delete', qs.stringify({ "deviceId": this.devices[index]['deviceId'] })).then(res => {
-                        if (res.data.code == 200) {
-                            this.$message({
-                                type: 'success',
-                                message: res.data.msg
-                            });
-                            this.initData();
-                        } else {
-                            this.$message.error(res.data.msg);
-                        }
-                    })
-                }).catch((err) => {
-                });
-            },
-            addDevice() {
-                this.$prompt('请输入新的设备ID', '添加设备', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    inputPattern: /^\d{4}-\d{4}-\d{4}-\d{4}$/,
-                    inputErrorMessage: '设备id格式不正确'
-                }).then(({ value }) => {
-
-                    this.$axios.post('device/add', qs.stringify({ "deviceId": value })).then(res => {
-                        if (res.data.code == 200) {
-                            this.$message({
-                                type: 'success',
-                                message: res.data.msg
-                            });
-                            this.initData();
-                        } else {
-                            this.$message.error(res.data.msg);
-                        }
-                    })
-                }).catch((err) => {
-                    console.log(err)
-                });
             }
         }
 

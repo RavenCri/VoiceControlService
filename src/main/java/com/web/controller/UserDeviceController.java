@@ -42,10 +42,14 @@ public class UserDeviceController {
     })
     @PassToken
     @GetMapping("keepOnline")
-    public void deviceHeartJump(String deviceId){
-        System.out.println("有设备在线啦："+deviceId);
+    public Result deviceHeartJump(String deviceId){
+
         if(deviceService.getDevice(deviceId) != null){
+            System.out.println("有设备在线啦："+deviceId);
             OnlineDevice.put(deviceId,new DateTime());
+            return Result.success(ResultCode.registerSuccess);
+        }else {
+            return Result.failure(ResultCode.registerError);
         }
     }
     @ApiOperation("获取用户账户下的设备")
@@ -63,11 +67,12 @@ public class UserDeviceController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType="header", name = "token", value = "登录后的token", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "deviceId", value = "设备唯一id", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="query", name = "deviceKey", value = "设备密码", required = true, dataType = "String"),
     })
     @PostMapping("add")
-    public Result addDevice(@RequestHeader("token") String token, String deviceId){
+    public Result addDevice(@RequestHeader("token") String token, String deviceId,String deviceKey){
         String userId = JWT.decode(token).getAudience().get(0);
-        return userDeviceService.userAddDevice(userId, deviceId);
+        return userDeviceService.userAddDevice(userId, deviceId,deviceKey);
 
     }
 
@@ -75,13 +80,14 @@ public class UserDeviceController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType="header", name = "token", value = "登录后的token", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "deviceId", value = "设备唯一id", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="query", name = "deviceKey", value = "设备密码", required = true, dataType = "String"),
     })
     @PostMapping("delete")
-    public Result deleteDevice(@RequestHeader("token") String token, String deviceId){
+    public Result deleteDevice(@RequestHeader("token") String token, String deviceId,String deviceKey){
         String userId = JWT.decode(token).getAudience().get(0);
-        boolean flag = userDeviceService.deleteDevice(userId, deviceId);
+        boolean flag = userDeviceService.deleteDevice(userId, deviceId,deviceKey);
         if(!flag){
-            return Result.failure(ResultCode.deleteDeviceSuccess);
+            return Result.failure(ResultCode.deleteDeviceFail);
         }
         return Result.success(ResultCode.deleteDeviceSuccess);
     }
@@ -90,7 +96,9 @@ public class UserDeviceController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType="header", name = "token", value = "登录后的token", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "oldDeviceId", value = "更新前的设备id", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="query", name = "oldDeviceKey", value = "更新前的设备密码", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "newDeviceId", value = "更新后的设备id", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="query", name = "newDeviceKey", value = "更新后的设备密码", required = true, dataType = "String"),
     })
     @PostMapping("update")
     /**
@@ -105,12 +113,13 @@ public class UserDeviceController {
     */
 
     public Result updateUserDevice(@RequestHeader("token") String token,
-                                   @NotNull String oldDeviceId, @NotNull String newDeviceId){
+                                   @NotNull String oldDeviceId,
+                                   @NotNull String oldDeviceKey,
+                                   @NotNull String newDeviceId,
+                                   String newDeviceKey){
         String userId = JWT.decode(token).getAudience().get(0);
-        if(oldDeviceId.equals(newDeviceId)){
-            return Result.failure(ResultCode.updateDeviceFail);
-        }
-        return userDeviceService.updateUserDevice(userId, oldDeviceId, newDeviceId);
+
+        return userDeviceService.updateUserDevice(userId, oldDeviceId,oldDeviceKey, newDeviceId,newDeviceKey);
 
     }
 }
