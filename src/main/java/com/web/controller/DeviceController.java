@@ -36,7 +36,7 @@ public class DeviceController {
     })
     @PostMapping("getMqttInfo")
     public Result getMQTTInfo(String username,String password){
-        //坑死了 传来的参数带了双引号 应该去掉。
+       // 如果有引号应该去掉
         username = username.replaceAll("\"","");
         password = password.replaceAll("\"","");
         User user = userAccountService.findUserByUsernameAndPassword(username, password);

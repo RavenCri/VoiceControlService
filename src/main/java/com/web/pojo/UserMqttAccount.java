@@ -32,4 +32,28 @@ public class UserMqttAccount {
                 ", mqtt_password='" + mqtt_password + '\'' +
                 '}';
     }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getMqtt_username() {
+        return mqtt_username;
+    }
+
+    public void setMqtt_username(String mqtt_username) {
+        this.mqtt_username = mqtt_username;
+    }
+
+    public String getMqtt_password() {
+        return mqtt_password;
+    }
+
+    public void setMqtt_password(String mqtt_password) {
+        this.mqtt_password = mqtt_password;
+    }
 }

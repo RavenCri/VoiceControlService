@@ -8,6 +8,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+
 /**
  * @Author raven
  * @Description 
@@ -23,10 +26,12 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableScheduling
 public class SmartApplication {
 
-    public static void main(String[] args)  {
-        // http://localhost/swagger-ui.html
+    public static void main(String[] args) throws MalformedURLException, URISyntaxException {
+        // http://localhost:8080/swagger-ui.html
 
         SpringApplication.run(SmartApplication.class, args);
     }
+
+
 
 }

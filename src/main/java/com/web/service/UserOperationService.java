@@ -3,6 +3,7 @@ package com.web.service;
 import com.alibaba.fastjson.JSONObject;
 import com.web.dao.DeviceRepository;
 import com.web.dao.UserDeviceRepository;
+import com.web.pojo.Device;
 import com.web.pojo.UserDevice;
 import correspond.serialport.UartServer;
 import init.JSONFileInit;
@@ -84,7 +85,10 @@ public class UserOperationService {
         // 如果智能回复库没有成功，获取本地回复列表
         JSONObject currIndexJSON = wordMap.getJSONObject(key);
         if(currIndexJSON.containsKey("code")){
-            mqttServer.convertAndSend("amq.topic", userDeviceIds.get(0).getDeviceId(), currIndexJSON.getString("code"));
+            Device device = deviceRepository.findDeviceByDeviceId(userDeviceIds.get(0).getDeviceId());
+
+           String subscribe =  device.getDeviceId()+"-"+device.getDeviceKey();
+            mqttServer.convertAndSend("amq.topic",subscribe , currIndexJSON.getString("code"));
         }
         List<String> replayList= JSONObject.parseArray(currIndexJSON.getString("word"),String.class);
         // 随机引索
@@ -95,4 +99,6 @@ public class UserOperationService {
         obj.put("data",replayList.get(len));
         return obj.toJSONString();
     }
+
+
 }

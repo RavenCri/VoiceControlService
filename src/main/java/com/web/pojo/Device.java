@@ -22,6 +22,7 @@ public class Device {
 
     @Column(nullable = false)
     public String deviceId;
+    @JsonIgnore
     @Column(nullable = false)
     public String deviceKey;
     @Column(nullable = false)

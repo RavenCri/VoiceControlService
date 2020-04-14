@@ -23,5 +23,6 @@ public class RabbitMqServer {
         System.out.println("Topic-Send：" + message);
 
 
+
     }
 }

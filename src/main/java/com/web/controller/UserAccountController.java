@@ -1,11 +1,13 @@
 package com.web.controller;
 
+import cn.hutool.core.util.RandomUtil;
 import com.auth0.jwt.JWT;
 import com.web.jwt.util.TokenUtil;
 import com.web.pojo.User;
 import com.web.result.Result;
 import com.web.result.ResultCode;
 import com.web.service.UserAccountService;
+import com.web.service.UserMqttAccountService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -13,6 +15,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import util.MqttUtil;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
@@ -26,6 +29,8 @@ import java.util.Map;
 public class UserAccountController {
     @Autowired
     UserAccountService userAccountService;
+    @Autowired
+    UserMqttAccountService userMqttAccountService;
     public static Map<String,String> tokens = new HashMap<>();
     @PostMapping("login")
     @ApiOperation("用户提供账号密码，调用该接口即可")
@@ -67,12 +72,14 @@ public class UserAccountController {
         if(!password.equals(password2)){
             return Result.failure(ResultCode.registerUserPasswordNotEqual);
         }
+
         User user = new User();
         user.setUsername(username);
         user.setPassword(password);
         user.setNickname(nickname);
 
         User existUser = userAccountService.getUserByUserName(username);
+        // 拿用户名 判断用户是否存在
         if(existUser != null){
             return Result.failure(ResultCode.registerUserNameExist);
         }
@@ -80,6 +87,16 @@ public class UserAccountController {
         if(us == null){
             return Result.failure(ResultCode.registerError);
         }
+        String mqttUserName = RandomUtil.randomString(8);
+        String mqttPassword = RandomUtil.randomString(16);
+
+        while(!MqttUtil.checkUsername(mqttUserName)){
+            mqttUserName = RandomUtil.randomString(8);
+        }
+        MqttUtil.CreateUser(mqttUserName,mqttPassword);
+        MqttUtil.setPermission(mqttUserName);
+        //保存创建的mqtt账号密码到数据表
+        userMqttAccountService.userAddMqTTInfo(username,mqttUserName,mqttPassword);
         return Result.success(ResultCode.registerSuccess);
     }
     @PostMapping("update")
@@ -119,4 +136,6 @@ public class UserAccountController {
         result.setMsg("用户信息");
         return result;
     }
+
+
 }

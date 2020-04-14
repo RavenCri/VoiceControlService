@@ -3,7 +3,7 @@
         <img src="../assets/znjj.jpg" alt=""
             style="width:100%;height: 110%; background-repeat: repeat-y; position: absolute;z-index: -1;top:-50px">
         <div class="content">
-            <div v-show="showlogin">
+            <div v-show="showlogin" id='login'>
 
                 <h1>科睿智能家居测试系统</h1>
                 <div style="height: 60px;"></div>
@@ -23,7 +23,7 @@
                 </div>
 
             </div>
-            <div v-show="showregister">
+            <div v-show="showregister" id='register'>
 
                 <h1>注册账号</h1>
                 <div class="box">
@@ -64,6 +64,7 @@
             return {
                 showlogin: true,
                 showregister: false,
+
                 loginForm: {
                     username: '',
                     password: ''
@@ -89,26 +90,37 @@
                 this.showregister = false;
             },
             login() {
-                // for (var o in this.loginForm) {
-
-                //     if (this.loginForm[o] == '') {
-                //         this.$message.error("请将参数填写完整再提交吧~");
-                //         return;
-                //     }
-                // }
+                for (var o in this.loginForm) {
+                    if (this.loginForm[o] == '') {
+                        this.$message.error("请将参数填写完整再提交吧~");
+                        return;
+                    }
+                }
                 // axios.get('url', {params: data});
                 // axios.post('url', data)
+                const loading = this.$loading({
+                    lock: true,
+                    target:"#login",
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.3)'
+                });
                 this.$axios.post("account/login", qs.stringify(this.loginForm), {
                     headers: {
                         'Content-type': 'application/x-www-form-urlencoded'
                     }
-                }).then(res => {
+                },{timeout: 1000 * 6}).then(res => {
+                    loading.close();
                     if (res.data.code == 200) {
                         localStorage.setItem('token', res.headers['token'])
                         this.$router.push({ name: 'center', });
                     } else {
                         this.$message.error(res.data.msg);
                     }
+                }).catch((err)=>{
+                    console.log(err)
+                    this.$message.error("服务器连接超时");
+                    loading.close();
                 });
             },
             register() {
@@ -118,11 +130,19 @@
                         return;
                     }
                 }
+                const loading = this.$loading({
+                    lock: true,
+                    target:"#register",
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.3)'
+                });
                 this.$axios.post("account/register", qs.stringify(this.registerForm), {
                     headers: {
                         'Content-type': 'application/x-www-form-urlencoded'
                     }
-                }).then(res => {
+                },{timeout: 1000 * 6}).then(res => {
+                    loading.close();
                     if (res.data.code == 200) {
                         this.$message({
                             message: res.data.msg,
@@ -132,7 +152,10 @@
                         this.$message.error(res.data.msg);
                     }
 
-                })
+                }).catch(()=>{
+                    this.$message.error("服务器连接超时");
+                    loading.close();
+                });
             }
         }
 
