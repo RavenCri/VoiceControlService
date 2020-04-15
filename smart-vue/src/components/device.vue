@@ -118,7 +118,7 @@
                                         {{item.msg}}</p>
                                 </div>
                                 <div style="width: 100px;">
-                                    <img src="../assets/ml.jpg" width="60px" alt=""
+                                    <img src="../assets/me.jpg" width="60px" alt=""
                                         style="border-radius: 100%;position: relative;top:20px;left: 10px;">
                                 </div>
 
