@@ -57,7 +57,7 @@ public class UserDeviceService {
     * @Author: raven
     * @Date: 2020/4/10
     */
-    public List<Device> findDevice(String userId){
+    public List<Device> findDeviceByUserId(String userId){
         List<Device> devices = new ArrayList<>();
         // 先查出用户所有的设备id
         List<UserDevice> userDevices = userDeviceRepository.findUserDeviceByUserId(userId);
@@ -67,6 +67,12 @@ public class UserDeviceService {
             devices.add(device);
         });
         return devices;
+    }
+    public List<UserDevice> findUserDeviceByDeviceId(String deviceId){
+
+        List<UserDevice> userDevices = userDeviceRepository.findUserDeviceByDeviceId(deviceId);
+
+        return userDevices;
     }
     @Transactional
     public boolean deleteDevice(String userId, String deviceId,String deviceKey) {
@@ -99,4 +105,6 @@ public class UserDeviceService {
         userDeviceRepository.saveAndFlush(dv);
         return Result.success(ResultCode.updateDeviceSuccess);
     }
+
+
 }

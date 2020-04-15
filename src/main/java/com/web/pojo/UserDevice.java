@@ -13,9 +13,9 @@ public class UserDevice {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY )
     public int id;
-    @Column(nullable = false )
+    @Column(nullable = false,name = "user_id" )
     public String userId;
-    @Column(nullable = false )
+    @Column(nullable = false,name = "device_id" )
     public String deviceId;
     public UserDevice(){
 

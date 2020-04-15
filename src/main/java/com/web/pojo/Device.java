@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @description:
@@ -20,16 +21,40 @@ public class Device {
     @JsonIgnore
     public int id;
 
-    @Column(nullable = false)
+    @Column(nullable = false,name = "device_id")
     public String deviceId;
     @JsonIgnore
-    @Column(nullable = false)
+    @Column(nullable = false,name = "device_key")
     public String deviceKey;
-    @Column(nullable = false)
+    @Column(nullable = false,name = "create_time")
+
     @JsonFormat(timezone = "GMT+8", shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    public Date create_time;
+    public Date createTime;
     @Column(nullable = false)
     public String type;
+    @Transient
+    // 设备状态
+    public boolean status;
+    @Transient
+    //绑定用户名
+    public List<User> users;
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
     public Device() {
     }
 
@@ -57,12 +82,12 @@ public class Device {
         this.deviceId = deviceId;
     }
 
-    public Date getCreate_time() {
-        return create_time;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreate_time(Date create_time) {
-        this.create_time = create_time;
+    public void setCreateTime(Date create_time) {
+        this.createTime = create_time;
     }
 
     public String getType() {

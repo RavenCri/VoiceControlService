@@ -1,13 +1,13 @@
 <template>
     <div>
-
         <el-container>
             <el-aside style="position: fixed;height: 100%;" width="250px">
+                <img src="../assets/ico.png"  style="width:185px;"> 
                 <el-menu :default-openeds="['1', '2']">
                     <el-submenu index="1">
-                        <template slot="title"><i class="el-icon-message"></i>设备管理</template>
+                        <template slot="title"><i class="el-icon-cpu"></i>设备中心</template>
                         <el-menu-item index="1-1">
-                            <router-link to="/center/device">查看设备</router-link>
+                            <router-link to="/center/device">我的设备</router-link>
                         </el-menu-item>
                     </el-submenu>
                     <el-submenu index="2">
@@ -16,7 +16,15 @@
                             <router-link to="/center/updateInfo">修改密码</router-link>
                         </el-menu-item>
                     </el-submenu>
-
+                    <el-submenu index="3">
+                        <template slot="title"><i class="el-icon-s-ticket"></i>管理专区</template>
+                        <el-menu-item index="3-1">
+                            <router-link to="/center/deviceManager">设备管理</router-link>
+                        </el-menu-item>
+                        <el-menu-item index="3-2">
+                            <router-link to="/center/userManager">用户管理</router-link>
+                        </el-menu-item>
+                    </el-submenu>
                 </el-menu>
             </el-aside>
             <el-container>
@@ -80,14 +88,16 @@
 </script>
 
 <style>
-    .el-header,
-    .el-footer {
-        background-color: #B3C0D1;
+    .el-header{
+        background-color: #648cff;
         color: #333;
         text-align: center;
         line-height: 60px;
     }
-
+   
+    .el-footer {
+      
+    }
     .el-main {
         background-color: white;
         margin-left: 250px;
@@ -95,10 +105,9 @@
     }
 
     .el-aside {
-        background-color: #D3DCE6;
+        background-color: #648cff;
         color: #333;
         text-align: center;
-
     }
 
     a {

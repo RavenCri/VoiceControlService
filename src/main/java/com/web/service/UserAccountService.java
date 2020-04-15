@@ -47,4 +47,8 @@ public class UserAccountService {
     public User findUserByUsernameAndPassword(String username, String password){
             return userAccountRepository.findUserByUsernameAndPassword(username,password);
     }
+
+    public User findUserByUserId(String userId) {
+        return userAccountRepository.findUserById(userId);
+    }
 }

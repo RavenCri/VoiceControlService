@@ -21,8 +21,8 @@ public class UserMqttAccountService {
     public void userAddMqTTInfo(String username,String mqttUsername,String mqttPassword){
         UserMqttAccount userMqttAccount = new UserMqttAccount();
         userMqttAccount.setUsername(username);
-        userMqttAccount.setMqtt_username(mqttUsername);
-        userMqttAccount.setMqtt_password(mqttPassword);
+        userMqttAccount.setMqttUsername(mqttUsername);
+        userMqttAccount.setMqttPassword(mqttPassword);
         userMqttAccountRepository.saveAndFlush(userMqttAccount);
     }
 }

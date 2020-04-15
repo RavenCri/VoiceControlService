@@ -7,8 +7,8 @@ import com.web.jwt.annotation.UserLoginToken;
 import com.web.pojo.Device;
 import com.web.result.Result;
 import com.web.result.ResultCode;
-import com.web.service.DeviceService;
 import com.web.service.UserDeviceService;
+import com.web.service.manager.DeviceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -59,7 +59,12 @@ public class UserDeviceController {
     @GetMapping("list")
     public Result getDevices(@RequestHeader("token") String token){
         String userId = JWT.decode(token).getAudience().get(0);
-        List<Device> device = userDeviceService.findDevice(userId);
+        List<Device> device = userDeviceService.findDeviceByUserId(userId);
+        device.forEach(e->{
+            if(OnlineDevice.containsKey(e.getDeviceId())){
+                e.setStatus(true);
+            }else e.setStatus(false);
+        });
         return Result.success(ResultCode.getDeviceList,device);
     }
 
@@ -122,4 +127,6 @@ public class UserDeviceController {
         return userDeviceService.updateUserDevice(userId, oldDeviceId,oldDeviceKey, newDeviceId,newDeviceKey);
 
     }
+
+
 }

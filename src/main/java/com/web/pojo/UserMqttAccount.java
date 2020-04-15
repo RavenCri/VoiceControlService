@@ -16,20 +16,20 @@ public class UserMqttAccount {
     @GeneratedValue(strategy= GenerationType.IDENTITY )
     @Ignore
     public int id;
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true,name = "user_name")
     public String username;
-    @Column(nullable = false, unique = true)
-    public String mqtt_username;
-    @Column(nullable = false, unique = true)
-    public String mqtt_password;
+    @Column(nullable = false, unique = true,name = "mqtt_username")
+    public String mqttUsername;
+    @Column(nullable = false, unique = true,name = "mqt_password")
+    public String mqttPassword;
 
     @Override
     public String toString() {
         return "UserMqttAccount{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
-                ", mqtt_username='" + mqtt_username + '\'' +
-                ", mqtt_password='" + mqtt_password + '\'' +
+                ", mqtt_username='" + mqttUsername + '\'' +
+                ", mqtt_password='" + mqttPassword + '\'' +
                 '}';
     }
 
@@ -41,19 +41,19 @@ public class UserMqttAccount {
         this.username = username;
     }
 
-    public String getMqtt_username() {
-        return mqtt_username;
+    public String getMqttUsername() {
+        return mqttUsername;
     }
 
-    public void setMqtt_username(String mqtt_username) {
-        this.mqtt_username = mqtt_username;
+    public void setMqttUsername(String mqtt_username) {
+        this.mqttUsername = mqtt_username;
     }
 
-    public String getMqtt_password() {
-        return mqtt_password;
+    public String getMqttPassword() {
+        return mqttPassword;
     }
 
-    public void setMqtt_password(String mqtt_password) {
-        this.mqtt_password = mqtt_password;
+    public void setMqttPassword(String mqtt_password) {
+        this.mqttPassword = mqtt_password;
     }
 }

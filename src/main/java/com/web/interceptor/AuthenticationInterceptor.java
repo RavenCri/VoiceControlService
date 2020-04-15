@@ -9,6 +9,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.web.controller.UserAccountController;
 import com.web.jwt.annotation.PassToken;
 import com.web.jwt.annotation.UserLoginToken;
+import com.web.jwt.util.TokenUtil;
 import com.web.pojo.User;
 import com.web.service.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +64,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 // 获取 token 中的 user id
                 String userId;
                 try {
-                    userId = JWT.decode(token).getAudience().get(0);
+                    userId = TokenUtil.decode(token);
                 } catch (JWTDecodeException j) {
                     throw new RuntimeException("401");
                 }

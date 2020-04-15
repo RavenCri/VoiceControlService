@@ -17,7 +17,7 @@ public class User {
     @Id
     @JsonIgnore
     private String id;
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true,name = "user_name")
     @JsonIgnore
     @NotEmpty(message = "账号不能为空哦")
     private String username;
@@ -25,7 +25,7 @@ public class User {
     @JsonIgnore
     @NotEmpty(message = "密码不能为空哦")
     private String password;
-    @Column(nullable = false)
+    @Column(nullable = false,name = "nick_name")
     private String nickname;
 
     public String getId() {

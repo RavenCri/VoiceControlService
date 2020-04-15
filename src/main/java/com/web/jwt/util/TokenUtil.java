@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.web.pojo.User;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * @description:
@@ -21,7 +22,7 @@ public class TokenUtil {
         iat: jwt的签发时间
         jti: jwt的唯一身份标识，主要用来作为一次性token,从而回避重放攻击。
 
-        .withNotBefore(new Date())  //生效时间
+        .withNotBefore(new Date())  //生效时间,定义在什么时间之前，该jwt都是不可用的
         .withJWTId(UUID.randomUUID().toString())    //编号
         .withIssuer("rstyro")   //发布者
         .withSubject("test")    //主题
@@ -29,16 +30,21 @@ public class TokenUtil {
         .withIssuedAt(new Date())   // 生成签名的时间
     */
 
-    public static String getToken(User user) {
+    public static String encode(User user) {
         String token="";
         // 也可以添加自定义声明值 这么直接设置过期时间.withClaim("data", System.currentTimeMillis())
-
-        //nbf: withNotBefore 定义在什么时间之前，该jwt都是不可用的
-        token= JWT.create().withAudience(String.valueOf(user.getId()))
-                // 设置jwt的过期时间，这个过期时间必须要大于签发时间
-                .withExpiresAt(new Date(System.currentTimeMillis() + 1000*60*60))
-
-                .sign(Algorithm.HMAC256(user.getUsername()));
+        Long date = System.currentTimeMillis();
+        token= JWT.create().withAudience(String.valueOf(user.getId()))//接受者
+                .withIssuedAt(new Date(date)) // 签发时间 非必要
+                .withExpiresAt(new Date(date + 1000*60*60))// jwt的过期时间
+                .withSubject(user.getUsername())  //主题 非必要
+                .withIssuer("raven")//发布者 非必要
+                .withJWTId(UUID.randomUUID().toString())
+                .sign(Algorithm.HMAC256(user.getUsername()));//签名
         return token;
+    }
+
+    public static String decode(String token){
+        return JWT.decode(token).getAudience().get(0);
     }
 }

@@ -1,15 +1,15 @@
 <template>
     <div>
-        <div class="title"><i class="el-icon-position"></i>我的设备列表</div>
-
-        <el-table :data="devices" style="width: 100%;">
+        <div class="title"><i class="el-icon-position"></i>设备列表</div>
+        <el-divider></el-divider>
+        <el-table :data="devices" style="width: 100%;" :border=true :stripe=true :highlight-current-row=true>
             <el-table-column label="生产日期" width="200" style="height: 10px;">
                 <template slot-scope="scope">
                     <i class="el-icon-time"></i>
-                    <span style="margin-left: 10px">{{ scope.row.create_time }}</span>
+                    <span style="margin-left: 10px">{{ scope.row.createTime }}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="设备类型" width="300">
+            <el-table-column label="设备类型" width="120">
                 <template slot-scope="scope">
                     <el-popover trigger="hover" placement="top">
                         <p>设备类型: {{ scope.row.type }}</p>
@@ -19,18 +19,29 @@
                     </el-popover>
                 </template>
             </el-table-column>
-            <el-table-column label="设备id" width="300">
+            <el-table-column label="设备编号" width="300">
                 <template slot-scope="scope">
                     <el-popover trigger="hover" placement="top">
                         <p>设备ID: {{ scope.row.deviceId }}</p>
                         <div slot="reference" class="name-wrapper">
-                            <el-tag size="medium">{{ scope.row.deviceId }}</el-tag>
+                            <el-tag size="medium" type='success'>{{ scope.row.deviceId }}</el-tag>
+                        </div>
+                    </el-popover>
+                </template>
+            </el-table-column>
+            <el-table-column label="设备状态" width="120">
+                <template slot-scope="scope">
+                    <el-popover trigger="hover" placement="top">
+                        <p>设备状态: {{ scope.row.status==true?'在线':'离线' }}</p>
+                        <div slot="reference" class="name-wrapper">
+                            <el-tag size="medium" type='danger'>{{  scope.row.status==true?'在线':'离线' }}</el-tag>
                         </div>
                     </el-popover>
                 </template>
             </el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
+                    <el-button size="mini" type="success" @click="controlDevice(scope.$index, scope.row)">控制</el-button>
                     <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                     <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                 </template>
@@ -40,15 +51,15 @@
         </el-button>
 
 
-        <el-dialog title="添加设备信息" :visible.sync="addDialogVisible" width="30%" >
-            <el-form ref="addForm"  :model="addForm" label-width="80px">
+        <el-dialog title="添加设备信息" :visible.sync="addDialogVisible" width="30%">
+            <el-form ref="addForm" :model="addForm" label-width="80px">
                 <el-form-item label="设备id" prop="deviceId" required>
                     <el-input v-model="addForm.deviceId"></el-input>
                 </el-form-item>
                 <el-form-item label="设备密码" prop="deviceKey" required>
                     <el-input v-model="addForm.deviceKey"></el-input>
                 </el-form-item>
-    
+
                 <el-form-item>
                     <el-button type="primary" @click="addSubmit()">提交</el-button>
                     <el-button @click="addDialogVisible = false">取消</el-button>
@@ -56,9 +67,9 @@
             </el-form>
         </el-dialog>
 
-        <el-dialog title="更新设备信息" :visible.sync="updateDialogVisible" width="30%" >
-            <el-form ref="updateForm"  :model="updateForm" label-width="80px">
-                <el-form-item label="当前设备id" prop="oldDeviceId" required >
+        <el-dialog title="更新设备信息" :visible.sync="updateDialogVisible" width="30%">
+            <el-form ref="updateForm" :model="updateForm" label-width="80px">
+                <el-form-item label="当前设备id" prop="oldDeviceId" required>
                     <el-input v-model="updateForm.oldDeviceId" readonly="readonly" disabled="disabled"></el-input>
                 </el-form-item>
                 <el-form-item label="当前设备密码" prop="oldDeviceKey" required>
@@ -77,7 +88,7 @@
             </el-form>
         </el-dialog>
     </div>
-   
+
 </template>
 
 <script>
@@ -149,10 +160,10 @@
                                     message: res.data.msg
                                 });
                                 this.updateDialogVisible = false;
-                                this.updateForm['olddeviceId']='';
-                                this.updateForm['olddeviceKey']='';
-                                this.updateForm['newdeviceId']='';
-                                this.updateForm['newdeviceId']='';
+                                this.updateForm['olddeviceId'] = '';
+                                this.updateForm['olddeviceKey'] = '';
+                                this.updateForm['newdeviceId'] = '';
+                                this.updateForm['newdeviceId'] = '';
                                 this.initData();
                             } else {
                                 this.$message.error(res.data.msg);
@@ -162,7 +173,7 @@
                 });
             },
             addDevice() {
-                
+
                 this.addDialogVisible = true;
             },
             addSubmit() {
@@ -174,8 +185,8 @@
                             message: res.data.msg
                         });
                         this.addDialogVisible = false;
-                        this.addForm['deviceId']='';
-                        this.addForm['deviceKey']='';
+                        this.addForm['deviceId'] = '';
+                        this.addForm['deviceKey'] = '';
                         this.initData();
                     } else {
                         this.$message.error(res.data.msg);
@@ -183,7 +194,28 @@
                 })
 
             },
-           
+            controlDevice(index, row) {
+                this.$prompt('请输入控制指令', '输入指令', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                }).then(({ value }) => {
+                    if (value && value != '') {
+
+                        this.$axios.get('roobot/replay?word='+value).then(res => {
+                            if (res.data.code == 200) {
+                                this.$message({
+                                    type: 'success',
+                                    message: res.data.msg
+                                });
+                                this.initData();
+                            } else {
+                                this.$message.error(res.data.msg);
+                            }
+                        })
+
+                    }
+                })
+            },
             handleDelete(index, row) {
                 console.log(index, row);
                 this.$prompt('请输入要该设备的密码', '输入密码', {

@@ -49,7 +49,7 @@ public class UserAccountController {
 
         }
 
-        String token = TokenUtil.getToken(user);
+        String token = TokenUtil.encode(user);
 
         tokens.put(user.getId(),token);
         response.addHeader("token",token);
@@ -109,7 +109,7 @@ public class UserAccountController {
     })
     public Result updateInfo(@RequestHeader String token, @RequestParam String currentPassword,
                              @RequestParam String password2, @RequestParam String password1){
-        String userId = JWT.decode(token).getAudience().get(0);
+        String userId = TokenUtil.decode(token);
         // 如果要改的密码与当前密码一样
         if(currentPassword.equals(password1)){
             return Result.failure(ResultCode.updateUserInfoFail);
