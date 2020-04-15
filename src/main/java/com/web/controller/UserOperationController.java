@@ -3,6 +3,7 @@ package com.web.controller;
 
 import com.auth0.jwt.JWT;
 import com.web.jwt.annotation.UserLoginToken;
+import com.web.result.Result;
 import com.web.service.UserOperationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -30,7 +31,7 @@ public class UserOperationController {
             @ApiImplicitParam(paramType="header", name = "token", value = "登录后的token", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "word", value = "用户说的话", required = true, dataType = "String"),
     })
-    @ResponseBody
+
     @GetMapping("replay")
     /**
     * @Description: 用来获取智能回复内容，并可以发送控制指令
@@ -39,11 +40,15 @@ public class UserOperationController {
     * @Author: raven
     * @Date: 2020/4/10
     */
-    public String getReturnWord(@RequestHeader("token") String token,
+    public Result getReturnWord(@RequestHeader("token") String token,
                                 @RequestParam(value = "word",required = false) String word)   {
         String userId = JWT.decode(token).getAudience().get(0);
         if(word == null ||word.trim().equals("") ){
-            return "您什么也没有说";
+            Result result = new Result();
+            result.setCode(200);
+            result.setMsg("传参不正确！");
+
+            return result;
         }
         return  userOperationService.getWord(userId,word);
     }

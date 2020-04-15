@@ -5,6 +5,7 @@ import com.web.dao.DeviceRepository;
 import com.web.dao.UserDeviceRepository;
 import com.web.pojo.Device;
 import com.web.pojo.UserDevice;
+import com.web.result.Result;
 import correspond.serialport.UartServer;
 import init.JSONFileInit;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -37,7 +38,7 @@ public class UserOperationService {
     * @Author: raven
     * @Date: 2020/4/10
     */
-    public String getWord(String userId,String word){
+    public Result getWord(String userId,String word){
         JSONObject wordMap = JSONFileInit.wordMap;
         System.out.println(word);
         List<UserDevice> userDeviceIds = userDeviceRepository.findUserDeviceByUserId(userId);
@@ -70,15 +71,15 @@ public class UserOperationService {
             key = "风扇停止";
         } else{
             // 调用只能回复库
-            JSONObject tuLingWord = tuLingRoobot.getWord(word);
-            String statusOfTuLing = tuLingWord.getString("status");
-            if(statusOfTuLing.equals("success")){
-                return tuLingWord.toJSONString();
+            Result tuLingWord = tuLingRoobot.getWord(word);
+            Integer statusCode1 = tuLingWord.getCode();
+            if(statusCode1 == 200){
+                return tuLingWord;
             }
-            JSONObject ownThinkRoobotWord = ownThinkRoobot.getWord(word);
-            String statusOfOwnThink = ownThinkRoobotWord.getString("status");
-            if(statusOfOwnThink.equals("success")){
-               return ownThinkRoobotWord.toJSONString();
+            Result ownThinkRoobotWord = ownThinkRoobot.getWord(word);
+            int statusCode2 = ownThinkRoobotWord.getCode();
+            if(statusCode2 == 200){
+               return ownThinkRoobotWord;
             }
             key = "未知";
         }
@@ -94,10 +95,11 @@ public class UserOperationService {
         // 随机引索
         int len = new Random().nextInt(replayList.size());
         System.out.println("回复："+replayList.get(len));
-        JSONObject obj = new JSONObject();
-        obj.put("status","success");
-        obj.put("data",replayList.get(len));
-        return obj.toJSONString();
+        Result result = new Result();
+        result.setCode(200);
+        result.setMsg("success");
+        result.setData(replayList.get(len));
+        return result;
     }
 
 

@@ -1,14 +1,14 @@
 package roobots;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.web.result.Result;
 import util.HttpUtil;
 
 public class TuLingRoobot {
     private String url = "http://openapi.tuling123.com/openapi/api/v2";
     private String apiKey = "8d8f0859dea14f1eacf2a3d20a136a27";
     private String userId = "373886";
-    public JSONObject getWord(String word){
+    public Result getWord(String word){
         JSONObject reqJson = new JSONObject();
         JSONObject perception = new JSONObject();
         // 输入的文本信息
@@ -33,16 +33,21 @@ public class TuLingRoobot {
                 JSONObject json = JSONObject.parseObject(resJSON.getJSONArray("results").getString(0));
                 String replay = json.getJSONObject("values").getString("text");
                 System.out.println("回复："+replay);
-                JSONObject obj = new JSONObject();
-                obj.put("status","success");
-                obj.put("data",replay);
-                return obj;
+
+                Result result = new Result();
+                result.setCode(200);
+                result.setMsg("success");
+                result.setData(replay);
+
+                return result;
+
             }
         }
-        JSONObject obj = new JSONObject();
-        obj.put("status","error");
-        obj.put("data","服务器请求数据异常");
-        return obj;
+        Result result = new Result();
+        result.setCode(400);
+        result.setMsg("服务器异常，请稍后再试。");
+        return result;
+
 
     }
 }

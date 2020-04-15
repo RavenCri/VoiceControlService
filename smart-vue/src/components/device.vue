@@ -87,11 +87,62 @@
                 </el-form-item>
             </el-form>
         </el-dialog>
+
+        <el-dialog title="曼拉小姐姐" :visible.sync="roobotWindow" width="50%" :before-close="handleCloseRoobotWindow">
+            <div style="display: flex;flex-direction: column;">
+                <div id='chatUI'
+                    style="height: 350px;border: 1px solid black;margin-bottom: 20px;overflow-y:auto;overflow-x: hidden;">
+                    <div v-for="(item,index) in chatMsg">
+                        <p  v-if="item.orient==='left'" style="position: relative;left: 50px;">
+                            <div style="display: flex;margin: 15px;">
+                                <div style="width: 100px;">
+                                    <img src="../assets/ml.jpg" width="60px" alt=""
+                                        style="border-radius: 100%;position: relative;top:10px">
+                                </div>
+                                <div style="font-size: 16px;font-weight: bold;width: 50%;">
+                                    <span style="display: block;margin-bottom: 10px;">曼拉：{{item.time}}</span>
+                                    <p style="background-color: blanchedalmond;border-radius: 20px;padding:10px">
+                                        {{item.msg}}</p>
+                                </div>
+                            </div>
+                        </p>
+                        <p v-if="item.orient==='right'" style="position: relative;left: 50px;">
+
+                            <div style="display: flex;margin: 15px;position: relative;left: 270px;">
+
+                                <div style="font-size: 16px;font-weight: bold;width: 50%;">
+                                    <span
+                                        style="text-align: right;display: block;margin-bottom: 10px;">曼拉：{{item.time}}</span>
+                                    <p
+                                        style="background-color: green;color: honeydew; border-radius: 20px;padding:10px">
+                                        {{item.msg}}</p>
+                                </div>
+                                <div style="width: 100px;">
+                                    <img src="../assets/ml.jpg" width="60px" alt=""
+                                        style="border-radius: 100%;position: relative;top:20px;left: 10px;">
+                                </div>
+
+                            </div>
+
+                        </p>
+                    </div>
+
+                </div>
+                <div>
+                    <textarea cols="80" rows="3" style="height: 100px;border: 1px solid black;font-size:17px"
+                        v-model="currentMsg"></textarea>
+                </div>
+            </div>
+            <el-button type="primary" @click="sendMsg" style="position: relative;left: 600px;top:10px">发 送
+            </el-button>
+
+        </el-dialog>
     </div>
 
 </template>
 
 <script>
+    import { formatDate } from '../common/dateUtil.js'
     import qs from 'qs';
     export default {
         name: 'device',
@@ -115,7 +166,12 @@
                     newDeviceId: "",
                     newDeviceKey: ""
                 },
-
+                roobotWindow: false,
+                chatMsg: [
+                    { "orient": "left", "msg": "你好啊~我是曼拉小姐姐，有什么吩咐的呢？", "time": "2020.04.16" },
+                ],
+                normalFormat: 'yyyy-MM-dd hh:mm',
+                currentMsg: ''
             }
         },
         methods: {
@@ -195,26 +251,29 @@
 
             },
             controlDevice(index, row) {
-                this.$prompt('请输入控制指令', '输入指令', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                }).then(({ value }) => {
-                    if (value && value != '') {
+                this.chatMsg[0].time = formatDate(new Date(), this.normalFormat)
+                this.roobotWindow = true;
+            },
+            sendMsg() {
+                this.chatMsg.push({ "orient": "right", "msg": this.currentMsg, "time": formatDate(new Date(), this.normalFormat) })
+             
+                if ( this.currentMsg != '') {
+                    this.$axios.get('roobot/replay?word=' + this.currentMsg).then(res => {
+                        if (res.data.code == 200) {
+                            this.$message({
+                                type: 'success',
+                                message: res.data.data
+                            });
+                            this.chatMsg.push({ "orient": "left", "msg": res.data.data, "time": formatDate(new Date(), this.normalFormat) })
 
-                        this.$axios.get('roobot/replay?word='+value).then(res => {
-                            if (res.data.code == 200) {
-                                this.$message({
-                                    type: 'success',
-                                    message: res.data.msg
-                                });
-                                this.initData();
-                            } else {
-                                this.$message.error(res.data.msg);
-                            }
-                        })
+                        } else {
+                            this.$message.error(res.data.msg);
+                        }
+                        this.currentMsg = ''
+                    })
 
-                    }
-                })
+                }
+                
             },
             handleDelete(index, row) {
                 console.log(index, row);
@@ -244,6 +303,9 @@
                     }
                 })
 
+            },
+            handleCloseRoobotWindow() {
+                this.roobotWindow = false;
             }
         }
 
