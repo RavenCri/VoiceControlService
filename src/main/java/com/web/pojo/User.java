@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 @Entity
 @Table(name = "user")
@@ -17,16 +18,40 @@ public class User {
     @Id
     @JsonIgnore
     private String id;
-    @Column(nullable = false, unique = true,name = "user_name")
-    @JsonIgnore
+    @Column(nullable = false, unique = true)
+    //@JsonIgnore
     @NotEmpty(message = "账号不能为空哦")
     private String username;
     @Column(nullable = false )
     @JsonIgnore
     @NotEmpty(message = "密码不能为空哦")
     private String password;
-    @Column(nullable = false,name = "nick_name")
+    @Column(nullable = false)
     private String nickname;
+    /**用户等级 0普通用户**/
+    @Column(nullable = false,name = "account_level")
+    private int accountLevel;
+    @Transient
+    private List<Device> devices;
+    @Transient
+    private UserAuth userAuth;
+
+    public List<Device> getDevices() {
+        return devices;
+    }
+
+    public void setDevices(List<Device> devices) {
+        this.devices = devices;
+    }
+
+
+    public UserAuth getUserAuth() {
+        return userAuth;
+    }
+
+    public void setUserAuth(UserAuth userAuth) {
+        this.userAuth = userAuth;
+    }
 
     public String getId() {
         return id;
@@ -42,6 +67,14 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public int getAccountLevel() {
+        return accountLevel;
+    }
+
+    public void setAccountLevel(int accountLevel) {
+        this.accountLevel = accountLevel;
     }
 
     public String getPassword() {

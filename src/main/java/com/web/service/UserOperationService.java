@@ -86,10 +86,10 @@ public class UserOperationService {
         }
         // 如果智能回复库没有成功，获取本地回复列表
         JSONObject currIndexJSON = wordMap.getJSONObject(key);
-        UserDevice userDevice = userDeviceRepository.findUserDeviceByUserIdAndDeviceId(userId, deviceId);
+        UserDevice userDevice = userDeviceRepository.findByUserIdAndDeviceId(userId, deviceId);
         if(currIndexJSON.containsKey("code")){
 
-            Device device = deviceRepository.findDeviceByDeviceId(userDevice.getDeviceId());
+            Device device = deviceRepository.findByDeviceId(userDevice.getDeviceId());
             // 如果设备未找到
             if(device == null){
                 Result result = new Result();

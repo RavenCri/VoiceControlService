@@ -12,9 +12,9 @@
             <el-table-column label="设备类型" width="120">
                 <template slot-scope="scope">
                     <el-popover trigger="hover" placement="top">
-                        <p>设备类型: {{ scope.row.type }}</p>
+                        <p>设备类型: {{ scope.row.type=='normal'?'普通版':'增强版' }}</p>
                         <div slot="reference" class="name-wrapper">
-                            <el-tag size="medium">{{ scope.row.type }}</el-tag>
+                            <el-tag size="medium">{{ scope.row.type=='normal'?'普通版':'增强版' }}</el-tag>
                         </div>
                     </el-popover>
                 </template>
@@ -47,9 +47,14 @@
                 </template>
             </el-table-column>
         </el-table>
-        <el-button type="primary" round style="display: block;width: 200px; margin: 30px auto;" @click='addDevice'>增加设备
-        </el-button>
+        <div style="width: 300px;margin: 50px auto;display: flex;">
+            <el-button type="success" round style="width: 200px;" @click='flushData'>
+                刷新数据
+            </el-button>
+            <el-button type="primary" round style="width: 200px;" @click='addDevice'>增加设备
+            </el-button>
 
+        </div>
 
         <el-dialog title="添加设备信息" :visible.sync="addDialogVisible" width="30%">
             <el-form ref="addForm" :model="addForm" label-width="80px">
@@ -181,7 +186,7 @@
 
                 this.addDialogVisible = true;
             },
-           
+
             addSubmit() {
 
                 this.$axios.post('device/add', qs.stringify(this.addForm)).then(res => {
@@ -233,6 +238,14 @@
                     }
                 })
 
+            },
+            flushData() {
+                this.$notify({
+                    title: '刷新数据',
+                    message: '刷新成功~',
+                    type: 'success'
+                });
+                this.initData()
             }
         }
 

@@ -14,8 +14,8 @@ public class OwnThinkRoobot {
                 String replay = respJSON.getJSONObject("data").getJSONObject("info").getString("text");
                 Result result = new Result();
                 result.setCode(200);
-                result.setMsg("success");
-                result.setData(replay);
+                result.setMsg(replay);
+
 
                 return result;
             }

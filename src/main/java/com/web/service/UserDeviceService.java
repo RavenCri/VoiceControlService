@@ -34,11 +34,11 @@ public class UserDeviceService {
     */
     public Result userAddDevice(String userId, String deviceId,String deviceKey) {
 
-        Device findDevice = deviceRepository.findDeviceByDeviceIdAndDeviceKey(deviceId,deviceKey);
+        Device findDevice = deviceRepository.findByDeviceIdAndDeviceKey(deviceId,deviceKey);
         if(findDevice == null){
             return Result.failure(ResultCode.addDeviceNoExist);
         }
-        UserDevice device = userDeviceRepository.findUserDeviceByUserIdAndDeviceId(userId,findDevice.getDeviceId());
+        UserDevice device = userDeviceRepository.findByUserIdAndDeviceId(userId,findDevice.getDeviceId());
         // 如果为空，说明该设备没有被该用户二次注册。设备可以二次注册，但是不能被一个人二次注册
         if(device == null){
 
@@ -60,23 +60,23 @@ public class UserDeviceService {
     public List<Device> findDeviceByUserId(String userId){
         List<Device> devices = new ArrayList<>();
         // 先查出用户所有的设备id
-        List<UserDevice> userDevices = userDeviceRepository.findUserDeviceByUserId(userId);
+        List<UserDevice> userDevices = userDeviceRepository.findByUserId(userId);
         // 用每个id查出所有设备信息
         userDevices.forEach(devive->{
-            Device device = deviceRepository.findDeviceByDeviceId(devive.getDeviceId());
+            Device device = deviceRepository.findByDeviceId(devive.getDeviceId());
             devices.add(device);
         });
         return devices;
     }
     public List<UserDevice> findUserDeviceByDeviceId(String deviceId){
 
-        List<UserDevice> userDevices = userDeviceRepository.findUserDeviceByDeviceId(deviceId);
+        List<UserDevice> userDevices = userDeviceRepository.findByDeviceId(deviceId);
 
         return userDevices;
     }
     @Transactional
     public boolean deleteDevice(String userId, String deviceId,String deviceKey) {
-        Device device = deviceRepository.findDeviceByDeviceIdAndDeviceKey(deviceId,deviceKey);
+        Device device = deviceRepository.findByDeviceIdAndDeviceKey(deviceId,deviceKey);
         if(device == null){
             return false;
         }
@@ -86,16 +86,16 @@ public class UserDeviceService {
 
     public Result updateUserDevice(String userId, String oldDeviceId,String oldDeviceKey,  String newDeviceId,String newDeviceKey) {
 
-        UserDevice dv = userDeviceRepository.findUserDeviceByUserIdAndDeviceId(userId, oldDeviceId);
+        UserDevice dv = userDeviceRepository.findByUserIdAndDeviceId(userId, oldDeviceId);
         // 如果找不到当前要修改的
         if(dv == null){
             return Result.failure(ResultCode.updateDeviceFailNoExist);
         }
-        Device oldDevice = deviceRepository.findDeviceByDeviceIdAndDeviceKey(oldDeviceId, oldDeviceKey);
+        Device oldDevice = deviceRepository.findByDeviceIdAndDeviceKey(oldDeviceId, oldDeviceKey);
         if(oldDevice == null){
             return Result.failure(ResultCode.updateDeviceFailOldDeviceError);
         }
-        Device newDevice = deviceRepository.findDeviceByDeviceIdAndDeviceKey(newDeviceId,newDeviceKey);
+        Device newDevice = deviceRepository.findByDeviceIdAndDeviceKey(newDeviceId,newDeviceKey);
         if(newDevice == null){
             return Result.failure(ResultCode.updateDeviceFailNewDeviceError);
         }

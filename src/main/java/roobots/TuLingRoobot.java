@@ -36,8 +36,8 @@ public class TuLingRoobot {
 
                 Result result = new Result();
                 result.setCode(200);
-                result.setMsg("success");
-                result.setData(replay);
+                result.setMsg(replay);
+
 
                 return result;
 

@@ -30,7 +30,7 @@ public class DeviceService {
 
     }
     public Device getDevice(String deviceId){
-        return deviceRepository.findDeviceByDeviceId(deviceId);
+        return deviceRepository.findByDeviceId(deviceId);
     }
     public void updateDevice(){
 

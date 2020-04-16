@@ -1,6 +1,7 @@
-package com.web.controller;
+package com.web.controller.manager;
 
 import cn.hutool.core.util.RandomUtil;
+import com.web.controller.UserDeviceController;
 import com.web.jwt.util.TokenUtil;
 import com.web.pojo.Device;
 import com.web.pojo.User;

@@ -16,7 +16,7 @@ public class UserMqttAccount {
     @GeneratedValue(strategy= GenerationType.IDENTITY )
     @Ignore
     public int id;
-    @Column(nullable = false, unique = true,name = "user_name")
+    @Column(nullable = false, unique = true)
     public String username;
     @Column(nullable = false, unique = true,name = "mqtt_username")
     public String mqttUsername;

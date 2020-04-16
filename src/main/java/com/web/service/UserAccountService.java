@@ -8,6 +8,8 @@ import com.web.result.ResultCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @description:
  * @author: raven
@@ -24,10 +26,26 @@ public class UserAccountService {
         return userAccountRepository.findById(userId);
     }
 
-    public User registerUser(User user) {
+    public Result registerUser(String username,
+                              String password,
+                             String password2,
+                             String nickname) {
+        if(!password.equals(password2)){
+            return Result.failure(ResultCode.registerUserPasswordNotEqual);
+        }
 
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setNickname(nickname);
+        user.setAccountLevel(0);
+        User existUser = getUserByUserName(username);
+        // 拿用户名 判断用户是否存在
+        if(existUser != null){
+            return Result.failure(ResultCode.registerUserNameExist);
+        }
         User us = userAccountRepository.saveAndFlush(user);
-        return us;
+        return us==null?Result.failure(ResultCode.registerError):null;
     }
 
     public User getUserByUserName(String username) {
@@ -45,10 +63,15 @@ public class UserAccountService {
         return Result.success(ResultCode.updateUserInfoSuccess);
     }
     public User findUserByUsernameAndPassword(String username, String password){
-            return userAccountRepository.findUserByUsernameAndPassword(username,password);
+            return userAccountRepository.findByUsernameAndPassword(username,password);
     }
 
     public User findUserByUserId(String userId) {
-        return userAccountRepository.findUserById(userId);
+        return userAccountRepository.findById(userId);
+    }
+
+    public List<User> getUserList() {
+        List<User> all = userAccountRepository.findByAccountLevelNot(1);
+        return all;
     }
 }

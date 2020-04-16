@@ -9,9 +9,36 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
 public interface UserDeviceRepository extends JpaRepository<UserDevice,Long>, CrudRepository<UserDevice,Long>, JpaSpecificationExecutor<UserDevice> {
-    List<UserDevice> findUserDeviceByUserId(String userId);
+    /**
+    * @Description: 通过用户id查找到 用户-设备 对象列表
+    * @Param: [userId]
+    * @return: java.util.List<com.web.pojo.UserDevice>
+    * @Author: raven
+    * @Date: 2020/4/16
+    */
+    List<UserDevice> findByUserId(String userId);
+    /**
+    * @Description: 删除设备
+    * @Param: [userId, deviceId]
+    * @return: void
+    * @Author: raven
+    * @Date: 2020/4/16
+    */
     void deleteByUserIdAndDeviceId(String userId,String deviceId);
-    UserDevice findUserDeviceByUserIdAndDeviceId(String userId,String deviceId);
-
-    List<UserDevice> findUserDeviceByDeviceId(String deviceId);
+    /**
+    * @Description: 找到用户是否拥有此设备
+    * @Param: [userId, deviceId]
+    * @return: com.web.pojo.UserDevice
+    * @Author: raven
+    * @Date: 2020/4/16
+    */
+    UserDevice findByUserIdAndDeviceId(String userId, String deviceId);
+    /**
+    * @Description: 通过设备id找到所有绑定此设备的 用户-设备 对象
+    * @Param: [deviceId]
+    * @return: java.util.List<com.web.pojo.UserDevice>
+    * @Author: raven
+    * @Date: 2020/4/16
+    */
+    List<UserDevice> findByDeviceId(String deviceId);
 }

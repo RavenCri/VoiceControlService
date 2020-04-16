@@ -18,6 +18,7 @@
       <div class="app_left an_left">
         <h1>合肥学院毕业设计</h1>
         <h1>基于语音识别的远程控制系统</h1>
+        <h1>指导老师：谢宇</h1>
         <h1>Design By 16自动化二班雷文珲</h1>
         <div>
           <a href="#" class='app_left_btn btn_primary' @click="downAPP">下载APP</a>
@@ -237,9 +238,10 @@
       onSubmit(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            this.$message.success('订单已提交至仓库!')
+            this.dialogVisible = false;
           } else {
-            console.log('error submit!!');
+            this.$message.error('提交订单发生了错误')
             return false;
           }
         })

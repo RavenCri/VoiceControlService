@@ -47,7 +47,7 @@ public class UserOperationController {
         if(word == null ||word.trim().equals("") ){
             Result result = new Result();
             result.setCode(200);
-            result.setMsg("传参不正确！");
+            result.setMsg("曼拉没听到您说什么啦~");
 
             return result;
         }

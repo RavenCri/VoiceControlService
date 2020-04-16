@@ -6,6 +6,7 @@ import center from '@/components/center'
 import login from '@/components/login'
 import updateInfo from '@/components/updateInfo'
 import deviceManager from '@/components/manager/deviceManager'
+import userManager from '@/components/manager/userManager'
 Vue.use(Router)
 
 export default new Router({
@@ -31,14 +32,16 @@ export default new Router({
           component: device
         },
         {
-          // path前面不能带/
           path: 'updateInfo',
           component: updateInfo
         },
         {
-          // path前面不能带/
           path: 'deviceManager',
           component: deviceManager
+        },
+        {
+          path: 'userManager',
+          component: userManager
         }
       ]
     },

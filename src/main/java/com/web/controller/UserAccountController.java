@@ -3,10 +3,14 @@ package com.web.controller;
 import cn.hutool.core.util.RandomUtil;
 import com.auth0.jwt.JWT;
 import com.web.jwt.util.TokenUtil;
+import com.web.pojo.Device;
 import com.web.pojo.User;
+import com.web.pojo.UserAuth;
 import com.web.result.Result;
 import com.web.result.ResultCode;
 import com.web.service.UserAccountService;
+import com.web.service.UserAuthSerice;
+import com.web.service.UserDeviceService;
 import com.web.service.UserMqttAccountService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -19,6 +23,7 @@ import util.MqttUtil;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -31,6 +36,10 @@ public class UserAccountController {
     UserAccountService userAccountService;
     @Autowired
     UserMqttAccountService userMqttAccountService;
+    @Autowired
+    UserDeviceService userDeviceService;
+    @Autowired
+    UserAuthSerice userAuthSerice;
     public static Map<String,String> tokens = new HashMap<>();
     @PostMapping("login")
     @ApiOperation("用户提供账号密码，调用该接口即可")
@@ -69,22 +78,9 @@ public class UserAccountController {
                                @RequestParam String password2,
                                @RequestParam String nickname) {
 
-        if(!password.equals(password2)){
-            return Result.failure(ResultCode.registerUserPasswordNotEqual);
-        }
 
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(password);
-        user.setNickname(nickname);
-
-        User existUser = userAccountService.getUserByUserName(username);
-        // 拿用户名 判断用户是否存在
-        if(existUser != null){
-            return Result.failure(ResultCode.registerUserNameExist);
-        }
-        User us = userAccountService.registerUser(user);
-        if(us == null){
+        Result result = userAccountService.registerUser(username,password,password2,nickname);
+        if(result != null){
             return Result.failure(ResultCode.registerError);
         }
         String mqttUserName = RandomUtil.randomString(8);
@@ -137,5 +133,49 @@ public class UserAccountController {
         return result;
     }
 
+    @GetMapping("userList")
+    @ApiOperation("获取所有用户")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType="header", name = "token", value = "登录后的token", required = true, dataType = "String"),
+    })
+    public Result getUserList(@RequestHeader String token){
+        String userId = JWT.decode(token).getAudience().get(0);
+        List<User> users = userAccountService.getUserList();
+        // 设置用户设备组
+        users.forEach(user -> {
+            List<Device> devices = userDeviceService.findDeviceByUserId(user.getId());
+            UserAuth userAuth = userAuthSerice.getUserAuth(user.getUsername());
+            if (userAuth == null){
+                userAuth = new UserAuth();
+                userAuth.setUsable(true);
+            }
+            user.setUserAuth(userAuth);
+            user.setDevices(devices);
+        });
 
+        Result result = new Result();
+        result.setData(users);
+        result.setCode(200);
+        result.setMsg("用户信息");
+        return result;
+    }
+
+    @PostMapping("close")
+    @ApiOperation("封禁用户接口")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType="header", name = "token", value = "登录后的token", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="header", name = "username", value = "要封禁的用户名", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="header", name = "reason", value = "封禁原因", required = true, dataType = "String"),
+    })
+    public Result closeUser(@RequestHeader String token,
+                              @RequestParam String username,
+                              @RequestParam String reason){
+        String userId = JWT.decode(token).getAudience().get(0);
+
+        userAuthSerice.closeUser(username,reason);
+        Result result = new Result();
+        result.setCode(200);
+        result.setMsg("封禁成功！");
+        return result;
+    }
 }

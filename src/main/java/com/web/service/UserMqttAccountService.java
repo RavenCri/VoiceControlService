@@ -16,7 +16,7 @@ public class UserMqttAccountService {
     @Autowired
     public UserMqttAccountRepository userMqttAccountRepository;
     public UserMqttAccount getMqttInfoByUsername(String username){
-        return userMqttAccountRepository.findUserMqttAccountByUsername(username);
+        return userMqttAccountRepository.findByUsername(username);
     }
     public void userAddMqTTInfo(String username,String mqttUsername,String mqttPassword){
         UserMqttAccount userMqttAccount = new UserMqttAccount();
