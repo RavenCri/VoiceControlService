@@ -1,6 +1,7 @@
 package com.web.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.web.controller.UserDeviceController;
 import com.web.dao.DeviceRepository;
 import com.web.dao.UserDeviceRepository;
 import com.web.pojo.Device;
@@ -38,10 +39,10 @@ public class UserOperationService {
     * @Author: raven
     * @Date: 2020/4/10
     */
-    public Result getWord(String userId,String word){
+    public Result getWord(String userId,String word,String deviceId){
         JSONObject wordMap = JSONFileInit.wordMap;
         System.out.println(word);
-        List<UserDevice> userDeviceIds = userDeviceRepository.findUserDeviceByUserId(userId);
+
         String key;
         if(word.contains("灯") && word.contains("开") ){ //默认开1号房间的灯
             key = "开灯";
@@ -85,10 +86,24 @@ public class UserOperationService {
         }
         // 如果智能回复库没有成功，获取本地回复列表
         JSONObject currIndexJSON = wordMap.getJSONObject(key);
+        UserDevice userDevice = userDeviceRepository.findUserDeviceByUserIdAndDeviceId(userId, deviceId);
         if(currIndexJSON.containsKey("code")){
-            Device device = deviceRepository.findDeviceByDeviceId(userDeviceIds.get(0).getDeviceId());
 
-           String subscribe =  device.getDeviceId()+"-"+device.getDeviceKey();
+            Device device = deviceRepository.findDeviceByDeviceId(userDevice.getDeviceId());
+            // 如果设备未找到
+            if(device == null){
+                Result result = new Result();
+                result.setCode(404);
+                result.setMsg("设备未找到。");
+                return result;
+            }
+            if(!UserDeviceController.OnlineDevice.containsKey(device.getDeviceKey())){
+                Result result = new Result();
+                result.setCode(404);
+                result.setMsg("您的设备当前不在线哦，曼拉无法帮您，请检查设备是否可以正常通信~");
+                return result;
+            }
+            String subscribe =  device.getDeviceId()+"-"+device.getDeviceKey();
             mqttServer.convertAndSend("amq.topic",subscribe , currIndexJSON.getString("code"));
         }
         List<String> replayList= JSONObject.parseArray(currIndexJSON.getString("word"),String.class);
@@ -97,8 +112,7 @@ public class UserOperationService {
         System.out.println("回复："+replayList.get(len));
         Result result = new Result();
         result.setCode(200);
-        result.setMsg("success");
-        result.setData(replayList.get(len));
+        result.setMsg(replayList.get(len));
         return result;
     }
 

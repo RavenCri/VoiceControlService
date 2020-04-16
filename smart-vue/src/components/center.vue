@@ -71,8 +71,9 @@
                         });
 
                     } else if (res.data.code == 200) {
-
+                        
                         this.nickname = res.data.data['nickname']
+                        localStorage.setItem('nickname',this.nickname)
                     }
 
                 })
