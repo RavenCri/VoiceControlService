@@ -57,7 +57,13 @@ public class UserAccountController {
             return Result.failure(ResultCode.loginFail);
 
         }
-
+        UserAuth userAuth = userAuthSerice.getUserAuth(user.getUsername());
+        if(userAuth!=null &&!userAuth.isUsable()){
+            Result result = new Result();
+            result.setCode(400);
+            result.setMsg("账号被封禁了无法登陆,封禁原因："+userAuth.getReason());
+            return result;
+        }
         String token = TokenUtil.encode(user);
 
         tokens.put(user.getId(),token);
