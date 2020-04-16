@@ -21,7 +21,7 @@ public class ScheduleTask {
         for(Map.Entry entry:UserDeviceController.OnlineDevice.entrySet()){
             DateTime last = (DateTime) entry.getValue();
             // 如果一分钟该硬件都没有相应心跳数据包，说明离线了。删除即可。
-            if( now.getTime()- last.getTime() >= 1000*6){
+            if( now.getTime()- last.getTime() >= 10000*6){
                 System.out.println(entry.getKey()+"设备离线了！");
                 UserDeviceController.OnlineDevice.remove(entry.getKey());
             }

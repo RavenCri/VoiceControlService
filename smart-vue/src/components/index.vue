@@ -233,7 +233,7 @@
         this.$message({
           message: 'APP正在优化中，稍后几天即可下载哦~',
           type: 'warning'
-        });
+        });  
       },
       onSubmit(formName) {
         this.$refs[formName].validate((valid) => {

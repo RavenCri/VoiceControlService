@@ -97,7 +97,7 @@ public class UserOperationService {
                 result.setMsg("设备未找到。");
                 return result;
             }
-            if(!UserDeviceController.OnlineDevice.containsKey(device.getDeviceKey())){
+            if(!UserDeviceController.OnlineDevice.containsKey(device.getDeviceId())){
                 Result result = new Result();
                 result.setCode(404);
                 result.setMsg("您的设备当前不在线哦，曼拉无法帮您，请检查设备是否可以正常通信~");
