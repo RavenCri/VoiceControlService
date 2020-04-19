@@ -20,4 +20,6 @@ public interface UserAuthResposity extends JpaRepository<UserAuth,Long>, CrudRep
     * @Date: 2020/4/16 
     */
     UserAuth findByUsername(String username);
+
+
 }

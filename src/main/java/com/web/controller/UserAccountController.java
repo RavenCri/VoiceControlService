@@ -69,7 +69,13 @@ public class UserAccountController {
         tokens.put(user.getId(),token);
         response.addHeader("token",token);
         response.addHeader("Access-Control-Expose-Headers","token");
-        return Result.success(ResultCode.loginSuccess);
+
+        Result result = new Result();
+        result.setData(user);
+        result.setCode(200);
+        result.setMsg("登录成功");
+
+        return result;
     }
     @PostMapping("register")
     @ApiOperation("注册新用户")
@@ -182,6 +188,25 @@ public class UserAccountController {
         Result result = new Result();
         result.setCode(200);
         result.setMsg("封禁成功！");
+        return result;
+    }
+
+    @PostMapping("open")
+    @ApiOperation("解封用户接口")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType="header", name = "token", value = "登录后的token", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="header", name = "username", value = "解封用户名", required = true, dataType = "String"),
+
+    })
+    public Result openUser(@RequestHeader String token,
+                           @RequestParam String username
+                           ){
+        String userId = JWT.decode(token).getAudience().get(0);
+
+        userAuthSerice.openUser(username);
+        Result result = new Result();
+        result.setCode(200);
+        result.setMsg("解封成功！");
         return result;
     }
 }

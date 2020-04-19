@@ -1,6 +1,5 @@
 package com.web.controller.manager;
 
-import cn.hutool.core.util.RandomUtil;
 import com.web.controller.UserDeviceController;
 import com.web.jwt.util.TokenUtil;
 import com.web.pojo.Device;
@@ -17,10 +16,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,7 +35,7 @@ public class ManagerDeviceController {
     @Autowired
     UserAccountService userAccountService;
 
-    SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     @ApiOperation("获取所有出厂设备")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType="header", name = "token", value = "管理员登录后的token", required = true, dataType = "String"),
@@ -71,31 +68,30 @@ public class ManagerDeviceController {
     @ApiOperation("增加出厂设备")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType="header", name = "token", value = "管理员登录后的token", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="query", name = "deviceId", value = "添加的设备id", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="query", name = "time", value = "设备的出厂时间", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="query", name = "type", value = "添加的设备类型", required = true, dataType = "String"),
     })
     @PostMapping("addDevice")
     public Result addDevice(@RequestHeader("token") String token,
-                            @RequestParam String id,
-                            @RequestParam String type,
-                            @RequestParam String time){
+                            @NotEmpty @RequestParam String deviceId,
+                            @NotEmpty @RequestParam String type,
+                            @NotEmpty @RequestParam String time){
         String userId = TokenUtil.decode(token);
-        Device device = new Device();
-        device.setDeviceId(id);
-        System.out.println(time);
-        time = time.replace("Z", "");
-        time = time.replace("T", " ");
-        System.out.println(time);
-        try {
-            Date tm = sf.parse(time);
-            System.out.println(tm.getTime());
-            device.setCreateTime(tm);
-            device.setDeviceId(id);
-            device.setType(type);
-            device.setDeviceKey(RandomUtil.randomString(16));
-            return deviceService.addDevice(device);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return deviceService.addDevice(deviceId,time,type);
 
+    }
+
+    @ApiOperation("删除出厂设备")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType="header", name = "token", value = "管理员登录后的token", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="header", name = "deviceId", value = "设备编号", required = true, dataType = "String"),
+    })
+    @PostMapping("deleteDevice")
+    public Result deleteDevice(@RequestHeader("token") String token,
+                               @NotEmpty @RequestParam String deviceId
+                            ){
+        String userId = TokenUtil.decode(token);
+        return deviceService.removeDevice(deviceId);
     }
 }

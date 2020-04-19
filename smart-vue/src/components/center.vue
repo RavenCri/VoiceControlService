@@ -3,7 +3,7 @@
         <el-container>
             <el-aside style="position: fixed;height: 100%;" width="250px">
                 <img src="../assets/ico.png"  style="width:185px;"> 
-                <el-menu :default-openeds="['1', '2']">
+                <el-menu :default-openeds="['1', '2','3']">
                     <el-submenu index="1">
                         <template slot="title"><i class="el-icon-cpu"></i>设备中心</template>
                         <el-menu-item index="1-1">
@@ -16,7 +16,7 @@
                             <router-link to="/center/updateInfo">修改密码</router-link>
                         </el-menu-item>
                     </el-submenu>
-                    <el-submenu index="3">
+                    <el-submenu index="3" v-if="userInfo.accountLevel==1">
                         <template slot="title"><i class="el-icon-s-ticket"></i>管理专区</template>
                         <el-menu-item index="3-1">
                             <router-link to="/center/deviceManager">设备管理</router-link>
@@ -29,13 +29,13 @@
             </el-aside>
             <el-container>
                 <el-header>
-                    <el-dropdown style="margin-left: 90%">
+                    <el-dropdown style="margin-left: 80%">
                         <i class="el-icon-setting" style="margin-right: 15px"></i>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item><span @click='logout'>退出</span></el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
-                    <span>您好，{{nickname}}</span>
+                    <span v-if="userInfo !=null">您好，{{userInfo.nickname}}({{userInfo.accountLevel==0?'普通用户':'管理员'}})</span>
                 </el-header>
                 <el-main>
                     <router-view></router-view>
@@ -51,10 +51,11 @@
         name: 'center',
         mounted() {
             this.initUserInfo();
+            
         },
         data() {
             return {
-                nickname: ''
+                userInfo:JSON.parse(localStorage.userInfo),   
             }
         },
         methods: {
@@ -72,8 +73,9 @@
 
                     } else if (res.data.code == 200) {
                         
-                        this.nickname = res.data.data['nickname']
-                        localStorage.setItem('nickname',this.nickname)
+                        this.userInfo = res.data.data
+                        
+                       // localStorage.setItem('nickname',this.nickname)
                     }
 
                 })

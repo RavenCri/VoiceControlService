@@ -107,4 +107,7 @@ public class UserDeviceService {
     }
 
 
+    public void deleteDevice(UserDevice userDevice) {
+        userDeviceRepository.delete(userDevice);
+    }
 }

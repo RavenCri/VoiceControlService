@@ -27,4 +27,10 @@ public class UserAuthSerice {
         userAuth.setUsable(false);
         userAuthResposity.saveAndFlush(userAuth);
     }
+
+    public void openUser(String username) {
+        UserAuth userAuth = userAuthResposity.findByUsername(username);
+
+        userAuthResposity.delete(userAuth);
+    }
 }

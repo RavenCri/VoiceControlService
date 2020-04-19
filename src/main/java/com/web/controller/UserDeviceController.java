@@ -44,7 +44,7 @@ public class UserDeviceController {
     @GetMapping("keepOnline")
     public Result deviceHeartJump(String deviceId){
 
-        if(deviceService.getDevice(deviceId) != null){
+        if(deviceService.findDeviceByDeviceId(deviceId) != null){
             System.out.println("有设备在线啦："+deviceId);
             OnlineDevice.put(deviceId,new DateTime());
             return Result.success(ResultCode.registerSuccess);

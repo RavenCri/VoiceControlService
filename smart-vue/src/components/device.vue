@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="title"><i class="el-icon-position"></i>设备列表</div>
+        <div class="title"><i class="el-icon-position"></i>我的设备列表</div>
         <el-divider></el-divider>
         <el-table :data="devices" style="width: 100%;" :border=true :stripe=true :highlight-current-row=true>
             <el-table-column label="生产日期" width="200" style="height: 10px;">
