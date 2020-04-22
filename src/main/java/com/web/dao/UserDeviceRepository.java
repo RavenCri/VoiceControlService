@@ -12,7 +12,7 @@ public interface UserDeviceRepository extends JpaRepository<UserDevice,Long>, Cr
     /**
     * @Description: 通过用户id查找到 用户-设备 对象列表
     * @Param: [userId]
-    * @return: java.util.List<com.web.pojo.UserDevice>
+    * @return: java.com.util.List<com.web.pojo.UserDevice>
     * @Author: raven
     * @Date: 2020/4/16
     */
@@ -36,7 +36,7 @@ public interface UserDeviceRepository extends JpaRepository<UserDevice,Long>, Cr
     /**
     * @Description: 通过设备id找到所有绑定此设备的 用户-设备 对象
     * @Param: [deviceId]
-    * @return: java.util.List<com.web.pojo.UserDevice>
+    * @return: java.com.util.List<com.web.pojo.UserDevice>
     * @Author: raven
     * @Date: 2020/4/16
     */

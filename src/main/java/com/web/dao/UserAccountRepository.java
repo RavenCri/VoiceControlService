@@ -38,7 +38,7 @@ public interface UserAccountRepository extends JpaRepository<User,Long>, CrudRep
     /**
     * @Description: 获取某一权限下的所有用户
     * @Param: [account_leavl]
-    * @return: java.util.List<com.web.pojo.User>
+    * @return: java.com.util.List<com.web.pojo.User>
     * @Author: raven
     * @Date: 2020/4/16
     */

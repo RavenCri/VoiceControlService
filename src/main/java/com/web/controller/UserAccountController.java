@@ -19,7 +19,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import util.MqttUtil;
+import com.util.MqttUtil;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;

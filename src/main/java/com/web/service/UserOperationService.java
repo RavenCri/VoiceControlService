@@ -7,13 +7,12 @@ import com.web.dao.UserDeviceRepository;
 import com.web.pojo.Device;
 import com.web.pojo.UserDevice;
 import com.web.result.Result;
-import correspond.serialport.UartServer;
-import init.JSONFileInit;
+import com.init.JSONFileInit;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import roobots.OwnThinkRoobot;
-import roobots.TuLingRoobot;
+import com.roobots.OwnThinkRoobot;
+import com.roobots.TuLingRoobot;
 
 import java.util.List;
 import java.util.Random;
@@ -28,8 +27,7 @@ public class UserOperationService {
     UserDeviceRepository userDeviceRepository;
     @Autowired
     DeviceRepository deviceRepository;
-    @Autowired
-    UartServer uartServer;
+
 
     /**
     * @Description: 用来获取并返回智能回复的话语，并发送指令至MQTT服务器

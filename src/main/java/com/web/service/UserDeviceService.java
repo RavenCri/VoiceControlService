@@ -53,7 +53,7 @@ public class UserDeviceService {
     /**
     * @Description: 通过用户ID找到所有在线设备
     * @Param: [userId]
-    * @return: java.util.List<com.web.pojo.Device>
+    * @return: java.com.util.List<com.web.pojo.Device>
     * @Author: raven
     * @Date: 2020/4/10
     */

@@ -102,10 +102,12 @@
     import { formatDate } from '../common/dateUtil.js'
     import chatWindow from "./chatWindow.vue"
     import qs from 'qs';
+
     export default {
         name: 'device',
         mounted() {
             this.initData()
+            
         },
         data() {
             return {
@@ -246,7 +248,8 @@
                     type: 'success'
                 });
                 this.initData()
-            }
+            },
+           
         }
 
     }
