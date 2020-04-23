@@ -6,7 +6,6 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
@@ -35,20 +34,22 @@ public class ReceiveController {
         return "有人发消息啦";
     }
 
-    @MessageMapping("/web") // client.send("/message/web", {"token":"123"}, JSON.stringify({ 'name': 'anumbrella' }));
-    @SendTo("/topic/notice")
+    @MessageMapping("/web")
+    // client.send("/message/web", {"token":"123"}, JSON.stringify({ 'name': 'anumbrella' }));
     public String webSystem(String message, @Header String token) {
 
         System.out.println("token:"+token+"用户来消息啦");
         return "有人发消息啦";
     }
-    @MessageMapping("/web.{name}") //client.send("/message/web.raven", {}, JSON.stringify({ 'name': 'anumbrella' }));
+    @MessageMapping("/web.{name}")
+    //client.send("/message/web.raven", {}, JSON.stringify({ 'name': 'anumbrella' }));
     @SendTo("/topic/notice")
     public String say(String message, @DestinationVariable("name") String name) throws Exception {
         System.out.println("name:"+name+"用户来消息啦");
         return name+"发消息啦"+message;
     }
-    @SubscribeMapping("/notice")
+
+   // @SubscribeMapping("/notice")
     public String sub(Principal p) {
 
         LOGGER.info("有用户订阅了notice，token为："+p.getName());

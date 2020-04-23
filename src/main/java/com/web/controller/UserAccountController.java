@@ -137,7 +137,7 @@ public class UserAccountController {
     })
     public Result getUserInfo(@RequestHeader String token){
         String userId = JWT.decode(token).getAudience().get(0);
-        User us = userAccountService.getUserById(userId);
+        User us = userAccountService.findUserById(userId);
         Result result = new Result();
         result.setData(us);
         result.setCode(200);

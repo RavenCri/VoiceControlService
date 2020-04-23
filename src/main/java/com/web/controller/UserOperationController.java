@@ -42,7 +42,8 @@ public class UserOperationController {
     */
     public Result getReturnWord(@RequestHeader("token") String token,
                                 @RequestParam(value = "word")String word,
-                                @RequestParam("deviceId") String deviceId)   {
+                                @RequestParam("deviceId") String deviceId,
+                                @RequestParam("platForm") String platForm)   {
         String userId = JWT.decode(token).getAudience().get(0);
         if(word == null ||word.trim().equals("") ){
             Result result = new Result();
@@ -51,6 +52,6 @@ public class UserOperationController {
 
             return result;
         }
-        return  userOperationService.getWord(userId,word,deviceId);
+        return  userOperationService.getWord(userId,word,deviceId,platForm);
     }
 }

@@ -1,18 +1,18 @@
 package com.web.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.init.JSONFileInit;
+import com.roobots.OwnThinkRoobot;
+import com.roobots.TuLingRoobot;
 import com.web.controller.UserDeviceController;
 import com.web.dao.DeviceRepository;
 import com.web.dao.UserDeviceRepository;
 import com.web.pojo.Device;
 import com.web.pojo.UserDevice;
 import com.web.result.Result;
-import com.init.JSONFileInit;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.roobots.OwnThinkRoobot;
-import com.roobots.TuLingRoobot;
 
 import java.util.List;
 import java.util.Random;
@@ -37,7 +37,7 @@ public class UserOperationService {
     * @Author: raven
     * @Date: 2020/4/10
     */
-    public Result getWord(String userId,String word,String deviceId){
+    public Result getWord(String userId,String word,String deviceId,String platForm){
         JSONObject wordMap = JSONFileInit.wordMap;
         System.out.println(word);
 
@@ -68,6 +68,8 @@ public class UserOperationService {
             key = "风扇反转";
         }else if(word.contains("风扇") && word.contains("停") ){
             key = "风扇停止";
+        } else if(word.contains("室内") && word.contains("状态")  ){
+            key = "家居状态";
         } else{
             // 调用只能回复库
             Result tuLingWord = tuLingRoobot.getWord(word);
@@ -102,15 +104,23 @@ public class UserOperationService {
                 return result;
             }
             String subscribe =  device.getDeviceId()+"-"+device.getDeviceKey();
-            mqttServer.convertAndSend("amq.topic",subscribe , currIndexJSON.getString("code"));
+            JSONObject data = new JSONObject();
+            data.put("code",currIndexJSON.getString("code"));
+            data.put("platForm",platForm);
+            String sendData = JSONObject.toJSONString(data);
+            System.out.println(sendData);
+            mqttServer.convertAndSend("amq.topic",subscribe , sendData);
         }
         List<String> replayList= JSONObject.parseArray(currIndexJSON.getString("word"),String.class);
-        // 随机引索
-        int len = new Random().nextInt(replayList.size());
-        System.out.println("回复："+replayList.get(len));
         Result result = new Result();
-        result.setCode(200);
-        result.setMsg(replayList.get(len));
+        System.out.println(replayList);
+        if(replayList.size() > 0){
+            // 随机引索
+            int len = new Random().nextInt(replayList.size());
+            result.setCode(200);
+            System.out.println("回复："+replayList.get(len));
+            result.setMsg(replayList.get(len));
+        }
         return result;
     }
 

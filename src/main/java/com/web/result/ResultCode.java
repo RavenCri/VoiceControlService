@@ -6,7 +6,8 @@ package com.web.result;
  * @create: 2020-04-10 17:57
  **/
 public enum ResultCode {
-
+    Success(200,"success"),
+    Fail(-1,"error"),
     /* 成功状态码 */
     loginSuccess(200, "登陆成功"),
     /* 失败状态码 */

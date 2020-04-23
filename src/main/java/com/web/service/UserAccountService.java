@@ -22,7 +22,7 @@ public class UserAccountService {
     @Autowired
     UserMqttAccountRepository userMqttAccountRepository;
 
-    public User getUserById(String userId) {
+    public User findUserById(String userId) {
         return userAccountRepository.findById(userId);
     }
 
@@ -39,7 +39,7 @@ public class UserAccountService {
         user.setPassword(password);
         user.setNickname(nickname);
         user.setAccountLevel(0);
-        User existUser = getUserByUserName(username);
+        User existUser = findUserByUserName(username);
         // 拿用户名 判断用户是否存在
         if(existUser != null){
             return Result.failure(ResultCode.registerUserNameExist);
@@ -48,7 +48,7 @@ public class UserAccountService {
         return us==null?Result.failure(ResultCode.registerError):null;
     }
 
-    public User getUserByUserName(String username) {
+    public User findUserByUserName(String username) {
         return userAccountRepository.findByUsername(username);
     }
 

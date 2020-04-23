@@ -72,7 +72,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 if(!token.equals(UserAccountController.tokens.get(userId))){
                     throw new RuntimeException("token信息已刷新，该token已失效，请重新登录！");
                 }
-                User user = userAccountService.getUserById(userId);
+                User user = userAccountService.findUserById(userId);
                 if (user == null) {
                     throw new RuntimeException("用户不存在，请重新登录");
                 }
