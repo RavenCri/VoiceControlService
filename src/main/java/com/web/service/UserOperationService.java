@@ -87,6 +87,12 @@ public class UserOperationService {
         // 如果智能回复库没有成功，获取本地回复列表
         JSONObject currIndexJSON = wordMap.getJSONObject(key);
         UserDevice userDevice = userDeviceRepository.findByUserIdAndDeviceId(userId, deviceId);
+        if(userDevice == null){
+            Result result = new Result();
+            result.setCode(404);
+            result.setMsg("该设备不存在或不在您的账户管理范围之内，有问题请联系管理员哦~");
+            return result;
+        }
         if(currIndexJSON.containsKey("code")){
 
             Device device = deviceRepository.findByDeviceId(userDevice.getDeviceId());

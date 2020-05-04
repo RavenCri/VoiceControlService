@@ -51,7 +51,10 @@ public class UserAccountController {
 
     public Result userLogin( @RequestParam String username,
                              @RequestParam String password,
+
                             HttpServletResponse response) {
+        System.out.println(username);
+        System.out.println(password);
         User user = userAccountService.findUserByUsernameAndPassword(username,password);
         if(user == null){
             return Result.failure(ResultCode.loginFail);
@@ -66,7 +69,7 @@ public class UserAccountController {
         }
         String token = TokenUtil.encode(user);
 
-        tokens.put(user.getId(),token);
+        //tokens.put(user.getId(),token);
         response.addHeader("token",token);
         response.addHeader("Access-Control-Expose-Headers","token");
 

@@ -6,7 +6,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.web.controller.UserAccountController;
 import com.web.jwt.annotation.PassToken;
 import com.web.jwt.annotation.UserLoginToken;
 import com.web.jwt.util.TokenUtil;
@@ -69,9 +68,10 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 } catch (JWTDecodeException j) {
                     throw new RuntimeException("401");
                 }
-                if(!token.equals(UserAccountController.tokens.get(userId))){
+
+               /* if(!token.equals(UserAccountController.tokens.get(userId))){
                     throw new RuntimeException("token信息已刷新，该token已失效，请重新登录！");
-                }
+                }*/
                 User user = userAccountService.findUserById(userId);
                 if (user == null) {
                     throw new RuntimeException("用户不存在，请重新登录");

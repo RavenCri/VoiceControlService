@@ -30,6 +30,8 @@ public class UserOperationController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType="header", name = "token", value = "登录后的token", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "word", value = "用户说的话", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="query", name = "deviceId", value = "要控制的设备id", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="query", name = "platForm", value = "平台", required = true, dataType = "String"),
     })
 
     @GetMapping("replay")

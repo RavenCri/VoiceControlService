@@ -128,6 +128,7 @@
   export default {
     name: 'index',
     mounted() {
+     
       window.addEventListener('scroll', this.handleScroll, true);
       this.scrollReveal.reveal('.an_left', {
         // 动画的时长
@@ -233,7 +234,7 @@
         this.$message({
           message: 'APP正在优化中，稍后几天即可下载哦~',
           type: 'warning'
-        });  
+        });
       },
       onSubmit(formName) {
         this.$refs[formName].validate((valid) => {

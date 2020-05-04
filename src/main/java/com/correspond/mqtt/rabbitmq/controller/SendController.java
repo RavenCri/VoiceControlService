@@ -1,7 +1,6 @@
 
 package com.correspond.mqtt.rabbitmq.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.web.pojo.Device;
 import com.web.pojo.User;
 import com.web.pojo.UserDevice;
@@ -42,7 +41,7 @@ public class SendController {
      */
     @GetMapping("/notice")
     public void notice() {
-        messagingTemplate.convertAndSend("/topic/notice", JSON.toJSONString("这是通知消息！！"));
+        messagingTemplate.convertAndSend("/topic/notice", "这是通知消息！！");
     }
 
     /**
