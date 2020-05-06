@@ -22,15 +22,19 @@ public class Device {
     public int id;
 
     @Column(nullable = false,name = "device_id")
+    /*设备唯一id*/
     public String deviceId;
     @JsonIgnore
     @Column(nullable = false,name = "device_key")
+    /*设备密码*/
     public String deviceKey;
     @Column(nullable = false,name = "create_time")
 
     @JsonFormat(timezone = "GMT+8", shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    /*设备出厂时间*/
     public Date createTime;
     @Column(nullable = false)
+    /*设备类型*/
     public String type;
     @Transient
     // 设备状态

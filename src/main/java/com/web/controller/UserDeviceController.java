@@ -58,6 +58,7 @@ public class UserDeviceController {
     })
     @GetMapping("list")
     public Result getDevices(@RequestHeader("token") String token){
+
         String userId = JWT.decode(token).getAudience().get(0);
         List<Device> device = userDeviceService.findDeviceByUserId(userId);
         device.forEach(e->{
