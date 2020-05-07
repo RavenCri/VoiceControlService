@@ -42,8 +42,20 @@ public class SendController {
     @GetMapping("/notice")
     public void notice() {
         messagingTemplate.convertAndSend("/topic/notice", "这是通知消息！！");
+
+
     }
 
+    /**
+     * 给特定用户推送消息
+     * @param username
+     * @param type
+     */
+    @GetMapping("/user/{username}/{type}")
+    public void notice(@PathVariable String username, @PathVariable String type) {
+        messagingTemplate.convertAndSendToUser(username+"@"+type
+                , "/topic/reply","这是通知消息！！");
+    }
     /**
      * 设备可以发送给具体用户消息
      */

@@ -11,6 +11,7 @@ import com.web.pojo.Device;
 import com.web.pojo.UserDevice;
 import com.web.result.Result;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,8 @@ import java.util.Random;
 public class UserOperationService {
     @Autowired
     public AmqpTemplate mqttServer;
+    @Autowired
+    public RabbitTemplate rabbitTemplate;
     TuLingRoobot tuLingRoobot = new TuLingRoobot();
     OwnThinkRoobot ownThinkRoobot = new OwnThinkRoobot();
     @Autowired
@@ -115,7 +118,8 @@ public class UserOperationService {
             data.put("platForm",platForm);
             String sendData = JSONObject.toJSONString(data);
             System.out.println(sendData);
-            mqttServer.convertAndSend("amq.topic",subscribe , sendData);
+           // mqttServer.convertAndSend("amq.topic",subscribe , sendData);
+            rabbitTemplate.convertAndSend("amq.topic",subscribe , sendData);
         }
         List<String> replayList= JSONObject.parseArray(currIndexJSON.getString("word"),String.class);
         Result result = new Result();

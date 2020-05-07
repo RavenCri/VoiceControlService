@@ -35,7 +35,9 @@ public class MyChannelInterceptor implements ChannelInterceptor {
          */
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
             System.out.println("连接success");
+
             Object raw = message.getHeaders().get(SimpMessageHeaderAccessor.NATIVE_HEADERS);
+
             if (raw instanceof Map) {
                 Object name = ((Map) raw).get("name");
                 if (name instanceof LinkedList) {
