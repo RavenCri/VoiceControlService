@@ -6,6 +6,7 @@ import com.web.result.Result;
 import com.web.result.ResultCode;
 import com.web.service.UserAccountService;
 import com.web.service.UserMqttAccountService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @create: 2020-04-13 18:40
  **/
 @RequestMapping("mqtt")
+@Api(value = "DeviceController|用于设备访问的接口")
 @RestController
 @Validated
 public class DeviceController {

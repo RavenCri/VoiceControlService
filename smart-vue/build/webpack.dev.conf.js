@@ -22,6 +22,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 
   // these devServer options should be customized in /config/index.js
   devServer: {
+    
     clientLogLevel: 'warning',
     historyApiFallback: {
       rewrites: [
@@ -40,9 +41,12 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     publicPath: config.dev.assetsPublicPath,
     proxy: config.dev.proxyTable,
     quiet: true, // necessary for FriendlyErrorsPlugin
+    
     watchOptions: {
       poll: config.dev.poll,
-    }
+    },
+      // 配置 frp应该加入这句
+      disableHostCheck: true
   },
   plugins: [
     new webpack.DefinePlugin({

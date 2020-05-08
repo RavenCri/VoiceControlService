@@ -21,7 +21,12 @@
         <h1>指导老师：谢宇</h1>
         <h1>Design By 16自动化二班雷文珲</h1>
         <div>
-          <a href="#" class='app_left_btn btn_primary' @click="downAPP">下载APP</a>
+         
+          <a href="#" class='app_left_btn btn_primary'  @click="downAPP">下载APP</a>
+          <div class="qrcode">
+            <p>扫码即可下载，密码：123456</p>
+            <img src="../assets/appQrcode.png" alt="" width="200px" >
+          </div>
           <a href="#" class='app_left_btn btn_danger' @click="buy">购买产品</a>
         </div>
       </div>
@@ -232,8 +237,8 @@
       },
       downAPP() {
         this.$message({
-          message: 'APP正在优化中，稍后几天即可下载哦~',
-          type: 'warning'
+          message: '扫码即可下载体验哦',
+          type: 'success'
         });
       },
       onSubmit(formName) {
@@ -459,5 +464,21 @@
     width: 20%;
     justify-content: space-around;
 
+  }
+  .qrcode{
+  
+    position: absolute;
+    left: 200px;
+    top:70px;
+    display: none;
+    color: #fc6a42;
+    padding: 10px;
+    text-align: center;
+    background-color: white;
+    border-radius: 20px;
+   
+  }
+  .app_left_btn:hover + .qrcode{
+      display: block;
   }
 </style>

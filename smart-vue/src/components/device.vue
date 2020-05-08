@@ -34,7 +34,7 @@
                     <el-popover trigger="hover" placement="top">
                         <p>设备状态: {{ scope.row.status==true?'在线':'离线' }}</p>
                         <div slot="reference" class="name-wrapper">
-                            <el-tag size="medium" type='danger'>{{  scope.row.status==true?'在线':'离线' }}</el-tag>
+                            <el-tag size="medium" :type="scope.row.status==true?'danger':'success'">{{  scope.row.status==true?'在线':'离线' }}</el-tag>
                         </div>
                     </el-popover>
                 </template>
