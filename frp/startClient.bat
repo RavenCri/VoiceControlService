@@ -1,0 +1,1 @@
+start /b frpc -c ./frpc.ini
