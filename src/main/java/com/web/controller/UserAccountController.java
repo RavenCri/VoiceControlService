@@ -2,6 +2,7 @@ package com.web.controller;
 
 import cn.hutool.core.util.RandomUtil;
 import com.auth0.jwt.JWT;
+import com.util.MqttUtil;
 import com.web.jwt.util.TokenUtil;
 import com.web.pojo.Device;
 import com.web.pojo.User;
@@ -19,7 +20,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import com.util.MqttUtil;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
@@ -51,10 +51,7 @@ public class UserAccountController {
 
     public Result userLogin( @RequestParam String username,
                              @RequestParam String password,
-
                             HttpServletResponse response) {
-        System.out.println(username);
-        System.out.println(password);
         User user = userAccountService.findUserByUsernameAndPassword(username,password);
         if(user == null){
             return Result.failure(ResultCode.loginFail);
@@ -69,16 +66,10 @@ public class UserAccountController {
         }
         String token = TokenUtil.encode(user);
 
-        //tokens.put(user.getId(),token);
+        tokens.put(user.getId(),token);
         response.addHeader("token",token);
         response.addHeader("Access-Control-Expose-Headers","token");
-
-        Result result = new Result();
-        result.setData(user);
-        result.setCode(200);
-        result.setMsg("登录成功");
-
-        return result;
+        return Result.success(ResultCode.loginSuccess);
     }
     @PostMapping("register")
     @ApiOperation("注册新用户")
@@ -96,7 +87,7 @@ public class UserAccountController {
 
         Result result = userAccountService.registerUser(username,password,password2,nickname);
         if(result != null){
-            return Result.failure(ResultCode.registerError);
+            return result;
         }
         String mqttUserName = RandomUtil.randomString(8);
         String mqttPassword = RandomUtil.randomString(16);
