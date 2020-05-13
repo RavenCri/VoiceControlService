@@ -34,7 +34,8 @@
                     <el-popover trigger="hover" placement="top">
                         <p>设备状态: {{ scope.row.status==true?'在线':'离线' }}</p>
                         <div slot="reference" class="name-wrapper">
-                            <el-tag size="medium" :type="scope.row.status==true?'danger':'success'">{{  scope.row.status==true?'在线':'离线' }}</el-tag>
+                            <el-tag size="medium" :type="scope.row.status==true?'danger':'success'">
+                                {{  scope.row.status==true?'在线':'离线' }}</el-tag>
                         </div>
                     </el-popover>
                 </template>
@@ -101,13 +102,13 @@
 <script>
     import { formatDate } from '../common/dateUtil.js'
     import chatWindow from "./chatWindow.vue"
-    import qs from 'qs';
 
+    import { addDevice_user, deviceList_user, deleteDevice_user, updateDevice_user } from '@/common/api/device.js'
     export default {
         name: 'device',
         mounted() {
             this.initData()
-            
+
         },
         data() {
             return {
@@ -132,7 +133,7 @@
         },
         methods: {
             initData() {
-                this.$axios.get('device/list').then(res => {
+                deviceList_user().then(res => {
                     if (res.data.code == -1) {
                         this.$alert('您的token已失效，请重新登录！', '数据异常', {
                             confirmButtonText: '确定',
@@ -146,6 +147,7 @@
                         this.devices = res.data.data;
                     }
                 })
+
             },
             handleEdit(index, row) {
                 this.updateForm.oldDeviceId = this.devices[index]['deviceId'];
@@ -162,25 +164,22 @@
                     type: 'warning'
                 }).then(() => {
                     console.log(JSON.stringify(this.updateForm))
-                    this.$axios.post('device/update',
-                        qs.stringify(
-                            this.updateForm
-                        )).then(res => {
-                            if (res.data.code == 200) {
-                                this.$message({
-                                    type: 'success',
-                                    message: res.data.msg
-                                });
-                                this.updateDialogVisible = false;
-                                this.updateForm['olddeviceId'] = '';
-                                this.updateForm['olddeviceKey'] = '';
-                                this.updateForm['newdeviceId'] = '';
-                                this.updateForm['newdeviceId'] = '';
-                                this.initData();
-                            } else {
-                                this.$message.error(res.data.msg);
-                            }
-                        })
+                    updateDevice_user(this.updateForm).then(res => {
+                        if (res.data.code == 200) {
+                            this.$message({
+                                type: 'success',
+                                message: res.data.msg
+                            });
+                            this.updateDialogVisible = false;
+                            this.updateForm['olddeviceId'] = '';
+                            this.updateForm['olddeviceKey'] = '';
+                            this.updateForm['newdeviceId'] = '';
+                            this.updateForm['newdeviceId'] = '';
+                            this.initData();
+                        } else {
+                            this.$message.error(res.data.msg);
+                        }
+                    })
                 }).catch((err) => {
                 });
             },
@@ -190,8 +189,7 @@
             },
 
             addSubmit() {
-
-                this.$axios.post('device/add', qs.stringify(this.addForm)).then(res => {
+                addDevice_user(this.addForm).then(res => {
                     if (res.data.code == 200) {
                         this.$message({
                             type: 'success',
@@ -205,6 +203,7 @@
                         this.$message.error(res.data.msg);
                     }
                 })
+                this.$axios.post('device/add', qs.stringify(this.addForm)).then()
 
             },
             controlDevice(index, row) {
@@ -224,7 +223,10 @@
                             cancelButtonText: '取消',
                             type: 'warning'
                         }).then(() => {
-                            this.$axios.post('device/delete', qs.stringify({ "deviceId": this.devices[index]['deviceId'], "deviceKey": value })).then(res => {
+                            deleteDevice_user({
+                                "deviceId": this.devices[index]['deviceId'],
+                                "deviceKey": value
+                            }).then(res => {
                                 if (res.data.code == 200) {
                                     this.$message({
                                         type: 'success',
@@ -235,6 +237,7 @@
                                     this.$message.error(res.data.msg);
                                 }
                             })
+
                         }).catch((err) => {
                         });
                     }
@@ -249,7 +252,7 @@
                 });
                 this.initData()
             },
-           
+
         }
 
     }

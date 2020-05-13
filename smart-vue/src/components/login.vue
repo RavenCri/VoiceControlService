@@ -16,7 +16,7 @@
                 </div>
                 <div style="height: 5px;"></div>
                 <div class="bt">
-                    <el-button type="primary" round style="margin-bottom: 20px;" @click='login'>登录</el-button>
+                    <el-button type="primary" round style="margin-bottom: 20px;" @click='userLogin'>登录</el-button>
                     <p style="cursor: pointer;" @click='goRegister'>没有账号？前去注册</p>
                     <p style="cursor: pointer;margin-top: 20px;color: greenyellow;" @click="goIndex">Design by @科睿工作室
                     </p>
@@ -39,7 +39,7 @@
                     <span>确认密码：</span><input type="password" v-model='registerForm.password2'>
                 </div>
                 <div class="bt">
-                    <el-button type="primary" round style="margin-bottom: 20px;" @click='register'>注册</el-button>
+                    <el-button type="primary" round style="margin-bottom: 20px;" @click='userRegister'>注册</el-button>
                     <p style="cursor: pointer;" @click='goLogin'>已有账号？前去登录</p>
                     <p style="cursor: pointer;margin-top: 20px;color: greenyellow;" @click='goIndex'>Design by @科睿工作室
                     </p>
@@ -53,6 +53,7 @@
 
 <script>
     import qs from 'qs';
+    import {login,register} from '@/common/api/user.js'
     export default {
         name: 'login',
         mounted() {
@@ -89,42 +90,32 @@
                 this.showlogin = true;
                 this.showregister = false;
             },
-            login() {
+            userLogin() {
                 for (var o in this.loginForm) {
                     if (this.loginForm[o] == '') {
                         this.$message.error("请将参数填写完整再提交吧~");
                         return;
                     }
                 }
-                // axios.get('url', {params: data});
-                // axios.post('url', data)
                 const loading = this.$loading({
                     lock: true,
-                    target:"#login",
+                    target: "#login",
                     text: 'Loading',
                     spinner: 'el-icon-loading',
                     background: 'rgba(0, 0, 0, 0.3)'
                 });
-                this.$axios.post("account/login", qs.stringify(this.loginForm), {
-                    headers: {
-                        'Content-type': 'application/x-www-form-urlencoded'
-                    }
-                },{timeout: 1000 * 6}).then(res => {
+                login(this.loginForm).then(res => {
                     loading.close();
                     if (res.data.code == 200) {
                         localStorage.setItem('token', res.headers['token'])
-                        localStorage.setItem('userInfo',JSON.stringify(res.data.data))
+                        localStorage.setItem('userInfo', JSON.stringify(res.data.data))
                         this.$router.push({ name: 'center', });
                     } else {
                         this.$message.error(res.data.msg);
                     }
-                }).catch((err)=>{
-                    console.log(err)
-                    this.$message.error("服务器连接超时");
-                    loading.close();
-                });
+                }).catch(err=>console.log(err))
             },
-            register() {
+            userRegister() {
                 for (var o in this.loginForm) {
                     if (this.registerForm[o] == '') {
                         this.$message.error("请将参数填写完整再提交吧~");
@@ -133,16 +124,12 @@
                 }
                 const loading = this.$loading({
                     lock: true,
-                    target:"#register",
+                    target: "#register",
                     text: 'Loading',
                     spinner: 'el-icon-loading',
                     background: 'rgba(0, 0, 0, 0.3)'
                 });
-                this.$axios.post("account/register", qs.stringify(this.registerForm), {
-                    headers: {
-                        'Content-type': 'application/x-www-form-urlencoded'
-                    }
-                },{timeout: 1000 * 6}).then(res => {
+                register(this.registerForm).then(res => {
                     loading.close();
                     if (res.data.code == 200) {
                         this.$message({
@@ -152,11 +139,8 @@
                     } else {
                         this.$message.error(res.data.msg);
                     }
-
-                }).catch(()=>{
-                    this.$message.error("服务器连接超时");
-                    loading.close();
-                });
+                })
+                
             }
         }
 

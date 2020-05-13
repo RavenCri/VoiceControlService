@@ -11,7 +11,7 @@ import brands from '@fortawesome/fontawesome-free-brands'
 
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-import axios from 'axios'
+
 
 
 Vue.config.productionTip = false
@@ -33,20 +33,7 @@ fontawesome.library.add(brands);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 //配置elementUI
 Vue.use(ElementUI);
-//配置axios
-Vue.prototype.$axios = axios;
 
-axios.defaults.baseURL = 'http://localhost:8080';
-// 自定义的 axios 请求拦截器 
-axios.interceptors.request.use((config) => {
-  if (typeof (localStorage.token) != 'undefined') {
-    config.headers['token'] = localStorage.token;
-  }
-  return config;
-}, (error) => {
-  // 对请求错误做些什么
-  return Promise.reject(error)
-});
 
 new Vue({
   el: '#app',

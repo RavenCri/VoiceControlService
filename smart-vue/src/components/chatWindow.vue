@@ -54,6 +54,8 @@
     // 引入
     import SockJS from 'sockjs-client';
     import Stomp from 'stompjs';
+    import { robotreplay } from '@/common/api/user.js'
+    import { mqttServerAddress } from '@/common/config.js'
     export default {
         name: 'chatWindow',
         data() {
@@ -105,7 +107,11 @@
                 this.currentMsg = this.currentMsg.replace("\n", '')
                 if (this.currentMsg !== '') {
                     this.chatMsg.push({ "orient": "right", "msg": this.currentMsg, "time": formatDate(new Date(), this.normalFormat), "nickname": localStorage.nickname })
-                    this.$axios.get(`roobot/replay?word=${this.currentMsg}&deviceId=${this.currDeviceId}&platForm=web`).then(res => {
+                    robotreplay({
+                        word:this.currentMsg,
+                        deviceId:this.currDeviceId,
+                        platForm:"web"
+                    }).then(res => {
                         if (res.data.code == 200) {
                             this.$message({
                                 type: 'success',
@@ -122,7 +128,6 @@
                       
                         this.currentMsg = ''
                     })
-
                 } else {
                     this.$message.warning('不可以发送空内容哦~');
                 }
@@ -133,7 +138,7 @@
             },
             mqttStart() {
                 console.log("进入mqtt初始化");
-                this.ws = Stomp.over(new SockJS('http://127.0.0.1:8080/ws?token='+localStorage.token));
+                this.ws = Stomp.over(new SockJS('${mqttServerAddress}/ws?token='+localStorage.token));
                 this. ws.heartbeat.outgoing = 0;
                 this.ws.heartbeat.incoming = 0;  
                 this.ws.connect({

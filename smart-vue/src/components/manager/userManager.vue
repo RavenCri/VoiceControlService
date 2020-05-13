@@ -55,7 +55,8 @@
             </el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
-                    <el-button size="mini" type="success" @click="cancleForbidden(scope.$index, scope.row)" v-if="scope.row.userAuth.usable==false">取消封禁
+                    <el-button size="mini" type="success" @click="cancleForbidden(scope.$index, scope.row)"
+                        v-if="scope.row.userAuth.usable==false">取消封禁
                     </el-button>
                     <el-button size="mini" type="danger" @click="forbidden(scope.$index, scope.row)">封禁账户</el-button>
                 </template>
@@ -68,7 +69,7 @@
 </template>
 
 <script>
-    import qs from 'qs'
+    import { userList, userForbidden, userUnForbidder } from '@/common/api/user.js'
     export default {
         name: 'userManager',
         data() {
@@ -81,7 +82,7 @@
         },
         methods: {
             initData() {
-                this.$axios.get('account/userList').then(res => {
+                userList().then(res => {
                     if (res.data.code == 200) {
 
                         this.users = res.data.data;
@@ -89,16 +90,17 @@
                         this.$message.error(res.data.msg);
                     }
                 })
+
             },
             forbidden(index, row) {
                 this.$prompt('封禁原因', '输入', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                 }).then(({ value }) => {
-                    this.$axios.post('account/close', qs.stringify({
+                    userForbidden({
                         "username": this.users[index]['username'],
                         "reason": value
-                    })).then(res => {
+                    }).then(res => {
                         if (res.data.code == 200) {
                             this.$message({
                                 type: 'success',
@@ -120,22 +122,21 @@
                     type: 'warning'
                 }).then(() => {
                     console.log(JSON.stringify(this.updateForm))
-                    this.$axios.post('account/open',
-                        qs.stringify({
-                            "username": this.users[index]['username'],
+                    userUnForbidder({
+                        "username": this.users[index]['username'],
 
-                        })).then(res => {
-                            if (res.data.code == 200) {
-                                this.$message({
-                                    type: 'success',
-                                    message: res.data.msg
-                                });
-                                
-                                this.initData();
-                            } else {
-                                this.$message.error(res.data.msg);
-                            }
-                        })
+                    }).then(res => {
+                        if (res.data.code == 200) {
+                            this.$message({
+                                type: 'success',
+                                message: res.data.msg
+                            });
+
+                            this.initData();
+                        } else {
+                            this.$message.error(res.data.msg);
+                        }
+                    })
                 }).catch((err) => {
                 });
             },
@@ -152,7 +153,7 @@
 </script>
 
 <style scoped>
- .title {
+    .title {
         text-align: center;
         margin: 10px auto 20px;
         font-size: 28px;

@@ -133,7 +133,7 @@
   export default {
     name: 'index',
     mounted() {
-     
+ 
       window.addEventListener('scroll', this.handleScroll, true);
       this.scrollReveal.reveal('.an_left', {
         // 动画的时长

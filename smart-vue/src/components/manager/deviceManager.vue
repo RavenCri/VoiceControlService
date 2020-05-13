@@ -36,9 +36,9 @@
                     <el-tag size="medium" type='danger' style="margin-bottom: 10px;" v-if="scope.row.users.length==0">无
                     </el-tag>
                     <el-popover trigger="hover" placement="top">
-                       <p>绑定用户组</p>
+                        <p>绑定用户组</p>
                         <div slot="reference" class="name-wrapper" v-for="(item,index) in scope.row.users">
-                            
+
                             <el-tag size="medium" type='warning' style="margin-bottom: 10px;">{{ item.nickname }}
                             </el-tag>
                         </div>
@@ -104,7 +104,8 @@
 </template>
 
 <script>
-    import qs from 'qs';
+   
+    import {addDevice_admin,deviceList_admin,deleteDevice_admin} from '@/common/api/device.js'
     export default {
         name: 'deviceStatus',
         data() {
@@ -144,7 +145,7 @@
                     .catch(_ => { });
             },
             initData() {
-                this.$axios.get('devicePlus/list').then(res => {
+                deviceList_admin().then(res => {
                     if (res.data.code == -1) {
                         this.$alert('您的token已失效，请重新登录！', '数据异常', {
                             confirmButtonText: '确定',
@@ -158,9 +159,10 @@
                         this.devices = res.data.data;
                     }
                 })
+                
             },
             onSubmit() {
-                this.$axios.post('devicePlus/addDevice', qs.stringify(this.ruleForm)).then(res => {
+                addDevice_admin(this.addDevice).then(res => {
                     this.dialogVisible = false;
                     if (res.data.code == -1) {
                         this.$alert('您的token已失效，请重新登录！', '数据异常', {
@@ -170,7 +172,7 @@
                                 this.$router.push({ name: 'login' })
                             }
                         });
-                        
+
                     } else if (res.data.code == 200) {
                         this.$message.success(res.data.msg)
                         this.initData()
@@ -187,9 +189,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$axios.post('devicePlus/deleteDevice', qs.stringify({
-                        "deviceId": deviceId
-                    })).then(res => {
+                    deleteDevice(deviceId).then(res => {
                         this.dialogVisible = false;
                         if (res.data.code == -1) {
                             this.$alert('您的token已失效，请重新登录！', '数据异常', {
@@ -199,13 +199,14 @@
                                     this.$router.push({ name: 'login' })
                                 }
                             });
-                            
+
                         } else if (res.data.code == 200) {
                             this.$message.success(res.data.msg)
                             this.initData()
                         }
 
                     })
+                    
                 }).catch((err) => {
                 });
 

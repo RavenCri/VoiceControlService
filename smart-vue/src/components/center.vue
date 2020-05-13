@@ -2,7 +2,7 @@
     <div>
         <el-container>
             <el-aside style="position: fixed;height: 100%;" width="250px">
-                <img src="../assets/ico.png"  style="width:185px;"> 
+                <img src="../assets/ico.png" style="width:185px;">
                 <el-menu :default-openeds="['1', '2','3']">
                     <el-submenu index="1">
                         <template slot="title"><i class="el-icon-cpu"></i>设备中心</template>
@@ -35,7 +35,8 @@
                             <el-dropdown-item><span @click='logout'>退出</span></el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
-                    <span v-if="userInfo !=null">您好，{{userInfo.nickname}}({{userInfo.accountLevel==0?'普通用户':'管理员'}})</span>
+                    <span
+                        v-if="userInfo !=null">您好，{{userInfo.nickname}}({{userInfo.accountLevel==0?'普通用户':'管理员'}})</span>
                 </el-header>
                 <el-main>
                     <router-view></router-view>
@@ -47,21 +48,20 @@
 </template>
 
 <script>
+    import { userInfo } from '@/common/api/user.js'
     export default {
         name: 'center',
         mounted() {
             this.initUserInfo();
-            
         },
         data() {
             return {
-                userInfo:JSON.parse(localStorage.userInfo),   
+                userInfo: JSON.parse(localStorage.userInfo),
             }
         },
         methods: {
             initUserInfo() {
-                this.$axios.get('account/userInfo').then(res => {
-
+                userInfo().then(res => {
                     if (res.data.code == -1) {
                         this.$alert('您的token已失效，请重新登录！', '数据异常', {
                             confirmButtonText: '确定',
@@ -70,15 +70,11 @@
                                 this.$router.push({ name: 'login' })
                             }
                         });
-
                     } else if (res.data.code == 200) {
-                        
                         this.userInfo = res.data.data
-                        
-                       // localStorage.setItem('nickname',this.nickname)
                     }
-
                 })
+                
             },
             logout() {
                 localStorage.clear('token');
@@ -91,16 +87,15 @@
 </script>
 
 <style>
-    .el-header{
+    .el-header {
         background-color: #648cff;
         color: #333;
         text-align: center;
         line-height: 60px;
     }
-   
-    .el-footer {
-      
-    }
+
+    .el-footer {}
+
     .el-main {
         background-color: white;
         margin-left: 250px;
