@@ -1,6 +1,7 @@
 package com.web.controller;
 
 import cn.hutool.core.util.RandomUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.auth0.jwt.JWT;
 import com.util.MqttUtil;
 import com.web.jwt.util.TokenUtil;
@@ -69,7 +70,7 @@ public class UserAccountController {
         tokens.put(user.getId(),token);
         response.addHeader("token",token);
         response.addHeader("Access-Control-Expose-Headers","token");
-        return Result.success(ResultCode.loginSuccess);
+        return Result.success(ResultCode.loginSuccess, JSONObject.toJSONString(user));
     }
     @PostMapping("register")
     @ApiOperation("注册新用户")
