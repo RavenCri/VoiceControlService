@@ -4,6 +4,17 @@
             <el-aside style="position: fixed;height: 100%;" width="250px">
                 <img src="../assets/ico.png" style="width:185px;">
                 <el-menu :default-openeds="['1', '2','3']">
+                    <!-- <div v-for='(item,index) in allRouter'>
+                        <el-submenu index="item">
+                            <template slot="title"><i :class="item.meta.icon"></i>{{item.meta.title}}</template>
+                            <div v-for='(item2,index2) in item '>
+                                <el-menu-item index="item-item2">
+                                    <router-link to="/center/device">{{item2.meta.title}}</router-link>
+                                </el-menu-item>
+                            </div>
+
+                        </el-submenu>
+                    </div> -->
                     <el-submenu index="1">
                         <template slot="title"><i class="el-icon-cpu"></i>设备中心</template>
                         <el-menu-item index="1-1">
@@ -16,7 +27,8 @@
                             <router-link to="/center/updateInfo">修改密码</router-link>
                         </el-menu-item>
                     </el-submenu>
-                    <el-submenu index="3" v-if="userInfo.accountLevel==1">
+                 
+                    <el-submenu index="3" v-if='roles.indexOf("manager") !=-1' >
                         <template slot="title"><i class="el-icon-s-ticket"></i>管理专区</template>
                         <el-menu-item index="3-1">
                             <router-link to="/center/deviceManager">设备管理</router-link>
@@ -40,6 +52,32 @@
                 </el-header>
                 <el-main>
                     <router-view></router-view>
+                    <div v-if="this.$route.path=='/center'">
+                        <el-card class="box-card">
+                            <div slot="header" class="clearfix">
+                                <span>系统特点</span>
+                            </div>
+                            <div>
+                                <p>权限管理、精准控制、智能聊天</p>
+                            </div>
+                        </el-card>
+                        <el-card class="box-card">
+                            <div slot="header" class="clearfix">
+                                <span>系统接入</span>
+                            </div>
+                            <div>
+                                <p>后台接口：http://api.raven520.top:5500</p>
+                            </div>
+                        </el-card>
+                        <el-card class="box-card">
+                            <div slot="header" class="clearfix">
+                                <span>关于</span>
+                            </div>
+                            <div>
+                                <p>本设计由raven设计，bug测试call:1856975969</p>
+                            </div>
+                        </el-card>
+                    </div>
                 </el-main>
                 <el-footer style="text-align: center;">Design by @Raven 2020</el-footer>
             </el-container>
@@ -49,35 +87,52 @@
 
 <script>
     import { userInfo } from '@/common/api/user.js'
+    import store from '@/store/index'
+    import { getToken, removeToken ,getUserInfo,removeUserInfo} from '@/utils/app'
+
     export default {
         name: 'center',
         mounted() {
             this.initUserInfo();
+            this.allRouter = store.getters['permission/allRouter']
+            this.roles = store.getters['permission/roles']
+            console.log(this.allRouter)
         },
         data() {
             return {
-                userInfo: JSON.parse(localStorage.userInfo),
+                userInfo: null,
+                allRouter: '',
+                roles:''
             }
         },
         methods: {
+
             initUserInfo() {
-                userInfo().then(res => {
-                    if (res.data.code == -1) {
-                        this.$alert('您的token已失效，请重新登录！', '数据异常', {
-                            confirmButtonText: '确定',
-                            callback: action => {
-                                localStorage.clear('token');
-                                this.$router.push({ name: 'login' })
-                            }
-                        });
-                    } else if (res.data.code == 200) {
-                        this.userInfo = res.data.data
-                    }
-                })
+                let info = getUserInfo();
+               
+                if (info == null) {
+                    userInfo().then(res => {
+                        if (res.data.code == -1) {
+                            this.$alert('您的token已失效，请重新登录！', '数据异常', {
+                                confirmButtonText: '确定',
+                                callback: action => {
+                                    removeToken()
+                                    this.$router.push({ name: 'login' })
+                                }
+                            });
+                        } else if (res.data.code == 200) {
+                            this.userInfo = res.data.data
+                            localStorage.setItem('userInfo',JSON.stringify(this.userInfo))
+                        }
+                    })
+                }else{
+                    this.userInfo = info
+                }
                 
             },
             logout() {
-                localStorage.clear('token');
+                removeToken()
+                removeUserInfo()
                 this.$router.push({ name: 'index' })
             }
         }

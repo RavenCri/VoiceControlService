@@ -73,7 +73,8 @@
         },
         created() {
           
-            this.userInfo = JSON.parse(localStorage.userInfo);
+            this.userInfo = JSON.parse(JSON.parse(localStorage.userInfo));
+          
             this.mqttStart();
         },
         mounted() {
@@ -138,13 +139,14 @@
             },
             mqttStart() {
                 console.log("进入mqtt初始化");
-                this.ws = Stomp.over(new SockJS('${mqttServerAddress}/ws?token='+localStorage.token));
+                
+                this.ws = Stomp.over(new SockJS(`${mqttServerAddress}/ws?token=`+localStorage.token));
                 this. ws.heartbeat.outgoing = 0;
                 this.ws.heartbeat.incoming = 0;  
                 this.ws.connect({
-                    name: this.userInfo.username+"@web",
+                    name: `${this.userInfo['username']}@web`,
                 }, (frame) => {
-
+                   
                     this.ws.subscribe('/user/topic/reply', (msg) => {
                         console.log( msg.body);
                         this.chatMsg.push({ "orient": "left", "msg": msg.body   , "time": formatDate(new Date(), this.normalFormat), "nickname": "曼拉" })

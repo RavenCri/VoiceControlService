@@ -23,6 +23,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -203,5 +204,25 @@ public class UserAccountController {
         result.setCode(200);
         result.setMsg("解封成功！");
         return result;
+    }
+
+    @GetMapping("/permission")
+    public JSONObject pagePermissions(@RequestHeader (value = "token",required = false) String token){
+        JSONObject jsonObject = new JSONObject();
+        List<String> list = new ArrayList<>();
+
+        String username = null;
+        if(token != null){
+            String userId = JWT.decode(token).getAudience().get(0);
+            username = userAccountService.findUserById(userId).getUsername();
+        }
+
+        if("admin".equals(username)){
+            list.add("manager");
+            list.add("manager:user");
+//            list.add("manager:device");
+        }
+        jsonObject.put("data",list);
+        return jsonObject;
     }
 }

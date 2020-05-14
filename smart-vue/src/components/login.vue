@@ -57,9 +57,9 @@
     export default {
         name: 'login',
         mounted() {
-            // if(typeof(localStorage.token) != 'undefined'){
-            //     this.$router.push({ name: 'center' });
-            // }
+            if(typeof(localStorage.token) != 'undefined'){
+                this.$router.push({ name: 'center' });
+            }
         },
         data() {
             return {
