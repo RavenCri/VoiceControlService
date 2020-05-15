@@ -183,5 +183,6 @@
     <orderEntry type="library" name="Maven: io.projectreactor:reactor-core:3.3.0.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.reactivestreams:reactive-streams:1.0.3" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish:jakarta.el:3.0.3" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-configuration-processor:2.2.1.RELEASE" level="project" />
   </component>
 </module>

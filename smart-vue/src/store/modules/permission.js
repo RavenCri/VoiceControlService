@@ -18,7 +18,9 @@ const getters = {
     allRouter:state => state.allRouter,
     addRouter:state => state.addRouter
 }
-
+/**
+ * 普通方法 store.commit
+ */
 const mutations = {
     set_roles(state,value){
         state.roles = value;
@@ -30,7 +32,9 @@ const mutations = {
     }
 
 }
-
+/**
+ * 处理异步请求 store.dispatch
+ */
 const actions = {
     getRouters({commit},requestData){
         return new Promise((resolve,reject) =>{
@@ -65,11 +69,6 @@ const actions = {
                       }
                 //}
                // return false
-                // 需要权限的路由 如果在 获取的权限路由里面
-                // 意思就是 只有当该用户有该路由的权限时，才去增加
-                if(role.includes(item.meta.role) ){ 
-                    return item
-                } 
             })
             
             // 更新路由

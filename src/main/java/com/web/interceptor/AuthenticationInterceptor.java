@@ -4,8 +4,10 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.web.exception.OwnException;
+import com.web.exception.impl.BaseErrorEnum;
 import com.web.jwt.annotation.PassToken;
 import com.web.jwt.annotation.UserLoginToken;
 import com.web.jwt.util.TokenUtil;
@@ -21,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 
 /**
- * @description:
+ * @description: 拦截器，主要判断token的状态
  * @author: raven
  * @create: 2020-04-10 14:26
  **/
@@ -31,7 +33,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     UserAccountService userAccountService;
 
     @Override
-    public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object) throws Exception {
+    public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object)   {
 
         String token = httpServletRequest.getHeader("token");// 从 http 请求头中取出 token
         // 如果不是映射到方法直接通过
@@ -59,14 +61,14 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             if (userLoginToken.required()) {
                 // 执行认证
                 if (token == null) {
-                    throw new RuntimeException("您还未登录，请先登录。");
+                    throw new OwnException(BaseErrorEnum.NotLoginException);
                 }
                 // 获取 token 中的 user id
                 String userId;
                 try {
                     userId = TokenUtil.decode(token);
                 } catch (JWTDecodeException j) {
-                    throw new RuntimeException("401");
+                    throw new OwnException(BaseErrorEnum.TokenDecodeException);
                 }
 
                /* if(!token.equals(UserAccountController.tokens.get(userId))){
@@ -74,20 +76,18 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 }*/
                 User user = userAccountService.findUserById(userId);
                 if (user == null) {
-                    throw new RuntimeException("用户不存在，请重新登录");
+                    throw new OwnException(BaseErrorEnum.UserNotExist);
                 }
                 // 验证 token
-                JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(user.getUsername())).build();
-
                 try {
+
+                    JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(user.getUsername())).build();
                     DecodedJWT verify = jwtVerifier.verify(token);
-                    /*Long time = verify.getClaim("data").asLong();
-                    if(time - System.currentTimeMillis() >= 1000*60*30){
-                        throw new RuntimeException("token已失效，请重新登录！");
-                    }*/
-                } catch (JWTVerificationException e) {
-                    throw new RuntimeException("401");
+                }catch (TokenExpiredException e){
+                    throw  new OwnException(BaseErrorEnum.TokenExpireException);
                 }
+
+
                 return true;
             }
         }

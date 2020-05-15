@@ -94,8 +94,7 @@
                                         this.$message.error(res.data.msg);
                                     }
                                 })
-                        }).catch((err) => {
-                        });
+                        }).catch(err=>{})
                     } else {
                         console.log('error submit!!');
                         return false;

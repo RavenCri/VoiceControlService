@@ -113,7 +113,11 @@
                     } else {
                         this.$message.error(res.data.msg);
                     }
-                }).catch(err=>console.log(err))
+                }).catch(err=>{
+                    loading.close();
+                   
+                })
+                    
             },
             userRegister() {
                 for (var o in this.loginForm) {
@@ -139,6 +143,9 @@
                     } else {
                         this.$message.error(res.data.msg);
                     }
+                }).catch(err=>{
+                    loading.close();
+                   
                 })
                 
             }

@@ -134,19 +134,10 @@
         methods: {
             initData() {
                 deviceList_user().then(res => {
-                    if (res.data.code == -1) {
-                        this.$alert('您的token已失效，请重新登录！', '数据异常', {
-                            confirmButtonText: '确定',
-                            callback: action => {
-                                localStorage.clear('token');
-                                this.$router.push({ name: 'login' })
-                            }
-                        });
-
-                    } else if (res.data.code == 200) {
+                     if (res.data.code == 200) {
                         this.devices = res.data.data;
                     }
-                })
+                }).catch(err=>{})
 
             },
             handleEdit(index, row) {
@@ -180,8 +171,7 @@
                             this.$message.error(res.data.msg);
                         }
                     })
-                }).catch((err) => {
-                });
+                }).catch(err=>{})
             },
             addDevice() {
 
@@ -202,7 +192,7 @@
                     } else {
                         this.$message.error(res.data.msg);
                     }
-                })
+                }).catch(err=>{})
                 this.$axios.post('device/add', qs.stringify(this.addForm)).then()
 
             },
@@ -238,8 +228,7 @@
                                 }
                             })
 
-                        }).catch((err) => {
-                        });
+                        }).catch(err=>{})
                     }
                 })
 

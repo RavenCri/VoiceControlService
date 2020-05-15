@@ -58,6 +58,7 @@ public class UserDeviceService {
     * @Date: 2020/4/10
     */
     public List<Device> findDeviceByUserId(String userId){
+
         List<Device> devices = new ArrayList<>();
         // 先查出用户所有的设备id
         List<UserDevice> userDevices = userDeviceRepository.findByUserId(userId);
@@ -74,6 +75,13 @@ public class UserDeviceService {
 
         return userDevices;
     }
+    /**
+    * @Description: 删除设备
+    * @Param: [userId, deviceId, deviceKey]
+    * @return: boolean
+    * @Author: raven
+    * @Date: 2020/5/16
+    */
     @Transactional
     public boolean deleteDevice(String userId, String deviceId,String deviceKey) {
         Device device = deviceRepository.findByDeviceIdAndDeviceKey(deviceId,deviceKey);
@@ -83,7 +91,13 @@ public class UserDeviceService {
         userDeviceRepository.deleteByUserIdAndDeviceId(userId,deviceId);
         return true;
     }
-
+    /**
+    * @Description: 更新设备信息
+    * @Param: [userId, oldDeviceId, oldDeviceKey, newDeviceId, newDeviceKey]
+    * @return: com.web.result.Result
+    * @Author: raven
+    * @Date: 2020/5/16
+    */
     public Result updateUserDevice(String userId, String oldDeviceId,String oldDeviceKey,  String newDeviceId,String newDeviceKey) {
 
         UserDevice dv = userDeviceRepository.findByUserIdAndDeviceId(userId, oldDeviceId);
@@ -106,7 +120,13 @@ public class UserDeviceService {
         return Result.success(ResultCode.updateDeviceSuccess);
     }
 
-
+    /**
+    * @Description: 删除设备
+    * @Param: [userDevice]
+    * @return: void
+    * @Author: raven
+    * @Date: 2020/5/16
+    */
     public void deleteDevice(UserDevice userDevice) {
         userDeviceRepository.delete(userDevice);
     }

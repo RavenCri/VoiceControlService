@@ -1,11 +1,17 @@
 import axios from 'axios'
 import qs from 'qs';
+import { removeToken, removeUserInfo } from '@/utils/app'
+import Vue from 'vue'
+//通过该属性即可调用vue的任意属性
+// Vue.prototype
+
+
 //配置axios
 const service = axios.create({
     baseURL: 'http://localhost:8080', // api的base_url
     timeout: 5000, // 请求超时时间
     responseType: "json",
-   
+
 });
 
 // 自定义的 axios 请求拦截器 
@@ -21,53 +27,140 @@ service.interceptors.request.use((config) => {
 export default {
     get(url, params, config = {}) {
         return new Promise((resolve, reject) => {
-            service.get(url, {params:params}, config)
+            service.get(url, { params: params }, config)
                 .then(response => {
-                    
-                    resolve(response);
+                    // 如果token过期
+                    if (response.data && response.data.code && response.data.code === -1) {
+                        Vue.prototype.$alert(response.data.msg, {
+                            confirmButtonText: '确定',
+                            callback: action => {
+                                removeToken()
+                                removeUserInfo()
+                                Vue.prototype.$router.push({ name: 'login' })
+                            }
+                        });
+                        // 如果非正常code      
+                    } else if (response.data && response.data.code && response.data.code !== 200) {
+                        Vue.prototype.$message({
+                            message: '错误消息:' + response.data.msg,
+                            type: 'error',
+                            time: 5000
+                        })
+                    } else {
+                        resolve(response)
+                        return
+                    }
+                    console.error('错误消息:' + response.data.msg)
+                    reject('错误消息:' + response.data.msg);
                 }, err => {
                     reject(err);
-                })
-                .catch((error) => {
-                    reject(error)
                 })
         })
     },
     post(url, params, config = {}) {
         return new Promise((resolve, reject) => {
             service.post(url, qs.stringify(params), config).then(response => {
-                resolve(response);
+                // 如果token过期
+                if (response.data && response.data.code && response.data.code === -1) {
+                    Vue.prototype.$alert(response.data.msg, {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                            removeToken()
+                            removeUserInfo()
+                            Vue.prototype.$router.push({ name: 'login' })
+                        }
+                    });
+                    reject('错误消息:' + response.data.msg);
+                    // 如果非正常code      
+                } else if (response.data && response.data.code && response.data.code !== 200) {
+                    Vue.prototype.$message({
+                        message: '错误消息:' + response.data.msg,
+                        type: 'error',
+                        time: 5000
+                    })
+                    reject('错误消息:' + response.data.msg);
+                } else {
+                    resolve(response)
+                    return
+                }
+                console.error('错误消息:' + response.data.msg)
+                reject('错误消息:' + response.data.msg);
             }, err => {
                 reject(err);
             })
-            .catch((error) => {
-                reject(error)
-            })
+
         })
     },
-    patch(url, params = {}){
-        return new Promise((resolve,reject) => {
+    patch(url, params = {}) {
+        return new Promise((resolve, reject) => {
             Axios.patch(url, params).then(response => {
-                resolve(response.data);
-            },err => {
+                // 如果token过期
+                if (response.data && response.data.code && response.data.code === -1) {
+                    Vue.prototype.$alert(response.data.msg, {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                            removeToken()
+                            removeUserInfo()
+                            Vue.prototype.$router.push({ name: 'login' })
+                        }
+                    });
+
+                    // 如果非正常code      
+                } else if (response.data && response.data.code && response.data.code !== 200) {
+                    Vue.prototype.$message({
+                        message: '错误消息:' + response.data.msg,
+                        type: 'error',
+                        time: 5000
+                    })
+
+                } else {
+                    resolve(response)
+                    return
+                }
+                console.error('错误消息:' + response.data.msg)
+                reject('错误消息:' + response.data.msg);
+            }, err => {
                 reject(err)
             })
-            .catch((error) => {
-                reject(error)
-            });
+                .catch((error) => {
+                    reject(error)
+                });
         })
     },
 
     put(url, params = {}) {
         return new Promise((resolve, reject) => {
-            Axios.put(url, { params: params}).then(response => {
-                resolve(response.data);
+            Axios.put(url, { params: params }).then(response => {
+                // 如果token过期
+                if (response.data && response.data.code && response.data.code === -1) {
+                    Vue.prototype.$alert(response.data.msg, {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                            removeToken()
+                            removeUserInfo()
+                            Vue.prototype.$router.push({ name: 'login' })
+                        }
+                    });
+                    // 如果非正常code      
+                } else if (response.data && response.data.code && response.data.code !== 200) {
+                    Vue.prototype.$message({
+                        message: '错误消息:' + response.data.msg,
+                        type: 'error',
+                        time: 5000
+                    })
+
+                } else {
+                    resolve(response);
+                    return
+                }
+                console.error('错误消息:' + response.data.msg)
+                reject('错误消息:' + response.data.msg);
             }, err => {
                 reject(err);
             })
-            .catch((error) => {
-                reject(error)
-            });
+                .catch((error) => {
+                    reject(error)
+                });
         })
 
     }

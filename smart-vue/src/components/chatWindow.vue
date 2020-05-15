@@ -128,7 +128,7 @@
                         }
                       
                         this.currentMsg = ''
-                    })
+                    }).catch(err=>{})
                 } else {
                     this.$message.warning('不可以发送空内容哦~');
                 }

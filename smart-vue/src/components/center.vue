@@ -3,7 +3,7 @@
         <el-container>
             <el-aside style="position: fixed;height: 100%;" width="250px">
                 <img src="../assets/ico.png" style="width:185px;">
-                <el-menu :default-openeds="['1', '2','3']" >
+                <el-menu :default-openeds="['1', '2','3']">
                     <!-- <div v-for='(item,index) in allRouter'>
                         <el-submenu index="item">
                             <template slot="title"><i :class="item.meta.icon"></i>{{item.meta.title}}</template>
@@ -18,7 +18,7 @@
                     <el-submenu index="1">
                         <template slot="title"><i class="el-icon-cpu"></i><span slot="title">设备中心</span></template>
                         <el-menu-item index="1-1">
-                            <router-link to="/center/device" ><span style="display: block;">我的设备</span></router-link>
+                            <router-link to="/center/device"><span style="display: block;">我的设备</span></router-link>
                         </el-menu-item>
                     </el-submenu>
                     <el-submenu index="2">
@@ -31,10 +31,12 @@
                     <el-submenu index="3" v-if='roles.indexOf("manager") !=-1'>
                         <template slot="title"><i class="el-icon-s-ticket"></i><span slot="title">管理专区</span></template>
                         <el-menu-item index="3-1" v-if='roles.indexOf("manager:device") !=-1'>
-                            <router-link to="/center/manager/deviceManager"><span style="display: block;">设备管理</span></router-link>
+                            <router-link to="/center/manager/deviceManager"><span style="display: block;">设备管理</span>
+                            </router-link>
                         </el-menu-item>
                         <el-menu-item index="3-2" v-if='roles.indexOf("manager:user") !=-1'>
-                            <router-link to="/center/manager/userManager"><span style="display: block;">用户管理</span></router-link>
+                            <router-link to="/center/manager/userManager"><span style="display: block;">用户管理</span>
+                            </router-link>
                         </el-menu-item>
                     </el-submenu>
                 </el-menu>
@@ -92,12 +94,12 @@
     import router from '../router/index'
     export default {
         name: 'center',
-        
+
         mounted() {
             this.initUserInfo();
             this.allRouter = store.getters['permission/allRouter']
             this.roles = store.getters['permission/roles']
-           
+
         },
         data() {
             return {
@@ -113,18 +115,14 @@
 
                 if (info == null) {
                     userInfo().then(res => {
-                        if (res.data.code == -1) {
-                            this.$alert('您的token已失效，请重新登录！', '数据异常', {
-                                confirmButtonText: '确定',
-                                callback: action => {
-                                    removeToken()
-                                    this.$router.push({ name: 'login' })
-                                }
-                            });
-                        } else if (res.data.code == 200) {
+
+                        if (res.data.code == 200) {
                             this.userInfo = res.data.data
                             localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
                         }
+                    },err=>{
+                       console.log(err)
+                        
                     })
                 } else {
                     this.userInfo = info

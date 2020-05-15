@@ -23,6 +23,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotBlank;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,8 +51,8 @@ public class UserAccountController {
 
     })
 
-    public Result userLogin( @RequestParam String username,
-                             @RequestParam String password,
+    public Result userLogin(@NotBlank(message = "账号不能为空")  @RequestParam String username,
+                            @NotBlank(message = "密码不能为空") @RequestParam String password,
                             HttpServletResponse response) {
         User user = userAccountService.findUserByUsernameAndPassword(username,password);
         if(user == null){
@@ -80,10 +81,10 @@ public class UserAccountController {
             @ApiImplicitParam(paramType="query", name = "password2", value = "用户确认密码", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "nickname", value = "用户昵称", required = true, dataType = "String"),
     })
-    public Result registerUser(@RequestParam String username,
-                               @RequestParam String password,
-                               @RequestParam String password2,
-                               @RequestParam String nickname) {
+    public Result registerUser(@NotBlank @RequestParam String username,
+                               @NotBlank @RequestParam String password,
+                               @NotBlank @RequestParam String password2,
+                               @NotBlank @RequestParam String nickname) {
 
 
         Result result = userAccountService.registerUser(username,password,password2,nickname);
@@ -110,8 +111,8 @@ public class UserAccountController {
             @ApiImplicitParam(paramType="query", name = "password1", value = "修改密码", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "password2", value = "确认修改密码", required = true, dataType = "String"),
     })
-    public Result updateInfo(@RequestHeader String token, @RequestParam String currentPassword,
-                             @RequestParam String password2, @RequestParam String password1){
+    public Result updateInfo(@NotBlank @RequestHeader String token, @NotBlank @RequestParam String currentPassword,
+                             @NotBlank @RequestParam String password2, @NotBlank @RequestParam String password1){
         String userId = TokenUtil.decode(token);
         // 如果要改的密码与当前密码一样
         if(currentPassword.equals(password1)){
@@ -130,7 +131,7 @@ public class UserAccountController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType="header", name = "token", value = "登录后的token", required = true, dataType = "String"),
     })
-    public Result getUserInfo(@RequestHeader String token){
+    public Result getUserInfo(@NotBlank @RequestHeader String token){
         String userId = JWT.decode(token).getAudience().get(0);
         User us = userAccountService.findUserById(userId);
         Result result = new Result();
@@ -145,7 +146,7 @@ public class UserAccountController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType="header", name = "token", value = "登录后的token", required = true, dataType = "String"),
     })
-    public Result getUserList(@RequestHeader String token){
+    public Result getUserList(@NotBlank @RequestHeader String token){
         String userId = JWT.decode(token).getAudience().get(0);
         List<User> users = userAccountService.getUserList();
         // 设置用户设备组
@@ -174,9 +175,9 @@ public class UserAccountController {
             @ApiImplicitParam(paramType="header", name = "username", value = "要封禁的用户名", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="header", name = "reason", value = "封禁原因", required = true, dataType = "String"),
     })
-    public Result closeUser(@RequestHeader String token,
-                              @RequestParam String username,
-                              @RequestParam String reason){
+    public Result closeUser(@NotBlank @RequestHeader String token,
+                            @NotBlank @RequestParam String username,
+                            @NotBlank @RequestParam String reason){
         String userId = JWT.decode(token).getAudience().get(0);
 
         userAuthSerice.closeUser(username,reason);

@@ -51,6 +51,26 @@ public class UserOperationService {
             key = "关灯";
             //操作 客厅 的灯
         } else if(word.contains("灯") && word.contains("开") && word.contains("客厅")  ){
+            key = "客厅开灯";
+        } else if(word.contains("灯") && word.contains("关")  && word.contains("客厅")  ){
+            key = "客厅关灯";
+            //操作所有灯
+        }else if(word.contains("灯") && word.contains("开") && word.contains("厨房")  ){
+            key = "厨房开灯";
+        } else if(word.contains("灯") && word.contains("关")  && word.contains("厨房")  ){
+            key = "厨房关灯";
+            //操作所有灯
+        }else if(word.contains("灯") && word.contains("开") && word.contains("洗手间")  ){
+            key = "洗手间开灯";
+        } else if(word.contains("灯") && word.contains("关")  && word.contains("洗手间")  ){
+            key = "洗手间关灯";
+            //操作所有灯
+        }else if(word.contains("灯") && word.contains("开") && word.contains("卧室")  ){
+            key = "卧室开灯";
+        } else if(word.contains("灯") && word.contains("关")  && word.contains("卧室")  ){
+            key = "卧室关灯";
+            //操作所有灯
+        }else if(word.contains("灯") && word.contains("开") && word.contains("客厅")  ){
             key = "开灯";
         } else if(word.contains("灯") && word.contains("关")  && word.contains("客厅")  ){
             key = "关灯";

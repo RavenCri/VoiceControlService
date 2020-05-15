@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * @description:
  * @author: raven
@@ -37,7 +39,7 @@ public class DeviceController {
             @ApiImplicitParam(paramType="query", name = "password", value = "用户密码", required = true, dataType = "String"),
     })
     @PostMapping("getMqttInfo")
-    public Result getMQTTInfo(String username,String password){
+    public Result getMQTTInfo(@NotBlank String username, @NotBlank String password){
        // 如果有引号应该去掉
         username = username.replaceAll("\"","");
         password = password.replaceAll("\"","");

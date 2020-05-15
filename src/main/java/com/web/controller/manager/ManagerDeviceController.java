@@ -10,6 +10,7 @@ import com.web.result.ResultCode;
 import com.web.service.UserAccountService;
 import com.web.service.UserDeviceService;
 import com.web.service.manager.DeviceService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -21,12 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @description:
+ * @description: 用来管理设备的接口
  * @author: raven
  * @create: 2020-04-15 21:09
  **/
 @RequestMapping("devicePlus")
 @RestController
+@Api(value = "ManagerDeviceController|用来管理设备的接口")
 public class ManagerDeviceController {
     @Autowired
     DeviceService deviceService;

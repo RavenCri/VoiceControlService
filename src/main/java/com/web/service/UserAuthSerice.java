@@ -6,11 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * @description:
+ * @description: 用户状态（禁止登陆、取消禁止登陆）服务
  * @author: raven
  * @create: 2020-04-16 15:14
  **/
 @Service
+
 public class UserAuthSerice {
     @Autowired
     UserAuthResposity userAuthResposity;
