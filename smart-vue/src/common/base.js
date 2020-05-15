@@ -1,5 +1,6 @@
 import axios from 'axios'
 import qs from 'qs';
+import router from "@/router"
 import { removeToken, removeUserInfo } from '@/utils/app'
 import Vue from 'vue'
 //通过该属性即可调用vue的任意属性
@@ -36,7 +37,7 @@ export default {
                             callback: action => {
                                 removeToken()
                                 removeUserInfo()
-                                Vue.prototype.$router.push({ name: 'login' })
+                                router.push({ name: 'login' })
                             }
                         });
                         // 如果非正常code      
@@ -67,7 +68,7 @@ export default {
                         callback: action => {
                             removeToken()
                             removeUserInfo()
-                            Vue.prototype.$router.push({ name: 'login' })
+                            router.push({ name: 'login' })
                         }
                     });
                     reject('错误消息:' + response.data.msg);
@@ -101,7 +102,7 @@ export default {
                         callback: action => {
                             removeToken()
                             removeUserInfo()
-                            Vue.prototype.$router.push({ name: 'login' })
+                            router.push({ name: 'login' })
                         }
                     });
 
@@ -138,7 +139,7 @@ export default {
                         callback: action => {
                             removeToken()
                             removeUserInfo()
-                            Vue.prototype.$router.push({ name: 'login' })
+                            router.push({ name: 'login' })
                         }
                     });
                     // 如果非正常code      

@@ -22,6 +22,7 @@
 
 <script>
     import qs from 'qs';
+    import {updateUserInfo} from '@/common/api/user'
     export default {
         name: 'updateInfo',
         data() {
@@ -82,18 +83,26 @@
                             cancelButtonText: '取消',
                             type: 'warning'
                         }).then(() => {
-                            this.$axios.post('account/update',
-                                qs.stringify(this.ruleForm)).then(res => {
-                                    if (res.data.code == 200) {
+                            updateUserInfo(this.ruleForm).then(res=>{
+                                if (res.data.code == 200) {
                                         this.$message({
                                             type: 'success',
                                             message: res.data.msg
                                         });
-                                        this.initData();
-                                    } else {
-                                        this.$message.error(res.data.msg);
                                     }
-                                })
+                            }).catch(err=>{})
+                            // this.$axios.post('account/update',
+                            //     qs.stringify(this.ruleForm)).then(res => {
+                            //         if (res.data.code == 200) {
+                            //             this.$message({
+                            //                 type: 'success',
+                            //                 message: res.data.msg
+                            //             });
+                            //             this.initData();
+                            //         } else {
+                            //             this.$message.error(res.data.msg);
+                            //         }
+                            //     })
                         }).catch(err=>{})
                     } else {
                         console.log('error submit!!');
