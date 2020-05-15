@@ -4,10 +4,10 @@ import store from '../store/index'
 import { getToken } from '@/utils/app'
 
 router.beforeEach((to, from, next) => {
+    console.log(to.path)
     if (to.meta.title) {
         document.title = to.meta.title
     }
-    
     //如果登陆了
     if (getToken() !== null) {
         // 如果需要判断权限
@@ -18,23 +18,25 @@ router.beforeEach((to, from, next) => {
                 console.log('路由权限为空')
                 // 获取用户路由权限
                 store.dispatch('permission/getRouters').then(role => {
-                
+                   
                     // 如果未获取到权限
-                    if(role.length ==0){
+                    if(role.length ==0){  
                         next()
                         return
                     }
+                    
                     // 保存获取到的路由
                     store.dispatch('permission/createRouter', role).then(addRouter => {
                         let allRouter = store.getters['permission/allRouter']
                         router.options.routes = allRouter
                         router.addRoutes(addRouter)
-                        console.log(allRouter)
-                        next()
-                    
+                        next({ ...to}) 
+                        
                     })
                 })
-            } else {  
+            } else {
+                 
+                console.log( router.options.routes)
                 next()
             }
         //}else{

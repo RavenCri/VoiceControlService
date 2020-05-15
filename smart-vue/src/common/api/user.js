@@ -11,4 +11,4 @@ export const userUnForbidder = params => service.post('account/open',params);
 
 export const robotreplay = params => service.get('roobot/replay',params);
 
-export const getUserRole = () => service.get('account/permission');
+export const getUserRole = () => service.get('/permission/user');

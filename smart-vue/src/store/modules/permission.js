@@ -2,7 +2,7 @@ import {getUserRole} from '@/common/api/user'
 import {defaultRouter,asnycRouterMap} from '@/router'
 function hasPermission(roles, route) {
     if (route.meta && route.meta.role) {
-      return roles.some(role => route.meta.role.indexOf(role) >= 0)
+        return roles.some(role => route.meta.role==role)
     } else {
       return true
     }
@@ -50,11 +50,11 @@ const actions = {
         return new Promise((resolve,reject) =>{
             let roles = data
             const addRouter  = asnycRouterMap.filter(item =>{
-                if(hasPermission(roles,item)){
+                //if(hasPermission(roles,item)){
                     if (item.children && item.children.length > 0) {
                         item.children = item.children.filter(child => {
                           if (hasPermission(roles, child)) {
-                              console.log(child)
+                              //console.log(child)
                             return child
                           }
                           return false;
@@ -63,8 +63,8 @@ const actions = {
                       } else {
                         return item
                       }
-                }
-                return false
+                //}
+               // return false
                 // 需要权限的路由 如果在 获取的权限路由里面
                 // 意思就是 只有当该用户有该路由的权限时，才去增加
                 if(role.includes(item.meta.role) ){ 

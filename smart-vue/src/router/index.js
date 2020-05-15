@@ -15,16 +15,16 @@ export const defaultRouter = [
     path: '/',
     name: 'index',
     component: index,
-    meta:{
-      title:'科睿物联',
+    meta: {
+      title: '科睿物联',
     }
   },
   {
     path: '/login',
     name: 'login',
     component: login,
-    meta:{
-      title:'登陆',
+    meta: {
+      title: '登陆',
     }
   },
   {
@@ -33,47 +33,17 @@ export const defaultRouter = [
     component: notFound
   },
   {
-    path: "*", // 此处需特别注意置于最底部
-    redirect: "/404",
-    meta:{
-      title:'页面丢了',
-    }
-  }
-
-]
-/**
- * 动态路由
- */
-export const asnycRouterMap = [
-  {
     path: '/center',
     name: 'center',
     component: center,
     meta: {
-      role: 'manager', // 需要manager权限
-      require:true,
-      title:'设备中心',
-      icon:'el-icon-s-ticket'
+
+      require: true,
+      title: '设备中心',
+      icon: 'el-icon-s-ticket'
     },
-    children: [
+    children:[
       {
-        path: 'deviceManager',
-        component: deviceManager,
-        meta:{
-          title:'设备管理',
-          role:'manager:device'
-        }
-      },
-      {
-        path: 'userManager',
-        component: userManager,
-        meta:{
-          title:'用户管理',
-          role:'manager:user',
-          
-        }
-      },
-       {
         // path前面不能带/
         path: 'device',
         component: device,
@@ -92,6 +62,47 @@ export const asnycRouterMap = [
         }
       },
     ]
+  },
+ 
+
+]
+/**
+ * 动态路由
+ */
+export const asnycRouterMap = [
+  {
+    path: '/center/manager',
+    component: center,
+    meta:{
+      role: 'manager'
+    },
+    children: [
+      {
+        path: 'deviceManager',
+        component: deviceManager,
+        meta: {
+          title: '设备管理',
+          role: 'manager:device'
+        }
+      },
+      {
+        path: 'userManager',
+        component: userManager,
+        meta: {
+          title: '用户管理',
+          role: 'manager:user',
+
+        }
+      }
+    ]
+  },
+  // 此处需特别注意置于最底部，由于路由是动态变化的，必须把这个放入动态添加的路由里面。因为如果404排在其他路由前面，那么会导致其他路由不能正常访问
+  {
+    path: "*", 
+    redirect: "/404",
+    meta: {
+      title: '页面丢了',
+    }
   }
 ]
 

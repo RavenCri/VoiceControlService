@@ -3,7 +3,7 @@
         <el-container>
             <el-aside style="position: fixed;height: 100%;" width="250px">
                 <img src="../assets/ico.png" style="width:185px;">
-                <el-menu :default-openeds="['1', '2','3']">
+                <el-menu :default-openeds="['1', '2','3']" >
                     <!-- <div v-for='(item,index) in allRouter'>
                         <el-submenu index="item">
                             <template slot="title"><i :class="item.meta.icon"></i>{{item.meta.title}}</template>
@@ -16,25 +16,25 @@
                         </el-submenu>
                     </div> -->
                     <el-submenu index="1">
-                        <template slot="title"><i class="el-icon-cpu"></i>设备中心</template>
+                        <template slot="title"><i class="el-icon-cpu"></i><span slot="title">设备中心</span></template>
                         <el-menu-item index="1-1">
-                            <router-link to="/center/device">我的设备</router-link>
+                            <router-link to="/center/device" ><span style="display: block;">我的设备</span></router-link>
                         </el-menu-item>
                     </el-submenu>
                     <el-submenu index="2">
-                        <template slot="title"><i class="el-icon-menu"></i>安全中心</template>
+                        <template slot="title"><i class="el-icon-menu"></i><span slot="title">安全中心</span></template>
                         <el-menu-item index="2-1">
-                            <router-link to="/center/updateInfo">修改密码</router-link>
+                            <router-link to="/center/updateInfo"><span style="display: block;">修改密码</span></router-link>
                         </el-menu-item>
                     </el-submenu>
-                 
-                    <el-submenu index="3" v-if='roles.indexOf("manager") !=-1' >
-                        <template slot="title"><i class="el-icon-s-ticket"></i>管理专区</template>
-                        <el-menu-item index="3-1">
-                            <router-link to="/center/deviceManager">设备管理</router-link>
+
+                    <el-submenu index="3" v-if='roles.indexOf("manager") !=-1'>
+                        <template slot="title"><i class="el-icon-s-ticket"></i><span slot="title">管理专区</span></template>
+                        <el-menu-item index="3-1" v-if='roles.indexOf("manager:device") !=-1'>
+                            <router-link to="/center/manager/deviceManager"><span style="display: block;">设备管理</span></router-link>
                         </el-menu-item>
-                        <el-menu-item index="3-2">
-                            <router-link to="/center/userManager">用户管理</router-link>
+                        <el-menu-item index="3-2" v-if='roles.indexOf("manager:user") !=-1'>
+                            <router-link to="/center/manager/userManager"><span style="display: block;">用户管理</span></router-link>
                         </el-menu-item>
                     </el-submenu>
                 </el-menu>
@@ -88,28 +88,29 @@
 <script>
     import { userInfo } from '@/common/api/user.js'
     import store from '@/store/index'
-    import { getToken, removeToken ,getUserInfo,removeUserInfo} from '@/utils/app'
-
+    import { getToken, removeToken, getUserInfo, removeUserInfo } from '@/utils/app'
+    import router from '../router/index'
     export default {
         name: 'center',
+        
         mounted() {
             this.initUserInfo();
             this.allRouter = store.getters['permission/allRouter']
             this.roles = store.getters['permission/roles']
-            console.log(this.allRouter)
+           
         },
         data() {
             return {
                 userInfo: null,
                 allRouter: '',
-                roles:''
+                roles: ''
             }
         },
         methods: {
 
             initUserInfo() {
                 let info = getUserInfo();
-               
+
                 if (info == null) {
                     userInfo().then(res => {
                         if (res.data.code == -1) {
@@ -122,13 +123,13 @@
                             });
                         } else if (res.data.code == 200) {
                             this.userInfo = res.data.data
-                            localStorage.setItem('userInfo',JSON.stringify(this.userInfo))
+                            localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
                         }
                     })
-                }else{
+                } else {
                     this.userInfo = info
                 }
-                
+
             },
             logout() {
                 removeToken()
