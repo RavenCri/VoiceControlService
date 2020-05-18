@@ -45,12 +45,7 @@ public class UserOperationService {
         System.out.println(word);
 
         String key;
-        if(word.contains("灯") && word.contains("开") ){ //默认开1号房间的灯
-            key = "开灯";
-        }else if(word.contains("灯") && word.contains("关")){
-            key = "关灯";
-            //操作 客厅 的灯
-        } else if(word.contains("灯") && word.contains("开") && word.contains("客厅")  ){
+        if(word.contains("灯") && word.contains("开") && word.contains("客厅")  ){
             key = "客厅开灯";
         } else if(word.contains("灯") && word.contains("关")  && word.contains("客厅")  ){
             key = "客厅关灯";
@@ -75,11 +70,16 @@ public class UserOperationService {
         } else if(word.contains("灯") && word.contains("关")  && word.contains("客厅")  ){
             key = "关灯";
             //操作所有灯
-        }else if(word.contains("灯") && word.contains("关") && (word.contains("都")|| word.contains("全")|| word.contains("所有"))){
-            key = "关灯";
+        } else if(word.contains("灯") && word.contains("关") && (word.contains("都")|| word.contains("全")|| word.contains("所有"))){
+            key = "关灯ALL";
         }else if(word.contains("灯") && word.contains("开") && (word.contains("都")|| word.contains("全")|| word.contains("所有"))){
             key = "开灯ALL";
-        } else if(word.contains("蹦") || word.contains("迪")){
+        } else if(word.contains("灯") && word.contains("开") ){ //默认开1号房间的灯
+            key = "开灯";
+        }else if(word.contains("灯") && word.contains("关")){
+            key = "关灯";
+            //操作 客厅 的灯
+        }else if(word.contains("蹦") || word.contains("迪")){
             key = "蹦迪";
         }else if(word.contains("风扇") && (word.contains("快")||word.contains("加")) ){
             key = "风扇快";
