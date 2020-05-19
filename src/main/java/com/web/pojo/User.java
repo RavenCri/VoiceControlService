@@ -35,7 +35,10 @@ public class User {
     private List<Device> devices;
     @Transient
     private UserAuth userAuth;
-
+    @Transient
+    private String salt;
+    @Transient
+    private String encryptPassword;
     public List<Device> getDevices() {
         return devices;
     }
@@ -91,6 +94,22 @@ public class User {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
+    public String getEncryptPassword() {
+        return encryptPassword;
+    }
+
+    public void setEncryptPassword(String encryptPassword) {
+        this.encryptPassword = encryptPassword;
     }
 
     @Override

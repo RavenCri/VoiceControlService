@@ -2,12 +2,14 @@ package com.web.service;
 
 import com.web.dao.UserAccountRepository;
 import com.web.dao.UserMqttAccountRepository;
+import com.web.jwt.util.JwtUtils;
 import com.web.pojo.User;
 import com.web.result.Result;
 import com.web.result.ResultCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -73,5 +75,37 @@ public class UserAccountService {
     public List<User> getUserList() {
         List<User> all = userAccountRepository.findByAccountLevelNot(1);
         return all;
+    }
+    /**
+     * 保存user登录信息，返回token
+     * @param username
+     */
+    public String generateJwtToken(String username) {
+        String salt = "12345";//JwtUtils.generateSalt();
+        /**
+         * @todo 将salt保存到数据库或者缓存中
+         * redisTemplate.opsForValue().set("token:"+username, salt, 3600, TimeUnit.SECONDS);
+         */
+        return JwtUtils.sign(username, salt, 3600); //生成jwt token，设置过期时间为1小时
+    }
+
+    public User getJwtTokenInfo(String username) {
+
+        /**
+         * @todo 从数据库或者缓存中取出jwt token生成时用的salt
+         * salt = redisTemplate.opsForValue().get("token:"+username);
+         */
+        User user = findUserByUserName(username);
+        user.setSalt("12345");
+        return user;
+    }
+
+    /**
+     * 获取用户角色列表，强烈建议从缓存中获取
+     * @param userId
+     * @return
+     */
+    public List<String> getUserRoles(Long userId){
+        return Arrays.asList("admin");
     }
 }

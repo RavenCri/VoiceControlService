@@ -1,7 +1,7 @@
 package com.web.controller.manager;
 
 import com.web.controller.UserDeviceController;
-import com.web.jwt.util.TokenUtil;
+import com.web.jwt.util.JwtUtils;
 import com.web.pojo.Device;
 import com.web.pojo.User;
 import com.web.pojo.UserDevice;
@@ -44,7 +44,7 @@ public class ManagerDeviceController {
     })
     @GetMapping("list")
     public Result getAllDevices(@RequestHeader("token") String token){
-        String userId = TokenUtil.decode(token);
+        String userId = JwtUtils.decode(token);
         List<Device> device = deviceService.findAllDevice();
 
         device.forEach(e->{
@@ -79,7 +79,7 @@ public class ManagerDeviceController {
                             @NotEmpty @RequestParam String deviceId,
                             @NotEmpty @RequestParam String type,
                             @NotEmpty @RequestParam String time){
-        String userId = TokenUtil.decode(token);
+        String userId = JwtUtils.decode(token);
         return deviceService.addDevice(deviceId,time,type);
 
     }
@@ -93,7 +93,7 @@ public class ManagerDeviceController {
     public Result deleteDevice(@RequestHeader("token") String token,
                                @NotEmpty @RequestParam String deviceId
                             ){
-        String userId = TokenUtil.decode(token);
+        String userId = JwtUtils.decode(token);
         return deviceService.removeDevice(deviceId);
     }
 }

@@ -1,6 +1,7 @@
 package com.correspond.mqtt.rabbitmq.config;
 
-import com.web.jwt.util.TokenUtil;
+
+import com.auth0.jwt.JWT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.server.ServerHttpRequest;
@@ -36,7 +37,7 @@ public class AuthHandshakeInterceptor implements HandshakeInterceptor {
         String token = serverRequest.getServletRequest().getParameter("token");
         if (token != null ) {
             try {
-                   TokenUtil.decode(token);
+                   JWT.decode(token);
             }catch (Exception e){
                    return false;
             }

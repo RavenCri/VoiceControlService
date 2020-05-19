@@ -42,6 +42,9 @@ const actions = {
                 let role = response.data.data
                 commit('set_roles',role)
                 resolve(role)
+            }).catch(err=>{
+                console.log(err)
+                
             })
         })
     },

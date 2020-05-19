@@ -10,7 +10,7 @@ import Vue from 'vue'
 //配置axios
 const service = axios.create({
     baseURL: 'http://localhost:8080', // api的base_url
-    timeout: 5000, // 请求超时时间
+    timeout: 3000, // 请求超时时间
     responseType: "json",
 
 });
@@ -25,6 +25,7 @@ service.interceptors.request.use((config) => {
     // 对请求错误做些什么
     return Promise.reject(error)
 });
+
 export default {
     get(url, params, config = {}) {
         return new Promise((resolve, reject) => {
@@ -84,10 +85,7 @@ export default {
                     resolve(response)
                     return
                 }
-                console.error('错误消息:' + response.data.msg)
-                reject('错误消息:' + response.data.msg);
-            }, err => {
-                reject(err);
+               
             })
 
         })
@@ -123,9 +121,6 @@ export default {
             }, err => {
                 reject(err)
             })
-                .catch((error) => {
-                    reject(error)
-                });
         })
     },
 

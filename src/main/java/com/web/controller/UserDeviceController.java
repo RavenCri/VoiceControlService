@@ -2,8 +2,8 @@ package com.web.controller;
 
 import cn.hutool.core.date.DateTime;
 import com.auth0.jwt.JWT;
-import com.web.jwt.annotation.PassToken;
-import com.web.jwt.annotation.UserLoginToken;
+import com.web.annotation.PassToken;
+import com.web.annotation.UserLoginToken;
 import com.web.pojo.Device;
 import com.web.result.Result;
 import com.web.result.ResultCode;

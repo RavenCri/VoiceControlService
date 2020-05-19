@@ -2,7 +2,7 @@ package com.web.controller;
 
 
 import com.auth0.jwt.JWT;
-import com.web.jwt.annotation.UserLoginToken;
+import com.web.annotation.UserLoginToken;
 import com.web.result.Result;
 import com.web.service.UserOperationService;
 import io.swagger.annotations.Api;

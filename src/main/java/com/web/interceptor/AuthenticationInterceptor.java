@@ -1,5 +1,6 @@
 package com.web.interceptor;
 
+import com.web.annotation.*;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -8,9 +9,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.web.exception.OwnException;
 import com.web.exception.impl.BaseErrorEnum;
-import com.web.jwt.annotation.PassToken;
-import com.web.jwt.annotation.UserLoginToken;
-import com.web.jwt.util.TokenUtil;
+import com.web.jwt.util.JwtUtils;
 import com.web.pojo.User;
 import com.web.service.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +65,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 // 获取 token 中的 user id
                 String userId;
                 try {
-                    userId = TokenUtil.decode(token);
+                    userId = JwtUtils.decode(token);
                 } catch (JWTDecodeException j) {
                     throw new OwnException(BaseErrorEnum.TokenDecodeException);
                 }

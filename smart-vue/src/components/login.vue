@@ -105,19 +105,19 @@
                     background: 'rgba(0, 0, 0, 0.3)'
                 });
                 login(this.loginForm).then(res => {
-                    loading.close();
+                  
                     if (res.data.code == 200) {
                         localStorage.setItem('token', res.headers['token'])
                         localStorage.setItem('userInfo', JSON.stringify(res.data.data))
                         this.$router.push({ name: 'center', });
                     } else {
-                        this.$message.error(res.data.msg);
+                        this.$message.error(res.data.msg)    
                     }
-                }).catch(err=>{
                     loading.close();
-                   
+                },err=>{
+               
+                    loading.close(); 
                 })
-                    
             },
             userRegister() {
                 for (var o in this.loginForm) {

@@ -4,7 +4,7 @@ import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.auth0.jwt.JWT;
 import com.util.MqttUtil;
-import com.web.jwt.util.TokenUtil;
+import com.web.jwt.util.JwtUtils;
 import com.web.pojo.Device;
 import com.web.pojo.User;
 import com.web.pojo.UserAuth;
@@ -66,7 +66,7 @@ public class UserAccountController {
             result.setMsg("账号被封禁了无法登陆,封禁原因："+userAuth.getReason());
             return result;
         }
-        String token = TokenUtil.encode(user);
+        String token = JwtUtils.sign(user.getId(),"123456",1000);
 
         tokens.put(user.getId(),token);
         response.addHeader("token",token);
@@ -113,7 +113,7 @@ public class UserAccountController {
     })
     public Result updateInfo(@NotBlank @RequestHeader String token, @NotBlank @RequestParam String currentPassword,
                              @NotBlank @RequestParam String password2, @NotBlank @RequestParam String password1){
-        String userId = TokenUtil.decode(token);
+        String userId = JwtUtils.decode(token);
         // 如果要改的密码与当前密码一样
         if(currentPassword.equals(password1)){
             return Result.failure(ResultCode.updateUserInfoFail);
