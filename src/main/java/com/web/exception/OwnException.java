@@ -18,6 +18,7 @@ public class OwnException extends RuntimeException {
     protected String errorMsg;
 
     public OwnException(BaseErrorEnum errorInfoInterface){
+        //必须加,不然空指针
         super(errorInfoInterface.getResultMsg());
         this.errorCode = errorInfoInterface.getResultCode();
         this.errorMsg = errorInfoInterface.getResultMsg();

@@ -1,7 +1,6 @@
-package com.web.config;
+package com.web.exception;
 
 import com.alibaba.fastjson.JSONObject;
-import com.web.exception.OwnException;
 import com.web.group.ToolValidated;
 import com.web.result.Result;
 import org.slf4j.Logger;
@@ -49,7 +48,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = BindException.class)
     @ResponseBody
     public Result BindException(BindException bindingResult) {
-        System.out.println("进来");
+
         // 验证参数信息是否有效
         Result messageBean = ToolValidated.myValidate(bindingResult);
         return messageBean;
