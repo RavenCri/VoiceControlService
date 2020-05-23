@@ -76,7 +76,7 @@
                                 <span>关于</span>
                             </div>
                             <div>
-                                <p>本设计由raven设计，bug测试call:1856975969</p>
+                                <p>本设计由raven设计，bug测试call:18856975969</p>
                             </div>
                         </el-card>
                     </div>

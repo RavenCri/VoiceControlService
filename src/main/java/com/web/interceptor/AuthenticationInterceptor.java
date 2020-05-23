@@ -1,11 +1,6 @@
 package com.web.interceptor;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.web.exception.OwnException;
 import com.web.exception.impl.BaseErrorEnum;
 import com.web.jwt.annotation.PassToken;
@@ -66,7 +61,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 // 获取 token 中的 user id
                 String userId;
                 try {
-                    userId = TokenUtil.decode(token);
+                    userId = TokenUtil.getUserInfo(token);
                 } catch (JWTDecodeException j) {
                     throw new OwnException(BaseErrorEnum.TokenDecodeException);
                 }
@@ -79,15 +74,10 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     throw new OwnException(BaseErrorEnum.UserNotExist);
                 }
                 // 验证 token
-                try {
-
-                    JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(user.getUsername())).build();
-                    DecodedJWT verify = jwtVerifier.verify(token);
-                }catch (TokenExpiredException e){
-
+                boolean verify  = TokenUtil.verify(token,user.getUsername(),user.getUsername());
+                if(!verify){
                     throw  new OwnException(BaseErrorEnum.TokenExpireException);
                 }
-
 
                 return true;
             }

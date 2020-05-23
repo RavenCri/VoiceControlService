@@ -25,6 +25,7 @@ import java.net.URISyntaxException;
 @EnableSwagger2
 @EnableScheduling
 @EnableConfigurationProperties
+
 public class SmartApplication {
 
     public static void main(String[] args) throws MalformedURLException, URISyntaxException {

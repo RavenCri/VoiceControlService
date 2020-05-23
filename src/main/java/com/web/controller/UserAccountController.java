@@ -9,6 +9,7 @@ import com.web.jwt.util.TokenUtil;
 import com.web.pojo.Device;
 import com.web.pojo.User;
 import com.web.pojo.UserAuth;
+import com.web.redis.util.RedisUtil;
 import com.web.result.Result;
 import com.web.result.ResultCode;
 import com.web.service.UserAccountService;
@@ -24,6 +25,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotBlank;
 import java.util.HashMap;
@@ -44,6 +46,8 @@ public class UserAccountController {
     UserDeviceService userDeviceService;
     @Autowired
     UserAuthSerice userAuthSerice;
+    @Resource
+    private RedisUtil redisUtil;
     public static Map<String,String> tokens = new HashMap<>();
     @PostMapping("login")
     @ApiOperation("用户提供账号密码，调用该接口即可")
@@ -68,7 +72,8 @@ public class UserAccountController {
             result.setMsg("账号被封禁了无法登陆,封禁原因："+userAuth.getReason());
             return result;
         }
-        String token = TokenUtil.encode(user);
+        String token = TokenUtil.getToken(user.getId(),user.getUsername());
+        redisUtil.set("token:"+user.getUsername(),token);
 
         tokens.put(user.getId(),token);
         response.addHeader("token",token);
@@ -115,7 +120,7 @@ public class UserAccountController {
     })
     public Result updateInfo(@NotBlank @RequestHeader String token, @NotBlank @RequestParam String currentPassword,
                              @NotBlank @RequestParam String password2, @NotBlank @RequestParam String password1){
-        String userId = TokenUtil.decode(token);
+        String userId = TokenUtil.getUserInfo(token);
         // 如果要改的密码与当前密码一样
         if(currentPassword.equals(password1)){
             return Result.failure(ResultCode.updateUserInfoFail);

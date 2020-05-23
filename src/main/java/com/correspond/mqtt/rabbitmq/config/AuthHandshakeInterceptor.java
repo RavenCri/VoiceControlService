@@ -36,7 +36,7 @@ public class AuthHandshakeInterceptor implements HandshakeInterceptor {
         String token = serverRequest.getServletRequest().getParameter("token");
         if (token != null ) {
             try {
-                   TokenUtil.decode(token);
+                   TokenUtil.getUserInfo(token);
             }catch (Exception e){
                    return false;
             }

@@ -1,8 +1,11 @@
 package com.web.jwt.util;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.web.pojo.User;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -18,31 +21,73 @@ import java.util.UUID;
 @ConfigurationProperties(prefix = "jwt")
 @Component
 public class TokenUtil {
-
+    public static Logger logger = LoggerFactory.getLogger(TokenUtil.class);
     private  static String expires = "0";
-
+    private  static String withIssuer = null;
    @Value("expires")
    public void setExpires(String expires) {
         System.out.println("==========================>");
         this.expires = expires;
     }
-
-    public static String encode(User user) {
+    @Value("withIssuer")
+    public void setWithIssuer(String withIssuer) {
+        System.out.println("==========================>");
+        this.withIssuer = withIssuer;
+    }
+    /**
+    * @Description: 生成Token
+    * @Param: [userId, username]
+    * @return: java.lang.String
+    * @Author: raven
+    * @Date: 2020/5/23
+    */
+    public static String getToken(String userId, String username ) {
+        String secret = username;
+        //SecureRandomNumberGenerator secureRandomNumberGenerator = new SecureRandomNumberGenerator();
+        //secret = secureRandomNumberGenerator.nextBytes(16).toHex();
         String token="";
         // 也可以添加自定义声明值 这么直接设置过期时间.withClaim("data", System.currentTimeMillis())
         Long date = System.currentTimeMillis();
-        token= JWT.create().withAudience(String.valueOf(user.getId()))//接受者
+        token= JWT.create().withAudience(String.valueOf(userId))//接受者
                 .withIssuedAt(new Date(date)) // 签发时间 非必要
                 .withExpiresAt(new Date(date + 1000*60*Integer.parseInt(expires)))// jwt的过期时间
-                .withSubject(user.getUsername())  //主题 非必要
-                .withIssuer("raven")//发布者 非必要
+              //  .withSubject(user.getUsername())  //主题 非必要
+                .withIssuer(withIssuer)//发布者 非必要
                 .withJWTId(UUID.randomUUID().toString())
-                .sign(Algorithm.HMAC256(user.getUsername()));//签名
+                .sign(Algorithm.HMAC256(secret));//签名
         return token;
     }
-
-    public static String decode(String token){
+    /**
+    * @Description: 获取用户信息
+    * @Param: [token]
+    * @return: java.lang.String
+    * @Author: raven
+    * @Date: 2020/5/23
+    */
+    public static String getUserInfo(String token){
         return JWT.decode(token).getAudience().get(0);
+    }
+    /**
+    * @Description: token校验
+    * @Param: [token, username, secret]
+    * @return: boolean
+    * @Author: raven
+    * @Date: 2020/5/23
+    */
+    public static boolean verify(String token, String username, String secret) {
+       try {
+            // 根据密码生成JWT效验器
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+
+            JWTVerifier verifier = JWT.require(algorithm).withIssuer(withIssuer).build();
+            // 效验TOKEN
+            DecodedJWT jwt = verifier.verify(token);
+            logger.info(jwt+":-token is valid");
+            return true;
+        } catch (Exception e) {
+           logger.info("The token is invalid{}",e.getMessage());
+            return false;
+        }
     }
 }
  /*

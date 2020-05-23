@@ -6,3 +6,4 @@ spring:
 
 jwt:
   expires: 120
+  withIssuer: raven
