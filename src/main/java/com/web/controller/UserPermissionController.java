@@ -2,6 +2,7 @@ package com.web.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.auth0.jwt.JWT;
+import com.web.jwt.annotation.UserLoginToken;
 import com.web.pojo.UserPermission;
 import com.web.service.UserAccountService;
 import com.web.service.UserPermissioService;
@@ -25,6 +26,7 @@ import java.util.List;
  **/
 @RestController
 @RequestMapping("permission")
+@UserLoginToken
 @Api(value = "UserPermissionController|用户获取权限的接口")
 public class UserPermissionController {
 

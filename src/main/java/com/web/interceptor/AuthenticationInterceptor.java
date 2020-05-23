@@ -33,7 +33,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     UserAccountService userAccountService;
 
     @Override
-    public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object)   {
+    public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object)  {
 
         String token = httpServletRequest.getHeader("token");// 从 http 请求头中取出 token
         // 如果不是映射到方法直接通过
@@ -84,6 +84,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(user.getUsername())).build();
                     DecodedJWT verify = jwtVerifier.verify(token);
                 }catch (TokenExpiredException e){
+
                     throw  new OwnException(BaseErrorEnum.TokenExpireException);
                 }
 

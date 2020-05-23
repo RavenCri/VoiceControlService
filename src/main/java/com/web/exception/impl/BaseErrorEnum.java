@@ -34,4 +34,12 @@ public enum  BaseErrorEnum implements BaseErrorInfoInterface {
         this.resultCode = resultCode;
         this.resultMsg = resultMsg;
     }
+
+    @Override
+    public String toString() {
+        return "BaseErrorEnum{" +
+                "resultCode=" + resultCode +
+                ", resultMsg='" + resultMsg + '\'' +
+                '}';
+    }
 }

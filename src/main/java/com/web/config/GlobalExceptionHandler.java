@@ -1,9 +1,12 @@
 package com.web.config;
 
 import com.alibaba.fastjson.JSONObject;
-import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.web.exception.OwnException;
+import com.web.group.ToolValidated;
+import com.web.result.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -34,13 +37,21 @@ public class GlobalExceptionHandler {
         return obj.toJSONString();
     }
 
-    @ExceptionHandler({JWTVerificationException.class})
+    @ExceptionHandler({OwnException.class})
     @ResponseBody
-    public String jwtVerification( Exception e){
+    public String jwtVerification( OwnException  e){
         e.printStackTrace();
         JSONObject obj = new JSONObject();
-        obj.put("code",-1);
+        obj.put("code",e.getErrorCode());
         obj.put("msg",e.getMessage());
         return obj.toJSONString();
+    }
+    @ExceptionHandler(value = BindException.class)
+    @ResponseBody
+    public Result BindException(BindException bindingResult) {
+        System.out.println("进来");
+        // 验证参数信息是否有效
+        Result messageBean = ToolValidated.myValidate(bindingResult);
+        return messageBean;
     }
 }

@@ -112,7 +112,7 @@ public class UserOperationService {
         UserDevice userDevice = userDeviceRepository.findByUserIdAndDeviceId(userId, deviceId);
         if(userDevice == null){
             Result result = new Result();
-            result.setCode(404);
+            result.setCode(200);
             result.setMsg("该设备不存在或不在您的账户管理范围之内，有问题请联系管理员哦~");
             return result;
         }
@@ -128,7 +128,7 @@ public class UserOperationService {
             }
             if(!UserDeviceController.OnlineDevice.containsKey(device.getDeviceId())){
                 Result result = new Result();
-                result.setCode(404);
+                result.setCode(200);
                 result.setMsg("您的设备当前不在线哦，曼拉无法帮您，请检查设备是否可以正常通信~");
                 return result;
             }

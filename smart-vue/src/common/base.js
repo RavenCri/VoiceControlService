@@ -75,10 +75,11 @@ export default {
                     // 如果非正常code      
                 } else if (response.data && response.data.code && response.data.code !== 200) {
                     Vue.prototype.$message({
-                        message: '错误消息:' + response.data.msg,
+                        message:  response.data.msg,
                         type: 'error',
                         time: 5000
                     })
+                    // reject是因为有可能要回馈关闭加载框
                     reject('错误消息:' + response.data.msg);
                 } else {
                     resolve(response)

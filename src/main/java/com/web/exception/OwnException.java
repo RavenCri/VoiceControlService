@@ -1,5 +1,7 @@
 package com.web.exception;
 
+import com.web.exception.impl.BaseErrorEnum;
+
 /**
  * @description:
  * @author: raven
@@ -15,9 +17,11 @@ public class OwnException extends RuntimeException {
      */
     protected String errorMsg;
 
-    public OwnException(BaseErrorInfoInterface errorInfoInterface){
+    public OwnException(BaseErrorEnum errorInfoInterface){
+        super(errorInfoInterface.getResultMsg());
         this.errorCode = errorInfoInterface.getResultCode();
         this.errorMsg = errorInfoInterface.getResultMsg();
+
     }
 
     public OwnException(String errorMsg) {

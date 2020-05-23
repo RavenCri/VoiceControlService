@@ -92,7 +92,7 @@ public class SendController {
                      @RequestParam String username,
                      @RequestParam String platForm,
                      @RequestParam String msg) {
-
+        System.out.println(msg);
         Device device = deviceService.findDeviceByDeviceId(deviceId);
         //先判断设备信息是否正确
         if (device != null && device.getDeviceKey().equals(deviceKey)) {

@@ -4,6 +4,7 @@ import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.auth0.jwt.JWT;
 import com.util.MqttUtil;
+import com.web.group.ToolValidated;
 import com.web.jwt.util.TokenUtil;
 import com.web.pojo.Device;
 import com.web.pojo.User;
@@ -19,6 +20,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +34,7 @@ import java.util.Map;
 @RestController
 @Api(value = "UserAccountController|用户账号操作接口")
 @RequestMapping("account")
-@Validated
+
 public class UserAccountController {
     @Autowired
     UserAccountService userAccountService;
@@ -51,10 +53,10 @@ public class UserAccountController {
 
     })
 
-    public Result userLogin(@NotBlank(message = "账号不能为空")  @RequestParam String username,
-                            @NotBlank(message = "密码不能为空") @RequestParam String password,
-                            HttpServletResponse response) {
-        User user = userAccountService.findUserByUsernameAndPassword(username,password);
+    public Result userLogin(@Validated(ToolValidated.login.class)User userLogin,
+                            HttpServletResponse response, BindingResult bindingResult) {
+
+        User user = userAccountService.findUserByUsernameAndPassword(userLogin.getUsername(),userLogin.getPassword());
         if(user == null){
             return Result.failure(ResultCode.loginFail);
 
