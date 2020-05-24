@@ -107,7 +107,8 @@
                 login(this.loginForm).then(res => {
                     loading.close();
                     if (res.data.code == 200) {
-                        localStorage.setItem('token', res.headers['token'])
+                        console.log(res.headers)
+                        localStorage.setItem('Authorization', res.headers['authorization'])
                         localStorage.setItem('userInfo', JSON.stringify(res.data.data))
                         this.$router.push({ name: 'center', });
                     } else {

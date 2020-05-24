@@ -14,6 +14,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,9 @@ import java.util.List;
  **/
 @RequestMapping("devicePlus")
 @RestController
+@RequiresPermissions(value = {"manager:device"})
 @Api(value = "ManagerDeviceController|用来管理设备的接口")
+
 public class ManagerDeviceController {
     @Autowired
     DeviceService deviceService;
@@ -40,11 +43,12 @@ public class ManagerDeviceController {
 
     @ApiOperation("获取所有出厂设备")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType="header", name = "token", value = "管理员登录后的token", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="header", name = "authorization", value = "管理员登录后的token", required = true, dataType = "String"),
     })
     @GetMapping("list")
-    public Result getAllDevices(@RequestHeader("token") String token){
-        String userId = TokenUtil.getUserInfo(token);
+
+    public Result getAllDevices(@RequestHeader("authorization") String token){
+        String userId = TokenUtil.getClaim(token,"userId");
         List<Device> device = deviceService.findAllDevice();
 
         device.forEach(e->{
@@ -69,31 +73,31 @@ public class ManagerDeviceController {
 
     @ApiOperation("增加出厂设备")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType="header", name = "token", value = "管理员登录后的token", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="header", name = "authorization", value = "管理员登录后的token", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "deviceId", value = "添加的设备id", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "time", value = "设备的出厂时间", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "type", value = "添加的设备类型", required = true, dataType = "String"),
     })
     @PostMapping("addDevice")
-    public Result addDevice(@RequestHeader("token") String token,
+    public Result addDevice(@RequestHeader("authorization") String token,
                             @NotEmpty @RequestParam String deviceId,
                             @NotEmpty @RequestParam String type,
                             @NotEmpty @RequestParam String time){
-        String userId = TokenUtil.getUserInfo(token);
+        String userId = TokenUtil.getClaim(token,"userId");
         return deviceService.addDevice(deviceId,time,type);
 
     }
 
     @ApiOperation("删除出厂设备")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType="header", name = "token", value = "管理员登录后的token", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="header", name = "authorization", value = "管理员登录后的token", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="header", name = "deviceId", value = "设备编号", required = true, dataType = "String"),
     })
     @PostMapping("deleteDevice")
-    public Result deleteDevice(@RequestHeader("token") String token,
+    public Result deleteDevice(@RequestHeader("authorization") String token,
                                @NotEmpty @RequestParam String deviceId
                             ){
-        String userId = TokenUtil.getUserInfo(token);
+        String userId = TokenUtil.getClaim(token,"userId");;
         return deviceService.removeDevice(deviceId);
     }
 }

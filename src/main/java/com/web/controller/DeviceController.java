@@ -10,6 +10,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +34,8 @@ public class DeviceController {
     UserAccountService userAccountService;
     @Autowired
     UserMqttAccountService userMqttAccountService;
+    @Autowired
+    HashedCredentialsMatcher hashedCredentialsMatcher;
 
     @ApiOperation("设备提供用户的账号和密码，获取mqtt账号")
     @ApiImplicitParams({
@@ -43,7 +47,9 @@ public class DeviceController {
        // 如果有引号应该去掉
         username = username.replaceAll("\"","");
         password = password.replaceAll("\"","");
-        User user = userAccountService.findUserByUsernameAndPassword(username, password);
+        String passSlat = new SimpleHash(hashedCredentialsMatcher.getHashAlgorithmName(), password,username, hashedCredentialsMatcher.getHashIterations()).toHex();
+
+        User user = userAccountService.findUserByUsernameAndPassword(username, passSlat);
         System.out.println("有设备要获取mqtt信息："+user);
         if( user == null){
             return Result.failure(ResultCode.loginFail);

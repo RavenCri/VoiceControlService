@@ -5,6 +5,8 @@ import com.web.dao.UserMqttAccountRepository;
 import com.web.pojo.User;
 import com.web.result.Result;
 import com.web.result.ResultCode;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,9 @@ public class UserAccountService {
     @Autowired
     UserMqttAccountRepository userMqttAccountRepository;
 
+    @Autowired
+    HashedCredentialsMatcher hashedCredentialsMatcher;
+
     public User findUserById(String userId) {
         return userAccountRepository.findById(userId);
     }
@@ -36,7 +41,8 @@ public class UserAccountService {
 
         User user = new User();
         user.setUsername(username);
-        user.setPassword(password);
+        String passSlat = new SimpleHash(hashedCredentialsMatcher.getHashAlgorithmName(), password,user.getUsername(), hashedCredentialsMatcher.getHashIterations()).toHex();
+        user.setPassword(passSlat);
         user.setNickname(nickname);
         user.setAccountLevel(0);
         User existUser = findUserByUserName(username);
@@ -58,7 +64,8 @@ public class UserAccountService {
         if(!currentPassword.equals(user.getPassword())){
             return Result.failure(ResultCode.updateUserInfoCurrPassError);
         }
-        user.setPassword(password);
+        String passSlat = new SimpleHash(hashedCredentialsMatcher.getHashAlgorithmName(), password,user.getUsername(), hashedCredentialsMatcher.getHashIterations()).toHex();
+        user.setPassword(passSlat);
         userAccountRepository.saveAndFlush(user);
         return Result.success(ResultCode.updateUserInfoSuccess);
     }

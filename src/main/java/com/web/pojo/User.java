@@ -37,7 +37,8 @@ public class User {
     private List<Device> devices;
     @Transient
     private UserAuth userAuth;
-
+    @Transient
+    private String salt;
     public List<Device> getDevices() {
         return devices;
     }
@@ -93,6 +94,14 @@ public class User {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 
     @Override

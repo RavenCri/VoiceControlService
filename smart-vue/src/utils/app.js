@@ -2,10 +2,10 @@ import router from '@/router/index'
 import {defaultRouter} from '@/router'
 import store from '../store/index'
 export function getToken(){
-    return localStorage.getItem('token')
+    return localStorage.getItem('Authorization')
 }
 export function removeToken(){
-    localStorage.clear('token');
+    localStorage.clear('Authorization');
     
     router.options.routes = []
     router.addRoutes([])

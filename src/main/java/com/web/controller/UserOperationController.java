@@ -1,8 +1,8 @@
 package com.web.controller;
 
 
-import com.auth0.jwt.JWT;
 import com.web.jwt.annotation.UserLoginToken;
+import com.web.jwt.util.TokenUtil;
 import com.web.result.Result;
 import com.web.service.UserOperationService;
 import io.swagger.annotations.Api;
@@ -28,7 +28,7 @@ public class UserOperationController {
     @UserLoginToken
     @ApiOperation("用于机器人智能回复，可以控制硬件")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType="header", name = "token", value = "登录后的token", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="header", name = "authorization", value = "登录后的token", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "word", value = "用户说的话", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "deviceId", value = "要控制的设备id", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "platForm", value = "平台", required = true, dataType = "String"),
@@ -42,11 +42,11 @@ public class UserOperationController {
     * @Author: raven
     * @Date: 2020/4/10
     */
-    public Result getReturnWord(@RequestHeader("token") String token,
+    public Result getReturnWord(@RequestHeader("authorization") String authorization,
                                 @RequestParam(value = "word")String word,
                                 @RequestParam("deviceId") String deviceId,
                                 @RequestParam("platForm") String platForm)   {
-        String userId = JWT.decode(token).getAudience().get(0);
+        String userId = TokenUtil.getClaim(authorization,"userId");
         if(word == null ||word.trim().equals("") ){
             Result result = new Result();
             result.setCode(200);

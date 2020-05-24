@@ -3,12 +3,12 @@ package com.web.exception;
 import com.alibaba.fastjson.JSONObject;
 import com.web.group.ToolValidated;
 import com.web.result.Result;
+import org.apache.shiro.ShiroException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,11 +17,11 @@ import javax.servlet.http.HttpServletRequest;
  * @author: raven
  * @create: 2020-04-10 17:09
  **/
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
     private static Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-    @ExceptionHandler(RuntimeException.class)
-    @ResponseBody
+   // @ExceptionHandler(RuntimeException.class)
+
     public String handleException(HttpServletRequest request, Exception e){
         //e.printStackTrace();
         JSONObject obj = new JSONObject();
@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({OwnException.class})
-    @ResponseBody
+
     public String jwtVerification( OwnException  e){
         e.printStackTrace();
         JSONObject obj = new JSONObject();
@@ -45,8 +45,19 @@ public class GlobalExceptionHandler {
         obj.put("msg",e.getMessage());
         return obj.toJSONString();
     }
-    @ExceptionHandler(value = BindException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(ShiroException.class)
     @ResponseBody
+    public Result handle401(ShiroException e) {
+        System.out.println("无权访问");
+        Result result = new Result();
+        result.setMsg( "权限不足！(Unauthorized):" + e.getMessage());
+        result.setCode(HttpStatus.UNAUTHORIZED.value());
+        return result;
+    }
+
+    @ExceptionHandler(value = BindException.class)
+
     public Result BindException(BindException bindingResult) {
 
         // 验证参数信息是否有效

@@ -140,7 +140,7 @@
             mqttStart() {
                 console.log("进入mqtt初始化");
                 
-                this.ws = Stomp.over(new SockJS(`${mqttServerAddress}/ws?token=`+localStorage.token));
+                this.ws = Stomp.over(new SockJS(`${mqttServerAddress}/ws?Authorization=`+localStorage.Authorization));
                 this. ws.heartbeat.outgoing = 0;
                 this.ws.heartbeat.incoming = 0;  
                 this.ws.connect({

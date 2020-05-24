@@ -33,10 +33,10 @@ public class AuthHandshakeInterceptor implements HandshakeInterceptor {
         // 比如，只有登录后，才可以进行websocket连接
 
         ServletServerHttpRequest serverRequest = (ServletServerHttpRequest) serverHttpRequest;
-        String token = serverRequest.getServletRequest().getParameter("token");
+        String token = serverRequest.getServletRequest().getParameter("Authorization");
         if (token != null ) {
             try {
-                   TokenUtil.getUserInfo(token);
+                TokenUtil.getClaim(token,"userId");;
             }catch (Exception e){
                    return false;
             }

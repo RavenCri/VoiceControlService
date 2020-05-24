@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateTime;
 import com.auth0.jwt.JWT;
 import com.web.jwt.annotation.PassToken;
 import com.web.jwt.annotation.UserLoginToken;
+import com.web.jwt.util.TokenUtil;
 import com.web.pojo.Device;
 import com.web.result.Result;
 import com.web.result.ResultCode;
@@ -54,12 +55,12 @@ public class UserDeviceController {
     }
     @ApiOperation("获取用户账户下的设备")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType="header", name = "token", value = "登录后的token", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="header", name = "authorization", value = "登录后的token", required = true, dataType = "String"),
     })
     @GetMapping("list")
-    public Result getDevices(@RequestHeader("token") String token){
+    public Result getDevices(@RequestHeader("authorization") String authorization){
 
-        String userId = JWT.decode(token).getAudience().get(0);
+        String userId = TokenUtil.getClaim(authorization,"userId");
         List<Device> device = userDeviceService.findDeviceByUserId(userId);
         device.forEach(e->{
             if(OnlineDevice.containsKey(e.getDeviceId())){
@@ -76,7 +77,7 @@ public class UserDeviceController {
             @ApiImplicitParam(paramType="query", name = "deviceKey", value = "设备密码", required = true, dataType = "String"),
     })
     @PostMapping("add")
-    public Result addDevice(@RequestHeader("token") String token, String deviceId,String deviceKey){
+    public Result addDevice(@RequestHeader("authorization") String token, String deviceId,String deviceKey){
         String userId = JWT.decode(token).getAudience().get(0);
         return userDeviceService.userAddDevice(userId, deviceId,deviceKey);
 
@@ -84,13 +85,13 @@ public class UserDeviceController {
 
     @ApiOperation("删除用户设备")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType="header", name = "token", value = "登录后的token", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="header", name = "authorization", value = "登录后的token", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "deviceId", value = "设备唯一id", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "deviceKey", value = "设备密码", required = true, dataType = "String"),
     })
     @PostMapping("delete")
-    public Result deleteDevice(@RequestHeader("token") String token, String deviceId,String deviceKey){
-        String userId = JWT.decode(token).getAudience().get(0);
+    public Result deleteDevice(@RequestHeader("authorization") String authorization, String deviceId,String deviceKey){
+        String userId = TokenUtil.getClaim(authorization,"userId");
         boolean flag = userDeviceService.deleteDevice(userId, deviceId,deviceKey);
         if(!flag){
             return Result.failure(ResultCode.deleteDeviceFail);
@@ -100,7 +101,7 @@ public class UserDeviceController {
 
     @ApiOperation("更新用户设备id")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType="header", name = "token", value = "登录后的token", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="header", name = "Authorization", value = "登录后的token", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "oldDeviceId", value = "更新前的设备id", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "oldDeviceKey", value = "更新前的设备密码", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "newDeviceId", value = "更新后的设备id", required = true, dataType = "String"),
@@ -118,12 +119,12 @@ public class UserDeviceController {
     * @Date: 2020/4/10
     */
 
-    public Result updateUserDevice(@RequestHeader("token") String token,
+    public Result updateUserDevice(@RequestHeader("Authorization") String authorization,
                                    @NotNull String oldDeviceId,
                                    @NotNull String oldDeviceKey,
                                    @NotNull String newDeviceId,
                                    String newDeviceKey){
-        String userId = JWT.decode(token).getAudience().get(0);
+        String userId = TokenUtil.getClaim(authorization,"userId");
 
         return userDeviceService.updateUserDevice(userId, oldDeviceId,oldDeviceKey, newDeviceId,newDeviceKey);
 

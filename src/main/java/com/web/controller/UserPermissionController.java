@@ -1,8 +1,8 @@
 package com.web.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.auth0.jwt.JWT;
 import com.web.jwt.annotation.UserLoginToken;
+import com.web.jwt.util.TokenUtil;
 import com.web.pojo.UserPermission;
 import com.web.service.UserAccountService;
 import com.web.service.UserPermissioService;
@@ -37,7 +37,7 @@ public class UserPermissionController {
     @GetMapping("user")
     @ApiOperation("用于获取用户所有权限")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType="header", name = "token", value = "登录后的token", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="header", name = "Authorization", value = "登录后的token", required = true, dataType = "String"),
     })
     /**
     * @Description: 根据token获取用户权限
@@ -46,13 +46,13 @@ public class UserPermissionController {
     * @Author: raven
     * @Date: 2020/5/15
     */
-    public JSONObject pagePermissions(@RequestHeader(value = "token",required = false) String token){
+    public JSONObject pagePermissions(@RequestHeader(value = "authorization",required = false) String token){
         JSONObject jsonObject = new JSONObject();
         List<String> list = new ArrayList<>();
 
         String username = null;
         if(token != null){
-            String userId = JWT.decode(token).getAudience().get(0);
+            String userId = TokenUtil.getClaim(token,"userId");
             username = userAccountService.findUserById(userId).getUsername();
         }
 

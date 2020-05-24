@@ -17,8 +17,8 @@ const service = axios.create({
 
 // 自定义的 axios 请求拦截器 
 service.interceptors.request.use((config) => {
-    if (typeof (localStorage.token) != 'undefined') {
-        config.headers['token'] = localStorage.token;
+    if (typeof (localStorage.Authorization) != 'undefined') {
+        config.headers['Authorization'] = localStorage.Authorization;
     }
     return config;
 }, (error) => {

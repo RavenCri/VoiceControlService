@@ -2,7 +2,6 @@ package com.web.controller;
 
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.auth0.jwt.JWT;
 import com.util.MqttUtil;
 import com.web.group.ToolValidated;
 import com.web.jwt.util.TokenUtil;
@@ -20,17 +19,17 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotBlank;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @RestController
@@ -48,7 +47,9 @@ public class UserAccountController {
     UserAuthSerice userAuthSerice;
     @Resource
     private RedisUtil redisUtil;
-    public static Map<String,String> tokens = new HashMap<>();
+    @Autowired
+    HashedCredentialsMatcher hashedCredentialsMatcher;
+
     @PostMapping("login")
     @ApiOperation("用户提供账号密码，调用该接口即可")
     @ApiImplicitParams({
@@ -58,27 +59,47 @@ public class UserAccountController {
     })
 
     public Result userLogin(@Validated(ToolValidated.login.class)User userLogin,
-                            HttpServletResponse response, BindingResult bindingResult) {
+                            HttpServletResponse response) {
+//        Subject subject = SecurityUtils.getSubject();
+//        try{
+//            UsernamePasswordToken token = new UsernamePasswordToken(userLogin.getUsername(), userLogin.getPassword());
+//
+//            subject.login(token);
+//        }catch (AuthenticationException e){
+//            e.printStackTrace();
+//            return Result.failure(ResultCode.loginFail);
+//        }
+//        User user = (User) subject.getPrincipal();
+//        String token = TokenUtil.getToken(user.getId());
+//        redisUtil.set("token_"+user.getId(),token,3600);
+//        response.addHeader("token",token);
+//        response.addHeader("Access-Control-Expose-Headers","token");
+//        return Result.success(ResultCode.loginSuccess, JSONObject.toJSONString(user));
 
-        User user = userAccountService.findUserByUsernameAndPassword(userLogin.getUsername(),userLogin.getPassword());
+        User user = userAccountService.findUserByUserName(userLogin.getUsername());
         if(user == null){
             return Result.failure(ResultCode.loginFail);
-
         }
-        UserAuth userAuth = userAuthSerice.getUserAuth(user.getUsername());
+        UserAuth userAuth = userAuthSerice.getUserAuth(userLogin.getUsername());
         if(userAuth!=null &&!userAuth.isUsable()){
             Result result = new Result();
             result.setCode(400);
             result.setMsg("账号被封禁了无法登陆,封禁原因："+userAuth.getReason());
             return result;
         }
-        String token = TokenUtil.getToken(user.getId(),user.getUsername());
-        redisUtil.set("token:"+user.getUsername(),token);
 
-        tokens.put(user.getId(),token);
-        response.addHeader("token",token);
-        response.addHeader("Access-Control-Expose-Headers","token");
+        SimpleHash simpleHash = new SimpleHash(hashedCredentialsMatcher.getHashAlgorithmName(), userLogin.getPassword(),user.getUsername(), hashedCredentialsMatcher.getHashIterations());
+        System.out.println("==>"+simpleHash);
+        if(!simpleHash.toHex().equals(user.getPassword())){
+             return Result.failure(ResultCode.loginFail);
+        }
+        String token = TokenUtil.getToken(user.getId());
+        redisUtil.set("token_"+user.getId(),token,3600);
+
+        response.addHeader("Authorization",token);
+        response.addHeader("Access-Control-Expose-Headers","Authorization");
         return Result.success(ResultCode.loginSuccess, JSONObject.toJSONString(user));
+
     }
     @PostMapping("register")
     @ApiOperation("注册新用户")
@@ -113,14 +134,14 @@ public class UserAccountController {
     @PostMapping("update")
     @ApiOperation("用来更新用户信息")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType="header", name = "token", value = "登录后的token", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="header", name = "authorization", value = "登录后的token", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "currentPassword", value = "当前密码", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "password1", value = "修改密码", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "password2", value = "确认修改密码", required = true, dataType = "String"),
     })
-    public Result updateInfo(@NotBlank @RequestHeader String token, @NotBlank @RequestParam String currentPassword,
+    public Result updateInfo(@NotBlank @RequestHeader("authorization") String authorization, @NotBlank @RequestParam String currentPassword,
                              @NotBlank @RequestParam String password2, @NotBlank @RequestParam String password1){
-        String userId = TokenUtil.getUserInfo(token);
+        String userId = TokenUtil.getClaim(authorization,"userId");;
         // 如果要改的密码与当前密码一样
         if(currentPassword.equals(password1)){
             return Result.failure(ResultCode.updateUserInfoFail);
@@ -136,10 +157,10 @@ public class UserAccountController {
     @GetMapping("userInfo")
     @ApiOperation("用来获取用户信息")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType="header", name = "token", value = "登录后的token", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="header", name = "authorization", value = "登录后的token", required = true, dataType = "String"),
     })
-    public Result getUserInfo(@NotBlank @RequestHeader String token){
-        String userId = JWT.decode(token).getAudience().get(0);
+    public Result getUserInfo(@NotBlank @RequestHeader("authorization") String authorization){
+        String userId = TokenUtil.getClaim(authorization,"userId");
         User us = userAccountService.findUserById(userId);
         Result result = new Result();
         result.setData(us);
@@ -150,11 +171,12 @@ public class UserAccountController {
 
     @GetMapping("userList")
     @ApiOperation("获取所有用户")
+    @RequiresPermissions(value = {"manager:user"})
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType="header", name = "token", value = "登录后的token", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="header", name = "authorization", value = "登录后的token", required = true, dataType = "String"),
     })
-    public Result getUserList(@NotBlank @RequestHeader String token){
-        String userId = JWT.decode(token).getAudience().get(0);
+    public Result getUserList(@NotBlank @RequestHeader("authorization") String authorization){
+        String userId = TokenUtil.getClaim(authorization,"userId");
         List<User> users = userAccountService.getUserList();
         // 设置用户设备组
         users.forEach(user -> {
@@ -178,14 +200,15 @@ public class UserAccountController {
     @PostMapping("close")
     @ApiOperation("封禁用户接口")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType="header", name = "token", value = "登录后的token", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="header", name = "authorization", value = "登录后的token", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="header", name = "username", value = "要封禁的用户名", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="header", name = "reason", value = "封禁原因", required = true, dataType = "String"),
     })
-    public Result closeUser(@NotBlank @RequestHeader String token,
+    @RequiresPermissions(value = {"manager:user"})
+    public Result closeUser(@NotBlank @RequestHeader("authorization") String authorization,
                             @NotBlank @RequestParam String username,
                             @NotBlank @RequestParam String reason){
-        String userId = JWT.decode(token).getAudience().get(0);
+        String userId = TokenUtil.getClaim(authorization,"userId");
 
         userAuthSerice.closeUser(username,reason);
         Result result = new Result();
@@ -196,15 +219,16 @@ public class UserAccountController {
 
     @PostMapping("open")
     @ApiOperation("解封用户接口")
+    @RequiresPermissions(value = {"manager:user"})
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType="header", name = "token", value = "登录后的token", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="header", name = "authorization", value = "登录后的token", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="header", name = "username", value = "解封用户名", required = true, dataType = "String"),
 
     })
-    public Result openUser(@RequestHeader String token,
+    public Result openUser(@RequestHeader("authorization") String authorization,
                            @RequestParam String username
                            ){
-        String userId = JWT.decode(token).getAudience().get(0);
+        String userId =  TokenUtil.getClaim(authorization,"userId");
 
         userAuthSerice.openUser(username);
         Result result = new Result();

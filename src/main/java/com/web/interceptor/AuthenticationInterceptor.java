@@ -1,12 +1,9 @@
 package com.web.interceptor;
 
-import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.web.exception.OwnException;
 import com.web.exception.impl.BaseErrorEnum;
 import com.web.jwt.annotation.PassToken;
 import com.web.jwt.annotation.UserLoginToken;
-import com.web.jwt.util.TokenUtil;
-import com.web.pojo.User;
 import com.web.service.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
@@ -30,7 +27,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object)  {
 
-        String token = httpServletRequest.getHeader("token");// 从 http 请求头中取出 token
+        String token = httpServletRequest.getHeader("Authorization");// 从 http 请求头中取出 token
         // 如果不是映射到方法直接通过
         if (!(object instanceof HandlerMethod)) {
             return true;
@@ -38,7 +35,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         HandlerMethod handlerMethod = (HandlerMethod) object;
         Method method = handlerMethod.getMethod();
         //Request method 'GET' not supported 则不进入拦截器
-
         if(method.isAnnotationPresent(PassToken.class) ){
             PassToken passToken = method.getAnnotation(PassToken.class);
             if( passToken.required() ){
@@ -59,25 +55,23 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     throw new OwnException(BaseErrorEnum.NotLoginException);
                 }
                 // 获取 token 中的 user id
-                String userId;
-                try {
-                    userId = TokenUtil.getUserInfo(token);
-                } catch (JWTDecodeException j) {
-                    throw new OwnException(BaseErrorEnum.TokenDecodeException);
-                }
-
-               /* if(!token.equals(UserAccountController.tokens.get(userId))){
-                    throw new RuntimeException("token信息已刷新，该token已失效，请重新登录！");
-                }*/
-                User user = userAccountService.findUserById(userId);
-                if (user == null) {
-                    throw new OwnException(BaseErrorEnum.UserNotExist);
-                }
-                // 验证 token
-                boolean verify  = TokenUtil.verify(token,user.getUsername(),user.getUsername());
-                if(!verify){
-                    throw  new OwnException(BaseErrorEnum.TokenExpireException);
-                }
+//                String userId;
+//                try {
+//                    userId = TokenUtil.getClaim(token,"userId");
+//                } catch (JWTDecodeException j) {
+//                    throw new OwnException(BaseErrorEnum.TokenDecodeException);
+//                }
+//
+//
+//                User user = userAccountService.findUserById(userId);
+//                if (user == null) {
+//                    throw new OwnException(BaseErrorEnum.UserNotExist);
+//                }
+//                // 验证 token
+//                boolean verify  = TokenUtil.verify(token,user.getUsername());
+//                if(!verify){
+//                    throw  new OwnException(BaseErrorEnum.TokenExpireException);
+//                }
 
                 return true;
             }

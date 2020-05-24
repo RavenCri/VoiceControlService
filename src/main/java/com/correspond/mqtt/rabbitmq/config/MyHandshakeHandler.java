@@ -31,7 +31,7 @@ public class MyHandshakeHandler extends DefaultHandshakeHandler {
             /**
              * 这边就获取你最熟悉的陌生人,携带参数，你可以cookie，请求头，或者url携带，这边我采用url携带
              */
-            final String token = httpRequest.getParameter("token");
+            final String token = httpRequest.getParameter("Authorization");
             if (StringUtils.isEmpty(token)) {
                 LOGGER.error("未登录系统，禁止登录websocket!");
                 return null;
