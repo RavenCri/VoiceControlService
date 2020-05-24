@@ -1,5 +1,7 @@
 package com.web.shiro;
 
+import com.web.exception.OwnException;
+import com.web.exception.impl.BaseErrorEnum;
 import com.web.jwt.util.TokenUtil;
 import com.web.pojo.User;
 import com.web.pojo.UserPermission;
@@ -99,6 +101,6 @@ public class MyShiroRealm extends AuthorizingRealm {
 
             return new SimpleAuthenticationInfo(token, token,getName());
         }
-        throw new AuthenticationException("Token异常");
+        throw  new OwnException(BaseErrorEnum.TokenExpireException);
     }
 }

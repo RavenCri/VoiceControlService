@@ -27,7 +27,8 @@ public class ShiroConfiguration {
     @Bean
     public MyShiroRealm myShiroRealm(){
         MyShiroRealm myShiroRealm= new MyShiroRealm();
-
+        // shiro 整合 jwt 不能 使用加密算法类来验证密文
+        //myShiroRealm.setCredentialsMatcher(hashedCredentialsMatcher());
         return myShiroRealm;
     }
     @Bean("securityManager")
@@ -42,7 +43,8 @@ public class ShiroConfiguration {
         DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
         defaultSessionStorageEvaluator.setSessionStorageEnabled(false);
         subjectDAO.setSessionStorageEvaluator(defaultSessionStorageEvaluator);
-
+            // 设置自定义Cache缓存
+        //securityManager.setCacheManager(new CustomCacheManager());
         securityManager.setSubjectDAO(subjectDAO);
         return securityManager;
     }

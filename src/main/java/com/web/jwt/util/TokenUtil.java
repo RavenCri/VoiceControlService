@@ -72,16 +72,14 @@ public class TokenUtil {
         return token;
     }
     /**
-    * @Description: 获取用户信息
+    * @Description: 获取封装在token的信息
     * @Param: [token]
     * @return: java.lang.String
     * @Author: raven
     * @Date: 2020/5/23
     */
-//    public static String getUserInfo(String token){
-//        return JWT.decode(token).getAudience().get(0);
-//    }
     public static String getClaim(String token,String claim){
+
         try {
             DecodedJWT jwt = JWT.decode(token);
             // 只能输出String类型，如果是其他类型返回null
