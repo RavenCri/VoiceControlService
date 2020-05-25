@@ -98,8 +98,9 @@ public class TokenUtil {
     * @Author: raven
     * @Date: 2020/5/23
     */
-    public static boolean verify(String token, String userId) {
+    public static boolean verify(String token) {
        try {
+            String userId = getClaim(token,"userId");
             String secret = (String)redisUtil.get("salt_"+userId);
             secret = secret.replaceAll("\"","");
 

@@ -1,7 +1,5 @@
 package com.web.shiro;
 
-import com.web.exception.OwnException;
-import com.web.exception.impl.BaseErrorEnum;
 import com.web.jwt.util.TokenUtil;
 import com.web.pojo.User;
 import com.web.pojo.UserPermission;
@@ -87,7 +85,7 @@ public class MyShiroRealm extends AuthorizingRealm {
      * @throws AuthenticationException
      */
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken)   {
         System.out.println("————身份认证方法————");
 
         String token = (String) authenticationToken.getCredentials();
@@ -96,11 +94,12 @@ public class MyShiroRealm extends AuthorizingRealm {
         if (user == null) {
             throw new AuthenticationException("该帐号不存在(The account does not exist.)");
         }
-        if(TokenUtil.verify(token,userId)){
+        if(TokenUtil.verify(token)){
             System.out.println("验证成功！");
 
             return new SimpleAuthenticationInfo(token, token,getName());
         }
-        throw  new OwnException(BaseErrorEnum.TokenExpireException);
+        throw new AuthenticationException("Token已过期(Token expired or incorrect.)");
+        //throw  new OwnException(BaseErrorEnum.TokenExpireException);
     }
 }

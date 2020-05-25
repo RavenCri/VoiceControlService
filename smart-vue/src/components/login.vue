@@ -57,7 +57,8 @@
     export default {
         name: 'login',
         mounted() {
-            if(typeof(localStorage.token) != 'undefined'){
+            //console.log(typeof(localStorage.Authorization) )
+            if(typeof(localStorage.Authorization) != 'undefined'){
                 this.$router.push({ name: 'center' });
             }
         },

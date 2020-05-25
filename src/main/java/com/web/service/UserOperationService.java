@@ -85,10 +85,10 @@ public class UserOperationService {
             key = "风扇快";
         }else if(word.contains("风扇") && (word.contains("慢")||word.contains("减")) ){
             key = "风扇慢";
-        }else if(word.contains("风扇") && word.contains("转") ){
-            key = "风扇正转";
         }else if(word.contains("风扇") && word.contains("反") && word.contains("转") ){
             key = "风扇反转";
+        }else if(word.contains("风扇") && word.contains("转") ){
+            key = "风扇正转";
         }else if(word.contains("风扇") && word.contains("停") ){
             key = "风扇停止";
         } else if(word.contains("室内") && word.contains("状态")  ){

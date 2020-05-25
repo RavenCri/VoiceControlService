@@ -98,7 +98,7 @@ public class ShiroConfiguration {
         filterRegistrationBean.setFilter(proxy);
         return filterRegistrationBean;
     }
-    // 颜值加密不适用于Token验证！！！！！！！
+    // 盐值加密不适用于Token验证！！！！！！！
     @Bean(name = "hashedCredentialsMatcher")
     public HashedCredentialsMatcher hashedCredentialsMatcher() {
         HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();

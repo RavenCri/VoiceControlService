@@ -64,6 +64,8 @@ public class UserPermissionController {
 
         }
         jsonObject.put("data",list);
+        jsonObject.put("code",200);
+        jsonObject.put("msg","获取成功");
         return jsonObject;
     }
 }

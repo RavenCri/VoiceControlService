@@ -20,10 +20,10 @@ import javax.servlet.http.HttpServletRequest;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     private static Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-   // @ExceptionHandler(RuntimeException.class)
 
+    @ExceptionHandler(RuntimeException.class)
     public String handleException(HttpServletRequest request, Exception e){
-        //e.printStackTrace();
+        e.printStackTrace();
         JSONObject obj = new JSONObject();
         obj.put("code",500);
         StackTraceElement stackTraceElement = e.getStackTrace()[0];
@@ -37,7 +37,6 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({OwnException.class})
-
     public String jwtVerification( OwnException  e){
         e.printStackTrace();
         JSONObject obj = new JSONObject();
@@ -45,13 +44,12 @@ public class GlobalExceptionHandler {
         obj.put("msg",e.getMessage());
         return obj.toJSONString();
     }
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    //@ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(ShiroException.class)
-    @ResponseBody
     public Result handle401(ShiroException e) {
         System.out.println("无权访问");
         Result result = new Result();
-        result.setMsg( "权限不足！(Unauthorized):" + e.getMessage());
+        result.setMsg( "权限不足！(Unauthorized):" );
         result.setCode(HttpStatus.UNAUTHORIZED.value());
         return result;
     }

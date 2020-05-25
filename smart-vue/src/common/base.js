@@ -30,6 +30,7 @@ export default {
         return new Promise((resolve, reject) => {
             service.get(url, { params: params }, config)
                 .then(response => {
+                    console.log(response.data   )
                     // 如果token过期
                     if (response.data && response.data.code && response.data.code === -1) {
                         Vue.prototype.$alert(response.data.msg, {
