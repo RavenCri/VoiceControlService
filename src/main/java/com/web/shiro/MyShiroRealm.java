@@ -100,6 +100,6 @@ public class MyShiroRealm extends AuthorizingRealm {
             return new SimpleAuthenticationInfo(token, token,getName());
         }
         throw new AuthenticationException("Token已过期(Token expired or incorrect.)");
-        //throw  new OwnException(BaseErrorEnum.TokenExpireException);
+
     }
 }

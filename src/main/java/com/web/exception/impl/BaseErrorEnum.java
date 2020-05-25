@@ -11,7 +11,7 @@ import com.web.exception.BaseErrorInfoInterface;
 public enum  BaseErrorEnum implements BaseErrorInfoInterface {
     TokenExpireException(-1,"token已过期,请您重新登陆"),
     NotLoginException(300,"当前状态还未登陆，请先登陆"),
-    TokenDecodeException(-1,"token信息异常，请你重新登陆"),
+    TokenDecodeException(-1,"token信息异常，请重新登陆"),
     UserNotExist(301,"当前用户信息不存在，请求失败！");
 
     /** 错误码 */

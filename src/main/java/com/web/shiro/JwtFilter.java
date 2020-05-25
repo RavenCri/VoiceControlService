@@ -40,8 +40,8 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
             } catch (AuthenticationException e) {
                 //token 错误
                // e.printStackTrace();
-                System.out.println("自定义异常");
-                LoginError(response);
+
+                LoginError(response,e.getMessage());
                 return false;
 
             }
@@ -89,7 +89,7 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
         return true;
     }
 
-    private void LoginError(ServletResponse response) {
+    private void LoginError(ServletResponse response,String msg) {
 
        // throw   new OwnException(BaseErrorEnum.TokenExpireException);
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
@@ -102,7 +102,7 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
             PrintWriter out = httpServletResponse.getWriter();
             Result result = new Result();
             result.setCode(-1);
-            result.setMsg("token已过期，请重新登录！");
+            result.setMsg(msg);
             out.write(JSON.toJSONString(result));
             out.flush();
         } catch (IOException e) {
