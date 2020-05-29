@@ -35,7 +35,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     // 配置消息代理，哪种路径的消息会进行代理处理
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        //并将其目的地前缀设置为“/topic”这样的话，设置"/topic"
+        //将其目的地前缀设置为“/topic”这样的话，设置"/topic"
         // Spring就能知道所有目的地前缀为“/topic”的消息都会发送到STOMP代理中。
         registry.enableStompBrokerRelay("/topic")
                 .setRelayHost("localhost")      // rabbitmq-host服务器地址

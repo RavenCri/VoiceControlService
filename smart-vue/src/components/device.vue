@@ -193,7 +193,7 @@
                         this.$message.error(res.data.msg);
                     }
                 }).catch(err=>{})
-                this.$axios.post('device/add', qs.stringify(this.addForm)).then()
+               
 
             },
             controlDevice(index, row) {

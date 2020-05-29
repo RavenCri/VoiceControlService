@@ -50,20 +50,20 @@ public class UserOperationService {
         } else if(word.contains("灯") && word.contains("关")  && word.contains("客厅")  ){
             key = "客厅关灯";
             //操作所有灯
-        }else if(word.contains("灯") && word.contains("开") && word.contains("厨房")  ){
-            key = "厨房开灯";
-        } else if(word.contains("灯") && word.contains("关")  && word.contains("厨房")  ){
-            key = "厨房关灯";
+        }else if(word.contains("开") && word.contains("抽油烟机")  ){
+            key = "开抽油烟机";
+        } else if( word.contains("关")  && word.contains("抽油烟机")  ){
+            key = "关抽油烟机";
             //操作所有灯
         }else if(word.contains("灯") && word.contains("开") && word.contains("洗手间")  ){
             key = "洗手间开灯";
         } else if(word.contains("灯") && word.contains("关")  && word.contains("洗手间")  ){
             key = "洗手间关灯";
             //操作所有灯
-        }else if(word.contains("灯") && word.contains("开") && word.contains("卧室")  ){
-            key = "卧室开灯";
-        } else if(word.contains("灯") && word.contains("关")  && word.contains("卧室")  ){
-            key = "卧室关灯";
+        }else if(word.contains("灯") && word.contains("开") && word.contains("次卧")  ){
+            key = "次卧开灯";
+        } else if(word.contains("灯") && word.contains("关")  && word.contains("次卧")  ){
+            key = "次卧关灯";
             //操作所有灯
         }else if(word.contains("灯") && word.contains("开") && word.contains("客厅")  ){
             key = "开灯";
@@ -74,10 +74,10 @@ public class UserOperationService {
             key = "关灯ALL";
         }else if(word.contains("灯") && word.contains("开") && (word.contains("都")|| word.contains("全")|| word.contains("所有"))){
             key = "开灯ALL";
-        } else if(word.contains("灯") && word.contains("开") ){ //默认开1号房间的灯
-            key = "开灯";
+        } else if(word.contains("灯") && word.contains("开") ){ //默认开主卧房间的灯
+            key = "主卧开灯";
         }else if(word.contains("灯") && word.contains("关")){
-            key = "关灯";
+            key = "主卧关灯";
             //操作 客厅 的灯
         }else if(word.contains("蹦") || word.contains("迪")){
             key = "蹦迪";

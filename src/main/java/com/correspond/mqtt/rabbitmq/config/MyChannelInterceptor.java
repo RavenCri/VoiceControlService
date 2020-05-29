@@ -39,17 +39,17 @@ public class MyChannelInterceptor implements ChannelInterceptor {
             Object raw = message.getHeaders().get(SimpMessageHeaderAccessor.NATIVE_HEADERS);
 
             if (raw instanceof Map) {
-                Object name = ((Map) raw).get("name");
-                if (name instanceof LinkedList) {
-                    String id = ((LinkedList) name).get(0).toString();
-                    System.out.println("id："+id);
+                Object nameObj = ((Map) raw).get("name");
+                if (nameObj instanceof LinkedList) {
+                    String name = ((LinkedList) nameObj).get(0).toString();
+                    System.out.println("name："+name);
                     //设置当前访问器的认证用户
-                    accessor.setUser(new MyPrincipal(id));
+                    accessor.setUser(new MyPrincipal(name));
 
                     String sessionId = accessor.getSessionId();
 
                     // 统计用户在线数，可通过redis来实现更好
-                    webAgentSessionRegistry.registerSessionId(id, sessionId);
+                    webAgentSessionRegistry.registerSessionId(name, sessionId);
 
                 }
             }

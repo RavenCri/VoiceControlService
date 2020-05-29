@@ -69,9 +69,9 @@ public class SendController {
             @ApiImplicitParam(paramType="query", name = "type", value = "推送的类型，是web还是android?", required = true, dataType = "String"),
     })
     @GetMapping("/user/{username}/{type}")
-    public void notice(@PathVariable String username, @PathVariable String type) {
+    public void notice(@PathVariable String username, @PathVariable String type,String msg) {
         messagingTemplate.convertAndSendToUser(username+"@"+type
-                , "/topic/reply","这是通知消息！！");
+                , "/topic/reply",msg);
     }
     /**
      * 设备可以发送给具体用户消息
@@ -109,7 +109,7 @@ public class SendController {
                 messagingTemplate.convertAndSendToUser(user.getUsername()+"@"+platForm, "/topic/reply",
                         msg);
 
-
+                System.out.println("已推送至："+user.getUsername()+"@"+platForm);
                 return Result.success(ResultCode.Success);
             }
         }

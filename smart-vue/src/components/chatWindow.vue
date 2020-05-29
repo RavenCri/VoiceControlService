@@ -126,7 +126,7 @@
                         if(typeof(res.data.msg) !="undefined" ){
                             this.chatMsg.push({ "orient": "left", "msg": res.data.msg, "time": formatDate(new Date(), this.normalFormat), "nickname": "曼拉" })
                         }
-                      
+                       //this.ws.send("/message/toFriend", {}, JSON.stringify({'message': this.currentMsg,'toUser':'test'}));
                         this.currentMsg = ''
                     }).catch(err=>{})
                 } else {
@@ -157,6 +157,9 @@
                         console.log(msg.body);
                         this.chatMsg.push({ "orient": "left", "msg": msg.body   , "time": formatDate(new Date(), this.normalFormat), "nickname": "曼拉" })
                     });
+                    
+                    //推送消息
+                    //this.ws.send(`/message/web.${this.userInfo['username']}`, {}, JSON.stringify({ 'name': 'anumbrella' }));
                     
                 });
 

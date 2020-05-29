@@ -3,7 +3,7 @@ package com.correspond.mqtt.rabbitmq.entity;
 import java.security.Principal;
 
 /**
- * @author Anumbrella
+ * @author raven
  */
 public class MyPrincipal implements Principal {
 

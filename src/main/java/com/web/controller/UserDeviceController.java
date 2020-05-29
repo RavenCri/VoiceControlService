@@ -1,7 +1,6 @@
 package com.web.controller;
 
 import cn.hutool.core.date.DateTime;
-import com.auth0.jwt.JWT;
 import com.web.jwt.annotation.PassToken;
 import com.web.jwt.annotation.UserLoginToken;
 import com.web.jwt.util.TokenUtil;
@@ -46,7 +45,7 @@ public class UserDeviceController {
     public Result deviceHeartJump(String deviceId){
 
         if(deviceService.findDeviceByDeviceId(deviceId) != null){
-            System.out.println("有设备在线啦："+deviceId);
+           // System.out.println("有设备在线啦："+deviceId);
             OnlineDevice.put(deviceId,new DateTime());
             return Result.success(ResultCode.registerSuccess);
         }else {
@@ -77,8 +76,8 @@ public class UserDeviceController {
             @ApiImplicitParam(paramType="query", name = "deviceKey", value = "设备密码", required = true, dataType = "String"),
     })
     @PostMapping("add")
-    public Result addDevice(@RequestHeader("authorization") String token, String deviceId,String deviceKey){
-        String userId = JWT.decode(token).getAudience().get(0);
+    public Result addDevice(@RequestHeader("authorization") String authorization, String deviceId,String deviceKey){
+        String userId = TokenUtil.getClaim(authorization,"userId");
         return userDeviceService.userAddDevice(userId, deviceId,deviceKey);
 
     }
