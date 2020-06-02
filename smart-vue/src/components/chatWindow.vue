@@ -96,6 +96,7 @@
             },
         },
         methods: {
+          
             scrollBotton() {
 
                 this.$nextTick(() => {

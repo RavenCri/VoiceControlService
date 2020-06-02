@@ -25,6 +25,19 @@ service.interceptors.request.use((config) => {
     // 对请求错误做些什么
     return Promise.reject(error)
 });
+service.interceptors.response.use(res => {
+    
+    if (res.headers['authorization'] != undefined) {
+        console.log("已更新token："+res.headers['authorization'])
+        localStorage.setItem('Authorization', res.headers['authorization'])
+    }
+    return res
+  },
+  error => {
+    alert('请求失败，请稍后重试！')
+    return Promise.reject(error)
+  }
+  )
 export default {
     get(url, params, config = {}) {
         return new Promise((resolve, reject) => {

@@ -26,9 +26,9 @@ import java.util.UUID;
 @Component
 public class TokenUtil {
     public static Logger logger = LoggerFactory.getLogger(TokenUtil.class);
-    private  static String expires = "0";
-    private  static String withIssuer = null;
-
+    public static String expires = "0";
+    private static String withIssuer = null;
+    public static String refreshExpires = null;
     private static RedisUtil redisUtil;
     @Autowired
     public void setRedisUtil(RedisUtil redisUtil) {
@@ -45,6 +45,11 @@ public class TokenUtil {
 
         this.withIssuer = withIssuer;
     }
+    @Value("refreshExpires")
+    public void setRefreshExpires(String refreshExpires) {
+
+        this.refreshExpires = refreshExpires;
+    }
     /**
     * @Description: 生成Token
     * @Param: [userId, username]
@@ -56,14 +61,16 @@ public class TokenUtil {
         String secret ;
         SecureRandomNumberGenerator secureRandomNumberGenerator = new SecureRandomNumberGenerator();
         secret = secureRandomNumberGenerator.nextBytes(16).toHex();
-        redisUtil.set("salt_"+userId,secret);
-        String token="";
-        // 也可以添加自定义声明值 这么直接设置过期时间.withClaim("data", System.currentTimeMillis())
-        Long date = System.currentTimeMillis();
-        token= JWT.create()
 
+        Long date = System.currentTimeMillis();
+        // 为了保证安全，盐值随机生成。然后保存该盐值到redis，验证的时候取出来
+        redisUtil.set("salt_"+userId,secret);
+
+        String token="";
+        token= JWT.create()
                 .withClaim("userId",String.valueOf(userId))
                 .withIssuedAt(new Date(date)) // 签发时间 非必要
+                .withClaim("createTime",String.valueOf(date))
                 .withExpiresAt(new Date(date + 1000*60*Integer.parseInt(expires)))// jwt的过期时间
               //  .withSubject(user.getUsername())  //主题 非必要
                 .withIssuer(withIssuer)//发布者 非必要
@@ -115,9 +122,11 @@ public class TokenUtil {
         } catch (Exception e) {
 
             logger.info("The token is invalid{}",e.getMessage());
+
             return false;
         }
     }
+
 }
  /*
         iss: jwt签发者

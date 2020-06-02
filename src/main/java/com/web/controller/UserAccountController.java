@@ -87,15 +87,17 @@ public class UserAccountController {
             result.setMsg("账号被封禁了无法登陆,封禁原因："+userAuth.getReason());
             return result;
         }
-
+        // 获取加密结果
         SimpleHash simpleHash = new SimpleHash(hashedCredentialsMatcher.getHashAlgorithmName(), userLogin.getPassword(),user.getUsername(), hashedCredentialsMatcher.getHashIterations());
         System.out.println("==>"+simpleHash);
         if(!simpleHash.toHex().equals(user.getPassword())){
              return Result.failure(ResultCode.loginFail);
         }
         String token = TokenUtil.getToken(user.getId());
-        redisUtil.set("token_"+user.getId(),token,3600);
-
+        // 更新token到Redis
+        redisUtil.set("token_"+user.getId(),token,Long.valueOf(TokenUtil.expires)*60);
+        // 更新refreshTime到Redis
+        redisUtil.set("refresh_"+user.getId(),TokenUtil.getClaim(token,"createTime"),Long.parseLong(TokenUtil.refreshExpires)*60);
         response.addHeader("Authorization",token);
         response.addHeader("Access-Control-Expose-Headers","Authorization");
         return Result.success(ResultCode.loginSuccess, JSONObject.toJSONString(user));

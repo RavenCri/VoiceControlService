@@ -7,6 +7,7 @@ import com.web.redis.util.RedisUtil;
 import com.web.service.UserAccountService;
 import com.web.service.UserAuthSerice;
 import com.web.service.UserPermissioService;
+import io.netty.util.internal.StringUtil;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -40,6 +41,7 @@ public class MyShiroRealm extends AuthorizingRealm {
     private RedisUtil redisUtil;
     @Autowired
     private UserAuthSerice userAuthSerice;
+
 
     @Override
     public boolean supports(AuthenticationToken authenticationToken) {
@@ -89,16 +91,20 @@ public class MyShiroRealm extends AuthorizingRealm {
         System.out.println("————身份认证方法————");
 
         String token = (String) authenticationToken.getCredentials();
-        String userId = TokenUtil.getClaim(token,"userId");;
+        String userId = TokenUtil.getClaim(token,"userId");
+        if (StringUtil.isNullOrEmpty(userId)) {
+            throw new AuthenticationException("Token中帐号为空(The account in Token is empty.)");
+        }
         User user = userService.findUserById(userId);
         if (user == null) {
             throw new AuthenticationException("该帐号不存在(The account does not exist.)");
         }
-        if(TokenUtil.verify(token)){
+        if(RedisUtil.hasKey("token_"+user.getId()) && TokenUtil.verify(token)){
             System.out.println("验证成功！");
 
             return new SimpleAuthenticationInfo(token, token,getName());
         }
+
         throw new AuthenticationException("Token已过期(Token expired or incorrect.)");
 
     }

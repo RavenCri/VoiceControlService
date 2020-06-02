@@ -18,8 +18,14 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class RedisUtil {
 
+
+
+    private static RedisTemplate<String, Object> redisTemplate;
+
     @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    public  void setRedisTemplate(RedisTemplate<String, Object> redisTemplate) {
+        RedisUtil.redisTemplate = redisTemplate;
+    }
 
     public RedisUtil(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
@@ -57,7 +63,7 @@ public class RedisUtil {
      * @param key 键
      * @return true 存在 false不存在
      */
-    public boolean hasKey(String key){
+    public static boolean hasKey(String key){
         try {
             return redisTemplate.hasKey(key);
         } catch (Exception e) {
@@ -87,7 +93,7 @@ public class RedisUtil {
      * @param key 键
      * @return 值
      */
-    public Object get(String key){
+    public static Object get(String key){
         return key==null?null:redisTemplate.opsForValue().get(key);
     }
 
@@ -97,7 +103,7 @@ public class RedisUtil {
      * @param value 值
      * @return true成功 false失败
      */
-    public boolean set(String key,Object value) {
+    public static boolean set(String key, Object value) {
         try {
             redisTemplate.opsForValue().set(key, value);
             return true;
@@ -114,7 +120,7 @@ public class RedisUtil {
      * @param time 时间(秒) time要大于0 如果time小于等于0 将设置无限期
      * @return true成功 false 失败
      */
-    public boolean set(String key,Object value,long time){
+    public static boolean set(String key,Object value,long time){
         try {
             if(time>0){
                 redisTemplate.opsForValue().set(key, value, time, TimeUnit.SECONDS);

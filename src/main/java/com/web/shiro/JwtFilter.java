@@ -1,6 +1,8 @@
 package com.web.shiro;
 
 import com.alibaba.fastjson.JSON;
+import com.web.jwt.util.TokenUtil;
+import com.web.redis.util.RedisUtil;
 import com.web.result.Result;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
@@ -26,6 +28,7 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
     Logger log = LoggerFactory.getLogger(JwtFilter.class);
 
 
+
     /**
      * 如果带有 token，则对 token 进行检查，否则直接通过
      */
@@ -37,17 +40,46 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
             try {
                 executeLogin(request, response);
                 return true;
-            } catch (AuthenticationException e) {
-                //token 错误
-               // e.printStackTrace();
+            }catch (AuthenticationException e){
 
+                // 执行到这里说明token过期
+                if(referToken((HttpServletRequest) request)){
+                    //referToken未过期，则刷新token
+                    log.info("refer未过期即将刷新token");
+                    String token = ((HttpServletRequest) request).getHeader("Authorization");
+                    String userId = TokenUtil.getClaim(token,"userId");
+                    String newToken = TokenUtil.getToken(userId);
+                    // 更新token到redis
+                    RedisUtil.set("token_"+userId,newToken,Long.valueOf(TokenUtil.expires)*60);
+                    ((HttpServletResponse)response).addHeader("Authorization",newToken);
+                    ((HttpServletResponse)response).addHeader("Access-Control-Expose-Headers","Authorization");
+                    return true;
+                }
+                log.info("refer过期");
+                //token 过期
                 LoginError(response,e.getMessage());
                 return false;
-
             }
         }
         //如果请求头不存在 Token，则可能是执行登陆操作或者是游客状态访问，无需检查 token，直接返回 true
         return true;
+    }
+
+    private boolean referToken(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        String createTime = TokenUtil.getClaim(token, "createTime");
+
+        // 如果redis还包含refresh,则进行刷新token
+        if(RedisUtil.hasKey("refresh_"+TokenUtil.getClaim(token, "userId"))){
+            String accessTime = (String) RedisUtil.get("refresh_"+TokenUtil.getClaim(token, "userId"));
+            // 如果和redis的值相同（也就是说只允许更新一次token）因为更新token后createTime会改变！，而accessTime是第一次token
+            // 携带的
+            if( createTime == accessTime){
+                //未过期
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -91,7 +123,7 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
 
     private void LoginError(ServletResponse response,String msg) {
 
-       // throw   new OwnException(BaseErrorEnum.TokenExpireException);
+
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
         //httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
