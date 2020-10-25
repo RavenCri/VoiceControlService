@@ -60,7 +60,7 @@ export const defaultRouter = [
           title:'更新信息',
           icon:'el-icon-menu'
         }
-      },
+      }
     ]
   },
  

@@ -46,7 +46,7 @@
                     <el-dropdown style="margin-left: 80%">
                         <i class="el-icon-setting" style="margin-right: 15px"></i>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item><span @click='logout'>退出</span></el-dropdown-item>
+                            <el-dropdown-item><span @click='logout' style="display: block;">退出</span></el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                     <span

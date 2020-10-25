@@ -86,7 +86,7 @@ public class SendController {
 
     })
     @PostMapping("/user")
-    public Result user(
+    public Result sendMsgToUser(
                      @RequestParam String deviceId,
                      @RequestParam String deviceKey,
                      @RequestParam String username,
