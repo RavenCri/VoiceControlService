@@ -28,7 +28,8 @@ swagger: 接口文档
 
 同时rabbitmq需要安装插件以开启对相关协议的支持：
 
-rabbitmq-plugins enable rabbitmq_stomp  
+rabbitmq-plugins enable rabbitmq_stomp
+rabbitmq-plugins enable rabbitmq_mqtt  
 rabbitmq-plugins enable rabbitmq_web_stomp_examples  
 知识准备：
 

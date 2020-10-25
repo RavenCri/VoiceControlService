@@ -32,6 +32,7 @@
 
   ```shell
   rabbitmq-plugins enable rabbitmq_stomp  
+  rabbitmq-plugins enable rabbitmq_mqtt
   rabbitmq-plugins enable rabbitmq_web_stomp_examples  
   ```
 
