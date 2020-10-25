@@ -42,7 +42,7 @@ rabbitmq-plugins enable rabbitmq_web_stomp_examples
 配置信息：
 
 application.yml中配置了RabbitMQ的相关信息，以及JWT的部分配置。
-application.properties中配置了mysql、redis```的相关信息
+application.properties中配置了```mysql```、```redis```的相关信息
 运行：
 
 启动Redis

@@ -48,7 +48,7 @@
 - 配置信息：
 
   - ```application.yml```中配置了```RabbitMQ```的相关信息，以及```JWT```的部分配置。
-  - ```application.properties```中配置了mysql```、```redis```的相关信息
+  - ```application.properties```中配置了```mysql```、 ```redis```的相关信息
 
 - 运行：
 
