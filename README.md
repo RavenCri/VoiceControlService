@@ -109,33 +109,33 @@ npm start
 ```
 
 
-- 前端展示：
+- 前端首页展示：
 
-  ![](C:\Users\raven\Desktop\VoiceControlService\images\index.jpg)
+  ![](https://github.com/RavenCri/VoiceControlService/tree/master/images/index.jpg)
 
   - 普通用户登录：
 
-  ![](C:\Users\raven\Desktop\VoiceControlService\images\normal_user.jpg)
+  ![](https://github.com/RavenCri/VoiceControlService/tree/master/images/normal_user.jpg)
 
   - 管理员登录
 
-  ![admin_user](C:\Users\raven\Desktop\VoiceControlService\images\admin_user.jpg)
+  ![admin_user](https://github.com/RavenCri/VoiceControlService/tree/master/images/admin_user.jpg)
 
 上图中，可以清楚地看到路由菜单是动态生成的。
 
 当普通用户试图访问管理员页面时：
 
-![no_Authorized](C:\Users\raven\Desktop\VoiceControlService\images\no_Authorized.jpg)
+![no_Authorized](https://github.com/RavenCri/VoiceControlService/tree/master/images/no_Authorized.jpg)
 
 ### 4.项目框架
 
 #### 4.1 APP通信图
 
-![app_set](C:\Users\raven\Desktop\VoiceControlService\images\app_set.png)
+![app_set](https://github.com/RavenCri/VoiceControlService/tree/master/images/app_set.png)
 
-#### 4.2 多设备精准控制方案：![mqtt_net](C:\Users\raven\Desktop\VoiceControlService\images\mqtt_net.png)
+#### 4.2 多设备精准控制方案：![mqtt_net](https://github.com/RavenCri/VoiceControlService/tree/master/images/mqtt_net.png)
 
-#### 4.3 整体方案![all_set](C:\Users\raven\Desktop\VoiceControlService\images\all_set.png)
+#### 4.3 整体方案![all_set](https://github.com/RavenCri/VoiceControlService/tree/master/images/all_set.png)
 
 ## 5.frp（内网穿透）:
 
@@ -246,7 +246,7 @@ start /b frpc -c ./frpc.ini
 
 选择设备，并在数据库中查看设备密码（因为设备密码及其隐私，不能在前端展示。该设备密码只有在设备出厂的盒子的说明书可以找到！）。
 
-![select_devices](C:\Users\raven\Desktop\VoiceControlService\images\select_devices.jpg)
+![select_devices](https://github.com/RavenCri/VoiceControlService/tree/master/images/select_devices.jpg)
 
 
 
@@ -254,15 +254,15 @@ start /b frpc -c ./frpc.ini
 
 ```0000-0000-0000-0002-3rbc47r7rngjxq50```
 
-![MQTTFX_init](C:\Users\raven\Desktop\VoiceControlService\images\MQTTFX_init.jpg)
+![MQTTFX_init](https://github.com/RavenCri/VoiceControlService/tree/master/images/MQTTFX_init.jpg)
 
 然后我们通过前端点击控制按钮，并发送开灯：
 
-![open_led](C:\Users\raven\Desktop\VoiceControlService\images\open_led.jpg)
+![open_led](https://github.com/RavenCri/VoiceControlService/tree/master/images/open_led.jpg)
 
 可以在MQTT客户端看到，它已经收到消息了！
 
-![show_msg](C:\Users\raven\Desktop\VoiceControlService\images\show_msg.jpg)
+![show_msg](https://github.com/RavenCri/VoiceControlService/tree/master/images/show_msg.jpg)
 
 ##### 问题一：那么前端，怎么知道设备是否正常处理了消息呢？
 
@@ -274,11 +274,11 @@ start /b frpc -c ./frpc.ini
 
 http://localhost:15672 点击Quenes，找到该用户所接收消息的队列名称。
 
-![queue_rabbitmq](C:\Users\raven\Desktop\VoiceControlService\images\queue_rabbitmq.jpg)
+![queue_rabbitmq](https://github.com/RavenCri/VoiceControlService/tree/master/images/queue_rabbitmq.jpg)
 
 接下来，我们尝试用MQTT客户端向前端推送消息。
 
-![send_msg](C:\Users\raven\Desktop\VoiceControlService\images\send_msg.jpg)
+![send_msg](https://github.com/RavenCri/VoiceControlService/tree/master/images/images\send_msg.jpg)
 
 可以看到我们已经成功发送了消息，经过测试，使用MQTT-fx 发送中文数据会乱码，可能是由于MQTT-fx内部对于字符编码的设置，暂时没有尝试寻找解决办法，不过这也并不影响我们可以收发消息。
 
